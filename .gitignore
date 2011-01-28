@@ -5,3 +5,6 @@
 .DS_Store
 build
 iOS/www/phonegap.js
+App/tmp
+App/output
+App/.sass-cache
