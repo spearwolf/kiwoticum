@@ -20,3 +20,8 @@ body {
     padding: 4px 2px;
 }
 
+path:hover {
+    stroke: #f00;
+    fill: #fac;
+}
+
