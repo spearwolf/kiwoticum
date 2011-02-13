@@ -1,0 +1,22 @@
+
+body {
+    font-family: Verdana, Sans-Serif;
+}
+
+#startup {
+    border: 1px solid #305070;
+    float: left;
+}
+
+#startup > h3 {
+    margin: 0 0;
+    padding: 2px 2px;
+    background-color: #305070;
+    color: #ffffff;
+}
+
+#startup > form {
+    margin: 0 0;
+    padding: 4px 2px;
+}
+
