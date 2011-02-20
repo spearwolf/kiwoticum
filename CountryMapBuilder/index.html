@@ -13,13 +13,37 @@
     <div id="startup">
       <h3>CountryMapBuilder</h3>
       <form action="#start">
-        <label for="countryMapWidth">Width</label>
-        <input name="countryMapWidth" type="number" min="10" max="1000" value="20" size="5"/>
+        <fieldset>
+          <legend>Hexagon</legend>
 
-        <label for="countryMapHeight">Height</label>
-        <input name="countryMapHeight" type="number" min="10" max="1000" value="10" size="5"/>
+          <label for="hexagonWidth">width:</label>
+          <input name="hexagonWidth" type="number" min="5" max="99" value="20" size="3"/>
 
-        <input type="submit" value="Start"/>
+          <label for="hexagonHeight">height:</label>
+          <input name="hexagonHeight" type="number" min="5" max="99" value="20" size="3"/>
+        </fieldset>
+
+        <fieldset>
+          <legend>Padding</legend>
+
+          <label for="paddingX">x:</label>
+          <input name="paddingX" type="number" min="0" max="99" value="4" size="3"/>
+
+          <label for="paddingY">y:</label>
+          <input name="paddingY" type="number" min="0" max="99" value="4" size="3"/>
+        </fieldset>
+
+        <fieldset>
+          <legend>Map</legend>
+
+          <label for="countryMapWidth">width:</label>
+          <input name="countryMapWidth" type="number" min="10" max="1000" value="20" size="5"/>
+
+          <label for="countryMapHeight">height:</label>
+          <input name="countryMapHeight" type="number" min="10" max="1000" value="10" size="5"/>
+        </fieldset>
+
+        <button type="submit">Start</button>
       </form>
     </div>
     <!-- end of Startup Form }}} -->
