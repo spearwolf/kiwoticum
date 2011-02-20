@@ -127,5 +127,7 @@ jQuery(function($) {
         });
         cmb.drawBaseHexagons();
     });
+
+    $("#startup > h3").click(function() { location.reload(true); });
 });
 

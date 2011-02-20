@@ -14,6 +14,7 @@ body {
     padding: 2px 2px;
     background-color: #305070;
     color: #ffffff;
+    cursor: pointer;
 }
 
 #startup > form {
@@ -24,5 +25,6 @@ body {
 path:hover {
     stroke: #f00;
     fill: #fac;
+    cursor: pointer;
 }
 
