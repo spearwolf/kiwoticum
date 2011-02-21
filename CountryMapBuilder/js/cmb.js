@@ -8,7 +8,9 @@ var CountryMapBuilder = function(options) {
             hexagonHeight: 20,
             startAtAngle: 90,
             paddingX: 4,
-            paddingY: 4
+            paddingY: 4,
+            hexagonFill: '#79b',
+            hexagonStroke: '#024'
         }, options),
         api = {};
 
@@ -25,11 +27,11 @@ var CountryMapBuilder = function(options) {
         });
     };
 
-    api.createSvgPath = function(coords) {
+    function createSvgPath(coords) {
         return _.reduce(coords, function(path, v) {
             return path + (path === "" ? "M" : " L") + (Math.round(v[0]*100)/100) + " " + (Math.round(v[1]*100)/100);
         }, "") + " z";
-    };
+    }
 
     var baseHexCoords = api.createHexagonCoords(conf.hexagonWidth, conf.hexagonHeight),
         stepX = baseHexCoords[5][0] - baseHexCoords[3][0],
@@ -48,20 +50,26 @@ var CountryMapBuilder = function(options) {
             left: positionLeft,
             elem: null,
             data: {},
-            getNeighborNorth: function() { return api.getHexagon(x, y-1); },
-            getNeighborSouth: function() { return api.getHexagon(x, y+1); },
-            getNeighborNorthWest: function() { return api.getHexagon(x-1, y-1); },
-            getNeighborSouthWest: function() { return api.getHexagon(x-1, y); },
-            getNeighborNorthEast: function() { return api.getHexagon(x+1, y-1); },
-            getNeighborSouthEast: function() { return api.getHexagon(x+1, y); },
+            neighbor: {  // see Phase 2) of HexagonModel generation
+                north: null,
+                south: null,
+                northWest: null,
+                southWest: null,
+                northEast: null,
+                southEast: null
+            },
             builder: api
         };
     }
 
     var hexagonModel = (function() {
         var col = [], row,
-            y, x, pixelX, pixelY;
+            y, x, pixelX, pixelY,
+            hexagon;
 
+        //===========================================================
+        // Phase I) Build hexagon 2d array
+        //===========================================================
         for (y = 0; y < conf.height; y++) {
             row = [];
             for (x = 0; x < conf.width; x++) {
@@ -74,6 +82,26 @@ var CountryMapBuilder = function(options) {
             }
             col.push(row);
         }
+
+        //===========================================================
+        // Phase II) Create neighbor references
+        //===========================================================
+        function getHexRef(x, y) {
+            return (x >= 0 && x < conf.width && y >= 0 && y < conf.height) ? col[y][x] : null;
+        }
+
+        for (y = 0; y < conf.height; y++) {
+            for (x = 0; x < conf.width; x++) {
+                hexagon = col[y][x];
+                hexagon.neighbor.north = getHexRef(x, y-1);
+                hexagon.neighbor.south = getHexRef(x, y+1);
+                hexagon.neighbor.northWest = getHexRef(x-1, y-1);
+                hexagon.neighbor.southWest = getHexRef(x-1, y);
+                hexagon.neighbor.northEast = getHexRef(x+1, y-1);
+                hexagon.neighbor.southEast = getHexRef(x+1, y);
+            }
+        }
+
         return col;
     })();
 
@@ -82,7 +110,7 @@ var CountryMapBuilder = function(options) {
     };
 
     api.drawBaseHexagons = function() {
-        var baseHexPath = api.createSvgPath(baseHexCoords),
+        var baseHexPath = createSvgPath(baseHexCoords),
             y, x, hexagon, model;
 
         function forwardOnClick(model_) {
@@ -92,8 +120,8 @@ var CountryMapBuilder = function(options) {
         for (y = 0; y < conf.height; y++) {
             for (x = 0; x < conf.width; x++) {
                 hexagon = paper.path(baseHexPath);
-                hexagon.attr("fill", "#79b");
-                hexagon.attr("stroke", "#000");
+                hexagon.attr("fill", conf.hexagonFill);
+                hexagon.attr("stroke", conf.hexagonStroke);
 
                 model = api.getHexagon(x, y);
                 model.elem = hexagon;
