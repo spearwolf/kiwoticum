@@ -49,6 +49,7 @@ var CountryMapBuilder = function(options) {
             top: positionTop,
             left: positionLeft,
             elem: null,
+            country: null,
             data: {},
             neighbor: {  // see Phase 2) of HexagonModel generation
                 north: null,
@@ -129,6 +130,54 @@ var CountryMapBuilder = function(options) {
                 hexagon.click(forwardOnClick(model));
             }
         }
+    };
+
+    //==============================================================
+    // Country class
+    //==============================================================
+    function Country(id) {
+        this.id = id;
+        this.hexagons = [];
+        this.neighbors = [];
+        this.data = {};
+    }
+
+    Country.prototype.unassignHexagon = function(hexagon) {
+        var i;
+        if (typeof hexagon === 'object' && (i = _.indexOf(this.hexagons, hexagon)) >= 0) {
+            this.hexagons[i] = null;
+            this.hexagons = _.compact(this.hexagons);
+            hexagon.country = null;
+        }
+    };
+
+    Country.prototype.assignHexagon = function(hexagon) {
+        if (typeof hexagon === 'object' && _.indexOf(this.hexagons, hexagon) < 0) {
+            this.hexagons.push(hexagon);
+            if (typeof hexagon.country === 'object') {
+                hexagon.country.unassignHexagon(hexagon);
+            }
+            hexagon.country = this;
+        }
+    };
+
+    Country.prototype.addNeighbor = function(country) {
+        if (typeof country === 'object' && _.indexOf(this.neighbors, country) < 0) {
+            this.neighbors.push(country);
+        }
+    };
+    //==============================================================
+
+    api.countries = [];
+
+    api.createCountry = function() {
+        var country = new Country(api.countries.length);
+        api.countries.push(country);
+        return country;
+    };
+
+    api.getCountry = function(id) {
+        return api.countries[id];
     };
 
     return api;
