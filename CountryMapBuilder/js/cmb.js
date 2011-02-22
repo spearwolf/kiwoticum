@@ -10,7 +10,9 @@ var CountryMapBuilder = function(options) {
             paddingX: 4,
             paddingY: 4,
             hexagonFill: '#79b',
-            hexagonStroke: '#024'
+            hexagonStroke: '#024',
+            hexagonExtension: null,
+            countryExtension: null
         }, options),
         api = {};
 
@@ -42,8 +44,17 @@ var CountryMapBuilder = function(options) {
 
     var paper = Raphael(10, 50, canvasWidth, canvasHeight);
 
+    function extendObject(obj, extension) {
+        if (typeof extension === 'object') {
+            return _.extend(obj, extension);
+        } else if (typeof extension === 'function') {
+            return _.extend(obj, new extension(obj));
+        }
+        return obj;
+    }
+
     function createHexagon(x, y, positionLeft, positionTop) {
-        return {
+        var hex = {
             x: x,
             y: y,
             top: positionTop,
@@ -61,6 +72,7 @@ var CountryMapBuilder = function(options) {
             },
             builder: api
         };
+        return extendObject(hex, conf.hexagonExtension);
     }
 
     var hexagonModel = (function() {
@@ -87,19 +99,27 @@ var CountryMapBuilder = function(options) {
         //===========================================================
         // Phase II) Create neighbor references
         //===========================================================
-        function getHexRef(x, y) {
-            return (x >= 0 && x < conf.width && y >= 0 && y < conf.height) ? col[y][x] : null;
-        }
-
         for (y = 0; y < conf.height; y++) {
             for (x = 0; x < conf.width; x++) {
                 hexagon = col[y][x];
-                hexagon.neighbor.north = getHexRef(x, y-1);
-                hexagon.neighbor.south = getHexRef(x, y+1);
-                hexagon.neighbor.northWest = getHexRef(x-1, y-1);
-                hexagon.neighbor.southWest = getHexRef(x-1, y);
-                hexagon.neighbor.northEast = getHexRef(x+1, y-1);
-                hexagon.neighbor.southEast = getHexRef(x+1, y);
+                if (x > 0) {
+                    hexagon.neighbor.southWest = col[y][x-1];
+                    if (y > 0) {
+                        hexagon.neighbor.northWest = col[y-1][x-1];
+                    }
+                }
+                if (y > 0) {
+                    hexagon.neighbor.north = col[y-1][x];
+                }
+                if (y < conf.height - 1) {
+                    hexagon.neighbor.south = col[y+1][x];
+                }
+                if (x < conf.width - 1) {
+                    if (y > 0) {
+                        hexagon.neighbor.northEast = col[y-1][x+1];
+                    }
+                    hexagon.neighbor.southEast = col[y][x+1];
+                }
             }
         }
 
@@ -171,7 +191,7 @@ var CountryMapBuilder = function(options) {
     api.countries = [];
 
     api.createCountry = function() {
-        var country = new Country(api.countries.length);
+        var country = extendObject(new Country(api.countries.length), conf.countryExtension);
         api.countries.push(country);
         return country;
     };
@@ -194,13 +214,16 @@ jQuery(function($) {
         event.preventDefault();
         $(this).hide();
 
-        var cmb = CountryMapBuilder({
+        window.cmb = CountryMapBuilder({
             hexagonWidth: parseInt($(this.hexagonWidth).val(), 10),
             hexagonHeight: parseInt($(this.hexagonHeight).val(), 10),
             paddingX: parseInt($(this.paddingX).val(), 10),
             paddingY: parseInt($(this.paddingY).val(), 10),
             width: parseInt($(this.countryMapWidth).val(), 10),
-            height: parseInt($(this.countryMapHeight).val(), 10)
+            height: parseInt($(this.countryMapHeight).val(), 10),
+            hexagonExtension: {
+                foo: function() { return "foo:"+this.x+":"+this.y; }
+            }
         });
         cmb.drawBaseHexagons();
     });
