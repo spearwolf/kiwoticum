@@ -174,7 +174,7 @@ var CountryMapBuilder = function(options) {
     Country.prototype.assignHexagon = function(hexagon) {
         if (typeof hexagon === 'object' && _.indexOf(this.hexagons, hexagon) < 0) {
             this.hexagons.push(hexagon);
-            if (typeof hexagon.country === 'object') {
+            if (hexagon.country !== null) {
                 hexagon.country.unassignHexagon(hexagon);
             }
             hexagon.country = this;
@@ -203,31 +203,33 @@ var CountryMapBuilder = function(options) {
     return api;
 };
 
+(function($) {
+    window.initCountryMapBuilder = function(options, fn) {
 
-jQuery(function($) {
-
-    $(document).bind("hexagon:click", function(event, hexagon) {
-        console.info("hexagon:click", "("+hexagon.x+","+hexagon.y+")", hexagon, event);
-    });
-
-    $("#startup form").bind("submit", function(event) {
-        event.preventDefault();
-        $(this).hide();
-
-        window.cmb = CountryMapBuilder({
-            hexagonWidth: parseInt($(this.hexagonWidth).val(), 10),
-            hexagonHeight: parseInt($(this.hexagonHeight).val(), 10),
-            paddingX: parseInt($(this.paddingX).val(), 10),
-            paddingY: parseInt($(this.paddingY).val(), 10),
-            width: parseInt($(this.countryMapWidth).val(), 10),
-            height: parseInt($(this.countryMapHeight).val(), 10),
-            hexagonExtension: {
-                foo: function() { return "foo:"+this.x+":"+this.y; }
-            }
+        $(document).bind("hexagon:click", function(event, hexagon) {
+            console.info("hexagon:click", "("+hexagon.x+","+hexagon.y+")", hexagon);
         });
-        cmb.drawBaseHexagons();
-    });
 
-    $("#startup > h3").click(function() { location.reload(true); });
-});
+        $("#startup form").bind("submit", function(event) {
+            event.preventDefault();
+            $(this).hide();
+
+            window.cmb = CountryMapBuilder(_.extend(options, {
+                hexagonWidth: parseInt($(this.hexagonWidth).val(), 10),
+                hexagonHeight: parseInt($(this.hexagonHeight).val(), 10),
+                paddingX: parseInt($(this.paddingX).val(), 10),
+                paddingY: parseInt($(this.paddingY).val(), 10),
+                width: parseInt($(this.countryMapWidth).val(), 10),
+                height: parseInt($(this.countryMapHeight).val(), 10)
+                //hexagonExtension: {
+                    //foo: function() { return "foo:"+this.x+":"+this.y; }
+                //}
+            }));
+            cmb.drawBaseHexagons();
+            fn(cmb);
+        });
+
+        $("#startup > h3").click(function() { location.reload(true); });
+    };
+})(jQuery);
 
