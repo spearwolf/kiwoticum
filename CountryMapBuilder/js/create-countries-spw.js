@@ -21,19 +21,22 @@ jQuery(function($) {
             return [Math.round(x), Math.round(y)];
         }
 
-        var i, point, hexagon, col, country;
-        for (i = 0; i < COUNTRIES_COUNT; i++) {
+        var i = 0, point, hexagon, col, country;
+        while (i < COUNTRIES_COUNT) {
             point = randomPoint();
 
             hexagon = builder.getHexagon(point[0], point[1]);
+            if (hexagon.country !== null) { continue; }
+
             col = COUNTRY_COLORS[i % COUNTRY_COLORS.length];
             hexagon.elem.attr("fill", col);
 
             country = builder.createCountry(); 
-            country.color = col;
+            country.data.color = col;
             country.assignHexagon(hexagon);
 
             console.log('point:', point, 'hexagon:', hexagon, 'country:', country);
+            ++i;
         }
 
     });
