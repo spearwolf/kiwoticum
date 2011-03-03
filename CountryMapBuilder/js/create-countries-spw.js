@@ -1,39 +1,55 @@
 jQuery(function($) {
 
     var options = {
-        hexagonFill: '#aaa',
-        hexagonStroke: '#000'
+        hexagonFill: '#bbb',
+        hexagonFill2: '#a5a5a5',
+        hexagonStroke: '#000',
+        gridWidth: 5,
+        gridHeight: 5,
+        countryExtension: {
+            setColor: function(color) {
+                this.data.color = color;
+                _.each(this.hexagons, function(hexagon) {
+                    if (hexagon.elem) {
+                        hexagon.elem.attr("fill", color);
+                    }
+                });
+            }
+        }
     };
 
     initCountryMapBuilder(options, function(builder) {
         console.info("spw country map algorithm, v0.1");
 
-        var w = builder.getWidth(),
-            h = builder.getHeight();
+        var width = builder.getWidth(),
+            height = builder.getHeight();
 
         var COUNTRIES_COUNT = 6,
             COUNTRY_COLORS = ["#d00", "#0d0", "#00d", "#dd0", "#d0d", "#0dd"],
             countries = [];
 
         function randomPoint() {
-            var x = Math.random() * (w - 1),
-                y = Math.random() * (h - 1);
+            var x = Math.random() * (width - 1),
+                y = Math.random() * (height - 1);
             return [Math.round(x), Math.round(y)];
         }
 
         var i = 0, point, hexagon, col, country;
         while (i < COUNTRIES_COUNT) {
             point = randomPoint();
-
+            
             hexagon = builder.getHexagon(point[0], point[1]);
-            if (hexagon.country !== null) { continue; }
+            if (hexagon.country !== null) {
+                continue;
+            }
 
-            col = COUNTRY_COLORS[i % COUNTRY_COLORS.length];
-            hexagon.elem.attr("fill", col);
+            //col = COUNTRY_COLORS[i % COUNTRY_COLORS.length];
+            //hexagon.elem.attr("fill", col);
 
             country = builder.createCountry(); 
-            country.data.color = col;
+            //country.data.color = col;
             country.assignHexagon(hexagon);
+            country.setColor(COUNTRY_COLORS[i % COUNTRY_COLORS.length]);
 
             console.log('point:', point, 'hexagon:', hexagon, 'country:', country);
             ++i;

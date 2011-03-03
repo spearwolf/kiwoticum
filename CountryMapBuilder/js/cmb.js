@@ -10,7 +10,10 @@ var CountryMapBuilder = function(options) {
             paddingX: 4,
             paddingY: 4,
             hexagonFill: '#79b',
+            hexagonFill2: '#68a',
             hexagonStroke: '#024',
+            gridWidth: 4,
+            gridHeight: 4,
             hexagonExtension: null,
             countryExtension: null
         }, options),
@@ -132,7 +135,8 @@ var CountryMapBuilder = function(options) {
 
     api.drawBaseHexagons = function() {
         var baseHexPath = createSvgPath(baseHexCoords),
-            y, x, hexagon, model;
+            y, x, hexagon, model,
+            evenX, evenY;
 
         function forwardOnClick(model_) {
             return function() { $(document).trigger("hexagon:click", model_); };
@@ -141,7 +145,10 @@ var CountryMapBuilder = function(options) {
         for (y = 0; y < conf.height; y++) {
             for (x = 0; x < conf.width; x++) {
                 hexagon = paper.path(baseHexPath);
-                hexagon.attr("fill", conf.hexagonFill);
+
+                evenX = (Math.floor(x / conf.gridWidth) % 2) === 1;
+                evenY = (Math.floor(y / conf.gridHeight) % 2) === 1;
+                hexagon.attr("fill", (evenY ? evenX : !evenX) ? conf.hexagonFill : conf.hexagonFill2);
                 hexagon.attr("stroke", conf.hexagonStroke);
 
                 model = api.getHexagon(x, y);
