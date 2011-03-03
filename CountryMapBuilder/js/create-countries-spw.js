@@ -1,18 +1,27 @@
 jQuery(function($) {
 
     var options = {
+
         hexagonFill: '#bbb',
         hexagonFill2: '#a5a5a5',
         hexagonStroke: '#000',
         gridWidth: 5,
         gridHeight: 5,
+
+        hexagonExtension: {
+            setColor: function(color) {
+                this.data.color = color;
+                if (this.elem) {
+                    this.elem.attr("fill", color);
+                }
+            }
+        },
+
         countryExtension: {
             setColor: function(color) {
                 this.data.color = color;
                 _.each(this.hexagons, function(hexagon) {
-                    if (hexagon.elem) {
-                        hexagon.elem.attr("fill", color);
-                    }
+                    hexagon.setColor(color);
                 });
             }
         }
@@ -22,9 +31,8 @@ jQuery(function($) {
         console.info("spw country map algorithm, v0.1");
 
         var width = builder.getWidth(),
-            height = builder.getHeight();
-
-        var COUNTRIES_COUNT = 6,
+            height = builder.getHeight(),
+            COUNTRIES_COUNT = 6,
             COUNTRY_COLORS = ["#d00", "#0d0", "#00d", "#dd0", "#d0d", "#0dd"],
             countries = [];
 
@@ -34,7 +42,9 @@ jQuery(function($) {
             return [Math.round(x), Math.round(y)];
         }
 
-        var i = 0, point, hexagon, col, country;
+        var i = 0,
+            point, hexagon, country;
+
         while (i < COUNTRIES_COUNT) {
             point = randomPoint();
             
@@ -43,11 +53,7 @@ jQuery(function($) {
                 continue;
             }
 
-            //col = COUNTRY_COLORS[i % COUNTRY_COLORS.length];
-            //hexagon.elem.attr("fill", col);
-
             country = builder.createCountry(); 
-            //country.data.color = col;
             country.assignHexagon(hexagon);
             country.setColor(COUNTRY_COLORS[i % COUNTRY_COLORS.length]);
 
@@ -55,5 +61,6 @@ jQuery(function($) {
             ++i;
         }
 
+        builder.drawGroundHexagons();
     });
 });

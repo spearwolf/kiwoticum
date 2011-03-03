@@ -133,28 +133,35 @@ var CountryMapBuilder = function(options) {
         return (x >= 0 && x < conf.width && y >= 0 && y < conf.height) ? hexagonModel[y][x] : null;
     };
 
-    api.drawBaseHexagons = function() {
+    api.drawGroundHexagons = function(showHexagonFn) {
         var baseHexPath = createSvgPath(baseHexCoords),
-            y, x, hexagon, model,
-            evenX, evenY;
+            y, x, hexagon,
+            evenX, evenY, fillColor,
+            showHexagon;
 
-        function forwardOnClick(model_) {
-            return function() { $(document).trigger("hexagon:click", model_); };
+        function forwardOnClick(hexagon_) {
+            return function() { $(document).trigger("hexagon:click", hexagon_); };
         }
 
         for (y = 0; y < conf.height; y++) {
             for (x = 0; x < conf.width; x++) {
-                hexagon = paper.path(baseHexPath);
+                hexagon = api.getHexagon(x, y);
+                if (_.isUndefined(showHexagonFn) || showHexagonFn(hexagon)) {
+                    hexagon.elem = paper.path(baseHexPath);
 
-                evenX = (Math.floor(x / conf.gridWidth) % 2) === 1;
-                evenY = (Math.floor(y / conf.gridHeight) % 2) === 1;
-                hexagon.attr("fill", (evenY ? evenX : !evenX) ? conf.hexagonFill : conf.hexagonFill2);
-                hexagon.attr("stroke", conf.hexagonStroke);
+                    if (_.isUndefined(hexagon.data.color)) {
+                        evenX = (Math.floor(x / conf.gridWidth) % 2) === 1;
+                        evenY = (Math.floor(y / conf.gridHeight) % 2) === 1;
+                        fillColor = (evenY ? evenX : !evenX) ? conf.hexagonFill : conf.hexagonFill2;
+                    } else {
+                        fillColor = hexagon.data.color;
+                    }
+                    hexagon.elem.attr("fill", fillColor);
+                    hexagon.elem.attr("stroke", conf.hexagonStroke);
 
-                model = api.getHexagon(x, y);
-                model.elem = hexagon;
-                hexagon.translate(model.left, model.top);
-                hexagon.click(forwardOnClick(model));
+                    hexagon.elem.translate(hexagon.left, hexagon.top);
+                    hexagon.elem.click(forwardOnClick(hexagon));
+                }
             }
         }
     };
@@ -228,11 +235,7 @@ var CountryMapBuilder = function(options) {
                 paddingY: parseInt($(this.paddingY).val(), 10),
                 width: parseInt($(this.countryMapWidth).val(), 10),
                 height: parseInt($(this.countryMapHeight).val(), 10)
-                //hexagonExtension: {
-                    //foo: function() { return "foo:"+this.x+":"+this.y; }
-                //}
             }));
-            cmb.drawBaseHexagons();
             fn(cmb);
         });
 
