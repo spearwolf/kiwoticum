@@ -47,7 +47,7 @@ jQuery(function($) {
 
         while (i < COUNTRIES_COUNT) {
             point = randomPoint();
-            
+
             hexagon = builder.getHexagon(point[0], point[1]);
             if (hexagon.country !== null) {
                 continue;
