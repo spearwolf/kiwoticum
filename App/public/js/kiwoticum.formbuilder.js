@@ -137,7 +137,7 @@ jQuery(function($) {
         $("body").toggleClass("loading");
     });
 
-    $(".load-display > *").click(function() { console.log("click"); $("body").toggleClass("loading"); });
+    $(".load-display > *").click(function() { $("body").toggleClass("loading"); });
 });
 
 // vim: set ts=4:sw=4:sts=4:

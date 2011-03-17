@@ -228,5 +228,3 @@ window.kiwoticum.RegisterCountryAlgorithm = function(options) {
     // TODO
 };
 
-
-
