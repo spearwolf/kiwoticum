@@ -28,6 +28,7 @@ window.kiwoticum = window.kiwoticum || {};
                                         .attr("id", options.idPrefix+item.name)
                                         .attr("type", "text")
                                         .attr("name", item.name)
+                                        .attr("size", "11")
                                         .attr("value", item.value);
                             break;
                         case "number":
