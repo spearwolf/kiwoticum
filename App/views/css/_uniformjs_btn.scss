@@ -1,0 +1,27 @@
+@import "compass/css3/border-radius";
+@import "compass/css3/box-shadow";
+@import "compass/css3/text-shadow";
+
+.uniformjsBtn {
+    font-size: 1em;
+    background-position: 0 bottom;
+    @include border-radius(2px);
+    @include box-shadow(rgba(0, 0, 0, 0.15), 0px, 1px, 3px, 0, false);
+    border: solid 1px #6E93B0;
+    background: image-url('btn-sm-bg.png') repeat-x 0px 0px;
+    height: 27px;
+    line-height: 26px;
+    @include text-shadow(rgba(255, 255, 255, 0.5), 0px, 1px, 0px);
+    margin-right: 5px;
+    padding: 0 10px;
+    display: inline;
+    color: #234E70;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.uniformjsBtn:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+

@@ -1,0 +1,16 @@
+!!! 5
+%html
+  %head
+    = meta_tag "yes", :name => "apple-mobile-web-app-capable"
+    = meta_tag "black", :name => "apple-mobile-web-app-status-bar-style"
+    = meta_tag "width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no", :name => "viewport"
+
+    = stylesheet_link_tag "site.css"
+
+    = javascript_include_tag "jquery-1.5.min.js", "raphael-min.js", "underscore-min.js"
+    = javascript_include_tag "kiwoticum.js", "kiwoticum.formbuilder.js"
+
+    = yield_content :head
+
+  %body{ :class => page_classes }
+    = yield

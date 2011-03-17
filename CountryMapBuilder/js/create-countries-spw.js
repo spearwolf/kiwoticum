@@ -42,8 +42,7 @@ jQuery(function($) {
             return [Math.round(x), Math.round(y)];
         }
 
-        var i = 0,
-            point, hexagon, country;
+        var i = 0, point, hexagon, country;
 
         while (i < COUNTRIES_COUNT) {
             point = randomPoint();

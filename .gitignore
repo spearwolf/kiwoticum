@@ -6,3 +6,6 @@
 build
 iOS/www/phonegap.js
 CountryMapBuilder/deploy.sh
+App.old
+.rvmrc
+.sass-cache
