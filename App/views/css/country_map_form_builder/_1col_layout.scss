@@ -18,11 +18,13 @@
 }
 
 #country-map-builder-form {
+    //width: 300px;
+    //margin-left: 10px;
     fieldset {
         display: inline-block;
-        width: 300px;
-        padding-left: 10px;
-        padding-right: 10px;
+        width: 280px;
+        margin-left: 10px;
+        margin-right: 10px;
     }
 
     .actions {

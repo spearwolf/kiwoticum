@@ -103,7 +103,6 @@ jQuery(function($) {
                 { type: 'number', name: 'height', value: 20, min: 10, max: 9999, size: 6, label: 'height' },
                 { type: 'number', name: 'gridWidth', value: 5, min: 1, max: 99, size: 6, label: 'grid-width' },
                 { type: 'number', name: 'gridHeight', value: 5, min: 1, max: 99, size: 6, label: 'grid-height' },
-                //{ type: 'title', text: 'Country Algorithm' },
                 {
                     type: 'fieldset',
                     legend: 'Country Algorithm',
@@ -113,7 +112,6 @@ jQuery(function($) {
                         { type: 'number', name: 'countryCount', value: 6, min: 1, max: 9999, size: 5, label: 'country-count' }
                     ]
                 }
-                //{ type: 'title', text: 'Country Algorithm' }
             ]
         }
     });
