@@ -134,7 +134,10 @@ jQuery(function($) {
 
     $(document).bind("kiwoticum:start:CountryMapBuilder", function(event, builderOptions) {
         console.info(event.type, builderOptions);
+        $("body").toggleClass("loading");
     });
+
+    $(".load-display > *").click(function() { console.log("click"); $("body").toggleClass("loading"); });
 });
 
 // vim: set ts=4:sw=4:sts=4:
