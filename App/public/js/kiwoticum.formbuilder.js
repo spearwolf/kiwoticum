@@ -83,7 +83,7 @@ jQuery(function($) {
     kiwoticum.FormBuilder('country-map-builder-form', {
         idPrefix: 'cmbf_',
         form: {
-            legend: 'CountryMapBuilder',
+            legend: 'Country Map Builder',
             cssClass: 'cmb-general',
             inputs: [
                 { type: 'title', text: 'Hexagon Definition' },
