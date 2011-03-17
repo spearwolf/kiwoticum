@@ -1,0 +1,24 @@
+
+.load-display {
+    display: none;
+}
+
+body.loading {
+
+    .country-map-builder {
+        display: none;
+    }
+
+    .load-display {
+        display: block;
+
+        p {
+            text-indent: -9999px;
+            width: 28px;
+            height: 28px;
+            margin: 100px auto;
+            background: image-url('ajax-loader.gif');
+        }
+    }
+}
+

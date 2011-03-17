@@ -3,6 +3,8 @@ window.kiwoticum = window.kiwoticum || {};
 (function($) {
     window.kiwoticum.FormBuilder = function(container, options) {
 
+        var optionElements = [];
+
         function build_form_elements(root, opts) {
             var $container = _.isString(root) ? $("#"+root) : root;
 
@@ -30,6 +32,7 @@ window.kiwoticum = window.kiwoticum || {};
                                         .attr("name", item.name)
                                         .attr("size", "11")
                                         .attr("value", item.value);
+                            optionElements.push($input);
                             break;
                         case "number":
                             $input = $("<input>")
@@ -38,8 +41,9 @@ window.kiwoticum = window.kiwoticum || {};
                                         .attr("name", item.name)
                                         .attr("min", item.min)
                                         .attr("max", item.max)
-                                        .attr("size", item.size)
+                                        .attr("size", "6")
                                         .attr("value", item.value);
+                            optionElements.push($input);
                             break;
                         case "br":
                             $input = $("<p>").addClass("br");
@@ -75,6 +79,17 @@ window.kiwoticum = window.kiwoticum || {};
 
         var $container = build_form_elements(container, options.form).parent();
 
+        $container.submit(function(event) {
+            var builderOptions = {};
+            _.each(optionElements, function (oe) {
+                var item = oe.data("itemDescription");
+                builderOptions[item.name] = item.type === 'number' ? parseInt(oe.val(), 10) : oe.val();
+            });
+            event.stopPropagation();
+            $(document).trigger("kiwoticum:start:CountryMapBuilder", builderOptions);
+            return false;
+        });
+
         $container.append($("<p>").addClass("actions").append($("<input>").attr("type", "submit").attr("value", "Start!").addClass("uniformjsBtn")));
     };
 })(jQuery);
@@ -88,22 +103,22 @@ jQuery(function($) {
             cssClass: 'cmb-general',
             inputs: [
                 { type: 'title', text: 'Hexagon Definition' },
-                { type: 'number', name: 'hexagonWidth', value: 30, min: 5, max: 99, size: 6, label: 'pixel-width' },
-                { type: 'number', name: 'hexagonHeight', value: 20, min: 5, max: 99, size: 6, label: 'pixel-height' },
+                { type: 'number', name: 'hexagonWidth', value: 30, min: 5, max: 99, label: 'pixel-width' },
+                { type: 'number', name: 'hexagonHeight', value: 20, min: 5, max: 99, label: 'pixel-height' },
                 { type: 'br' },
-                { type: 'number', name: 'paddingX', value: 4, min: 0, max: 99, size: 6, label: 'padding-x' },
-                { type: 'number', name: 'paddingY', value: 4, min: 0, max: 99, size: 6, label: 'padding-y' },
+                { type: 'number', name: 'paddingX', value: 4, min: 0, max: 99, label: 'padding-x' },
+                { type: 'number', name: 'paddingY', value: 4, min: 0, max: 99, label: 'padding-y' },
                 { type: 'br' },
-                { type: 'number', name: 'startAtAngle', value: 90, min: 0, max: 359, size: 6, label: 'start-at-angle' },
+                { type: 'number', name: 'startAtAngle', value: 90, min: 0, max: 359, label: 'start-at-angle' },
                 { type: 'br' },
                 { type: 'text', name: 'hexagonFill', value: '#79b', label: 'even-fill-color' },
                 { type: 'text', name: 'hexagonFill2', value: '#68a', label: 'odd-fill-color' },
                 { type: 'text', name: 'hexagonStroke', value: '#024', label: 'stroke-color' },
                 { type: 'title', text: 'Map/Grid Definition' },
-                { type: 'number', name: 'width', value: 30, min: 10, max: 9999, size: 6, label: 'width' },
-                { type: 'number', name: 'height', value: 20, min: 10, max: 9999, size: 6, label: 'height' },
-                { type: 'number', name: 'gridWidth', value: 5, min: 1, max: 99, size: 6, label: 'grid-width' },
-                { type: 'number', name: 'gridHeight', value: 5, min: 1, max: 99, size: 6, label: 'grid-height' },
+                { type: 'number', name: 'width', value: 30, min: 10, max: 9999, label: 'width' },
+                { type: 'number', name: 'height', value: 20, min: 10, max: 9999, label: 'height' },
+                { type: 'number', name: 'gridWidth', value: 5, min: 1, max: 99, label: 'grid-width' },
+                { type: 'number', name: 'gridHeight', value: 5, min: 1, max: 99, label: 'grid-height' },
                 {
                     type: 'fieldset',
                     legend: 'Country Algorithm',
@@ -115,6 +130,10 @@ jQuery(function($) {
                 }
             ]
         }
+    });
+
+    $(document).bind("kiwoticum:start:CountryMapBuilder", function(event, builderOptions) {
+        console.info(event.type, builderOptions);
     });
 });
 

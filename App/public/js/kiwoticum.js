@@ -220,3 +220,13 @@ window.kiwoticum.CountryMapBuilder = function(options) {
     return api;
 };
 
+
+// name : string
+// options.generate : function
+// options.draw : function
+window.kiwoticum.RegisterCountryAlgorithm = function(options) {
+    // TODO
+};
+
+
+
