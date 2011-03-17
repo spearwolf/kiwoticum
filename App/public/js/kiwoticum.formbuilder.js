@@ -8,6 +8,9 @@ window.kiwoticum = window.kiwoticum || {};
 
             if ("legend" in opts) {
                 var $el = $("<fieldset>");
+                if ("cssClass" in opts) {
+                    $el.addClass(opts.cssClass);
+                }
                 $container.append($el);
                 $container = $el;
                 $container.append($("<legend>").html(opts.legend));
@@ -81,6 +84,7 @@ jQuery(function($) {
         idPrefix: 'cmbf_',
         form: {
             legend: 'CountryMapBuilder',
+            cssClass: 'cmb-general',
             inputs: [
                 { type: 'title', text: 'Hexagon Definition' },
                 { type: 'number', name: 'hexagonWidth', value: 30, min: 5, max: 99, size: 6, label: 'pixel-width' },
@@ -103,6 +107,7 @@ jQuery(function($) {
                 {
                     type: 'fieldset',
                     legend: 'Country Algorithm',
+                    cssClass: 'cmb-algorithm',
                     inputs: [
                         { type: 'title', text: 'General Definition' },
                         { type: 'number', name: 'countryCount', value: 6, min: 1, max: 9999, size: 5, label: 'country-count' }
