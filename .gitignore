@@ -5,7 +5,7 @@
 .DS_Store
 build
 iOS/www/phonegap.js
-CountryMapBuilder/deploy.sh
+deploy.sh
 App.old
 .rvmrc
 .sass-cache
