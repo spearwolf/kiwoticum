@@ -1,19 +1,22 @@
 
-.load-display, .country-map-builder {
+$ajaxLoadImg: "ajax-load-dark.gif";
+
+//.load-display > *, .country-map-builder {
+.country-map-builder {
     -webkit-transition: opacity 1s ease-in-out;
     -moz-transition: opacity 1s ease-in-out;
     -o-transition: opacity 1s ease-in-out;
     transition: opacity 1s ease-in-out;
 }
 
-.load-display {
-    //display: none;
-    opacity: 0;
+.load-display > * {
+    display: none;
+    //opacity: 0;
 
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
+    //position: absolute;
+    //top: 0;
+    //left: 0;
+    //width: 100%;
 }
 
 .country-map-builder {
@@ -29,15 +32,20 @@ body.loading {
 
     .load-display {
         //display: block;
-        opacity: 1;
-        z-index: 1000;
 
-        p {
-            text-indent: -9999px;
-            width: 28px;
-            height: 28px;
-            margin: 250px auto 0 auto;
-            background: image-url('ajax-loader.gif');
+        * {
+            //opacity: 1;
+            display: block;
+            z-index: 1000;
+            //text-indent: -9999px;
+            //overflow: hidden;
+            //width: image-width($ajaxLoadImg);
+            //height: image-height($ajaxLoadImg);
+            //margin: 250px auto 0 auto;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            //background: image-url($ajaxLoadImg);
         }
     }
 }

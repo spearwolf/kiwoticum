@@ -132,12 +132,28 @@ jQuery(function($) {
         }
     });
 
+    function toggleLoading() {
+        try {
+            var winWidth = $(window).width(),
+                winHeight = $(window).height(),
+                $loadImg = $('.load-display > img'),
+                imgWidth = $loadImg.width(),
+                imgHeight = $loadImg.height();
+            $loadImg.css({ top: Math.round(winHeight/2 - imgHeight), left: Math.round(winWidth/2 - imgWidth/2)});
+            $("body").toggleClass("loading");
+        } catch (ex) {
+            console.log(ex);
+        }
+    }
+
     $(document).bind("kiwoticum:start:CountryMapBuilder", function(event, builderOptions) {
+        toggleLoading();
         console.info(event.type, builderOptions);
-        $("body").toggleClass("loading");
     });
 
-    $(".load-display > *").click(function() { $("body").toggleClass("loading"); });
+    $(".load-display > *").click(function() {
+        toggleLoading();
+    });
 });
 
 // vim: set ts=4:sw=4:sts=4:
