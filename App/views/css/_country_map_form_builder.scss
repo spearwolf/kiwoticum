@@ -16,7 +16,7 @@
 
     fieldset {
         margin-top: 0.5em;
-        border: solid 1px #aaa;
+        border: solid 1px $border_col;
         @include border-top-left-radius(10px);
         @include border-bottom-right-radius(25px);
         padding: 0 0.5em 0.5em 0.5em;

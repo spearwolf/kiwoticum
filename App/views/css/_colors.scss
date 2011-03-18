@@ -1,0 +1,26 @@
+// color themes from http://www.colorapi.com/
+
+$themeA_col1: #cdada7;  // light
+$themeA_col2: #140f0f;  // dark
+$themeA_col3: #9e6249;
+$themeA_col4: #b6915f;
+$themeA_col5: #5d4643;
+$themeA_col6: #697297;
+
+$themeB_col1: #c4c1be;  // light
+$themeB_col2: #422927;  // dark
+$themeB_col3: #9f1d08;
+$themeB_col4: #99798e;
+$themeB_col5: #b85b3e;
+$themeB_col6: #b38d6a;
+
+$text_col: #f0f0f0;
+$title_col: #f0f0f0;
+$background_col: #232323;
+$border_col: #ff0060;
+
+input[type=number], input[type=text] {
+    background-color: $themeA_col1;
+    border: solid 2px $themeA_col3;
+}
+

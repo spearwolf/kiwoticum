@@ -225,6 +225,12 @@ window.kiwoticum.CountryMapBuilder = function(options) {
 // options.generate : function
 // options.draw : function
 window.kiwoticum.RegisterCountryAlgorithm = function(options) {
-    // TODO
+    // TODO nearly same workflow as initCountryMapBuilder?
+    //      - merge options with FormBuilder example
+    //      - after submit
+    //         - show loading
+    //         - call generate fn
+    //         - switch to map display
+    //         - call draw fn
 };
 
