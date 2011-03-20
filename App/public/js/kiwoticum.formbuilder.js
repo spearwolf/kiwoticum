@@ -157,7 +157,24 @@ jQuery(function($) {
         console.info(event.type, builderOptions);
     });
 
-    $(".load-display > *").click(function() { toggleLoading(); });
+    function calculatePlaygroundLayout() {
+        if (window.screen.availWidth <= 480) {
+            $("#battlefield").css({ width: $(window).width(), height: $(window).height()-2 });
+        }
+        alert($(window).width() + 'x' + $(window).height());
+    }
+
+    $(document).bind("kiwoticum:start:playing", function(event) {
+        calculatePlaygroundLayout();
+        $("body").removeClass("loading").addClass("playing").bind("orientationchange", function(){
+            calculatePlaygroundLayout();
+        });
+    });
+
+    $(".load-display > *").click(function() {
+        //toggleLoading();
+        $(document).trigger("kiwoticum:start:playing");
+    });
 });
 
 // vim: set ts=4:sw=4:sts=4:
