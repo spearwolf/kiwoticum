@@ -133,17 +133,23 @@ jQuery(function($) {
     });
 
     function toggleLoading() {
-        try {
-            var winWidth = $(window).width(),
-                winHeight = $(window).height(),
-                $loadImg = $('.load-display > img'),
+        var LOADING_CLASS = "loading",
+            $body = $("body");
+        if (!$body.hasClass(LOADING_CLASS)) {
+            var $loadImg = $('.load-display > img'),
                 imgWidth = $loadImg.width(),
-                imgHeight = $loadImg.height();
-            $loadImg.css({ top: Math.round(winHeight/2 - imgHeight), left: Math.round(winWidth/2 - imgWidth/2)});
-            $("body").toggleClass("loading");
-        } catch (ex) {
-            console.log(ex);
+                imgHeight = $loadImg.height(),
+                imgTop, imgLeft;
+            if (_.isNumber(window.innerHeight) && _.isNumber(window.pageYOffset)) {
+                imgTop = window.innerHeight/2 + window.pageYOffset - imgHeight;
+                imgLeft = window.innerWidth/2 + window.pageXOffset - imgWidth/2;
+            } else {
+                imgTop = $(window).height()/2 - imgHeight;
+                imgLeft = $(window).width()/2 - imgWidth/2;
+            }
+            $loadImg.css({ top: Math.round(imgTop), left: Math.round(imgLeft)});
         }
+        $body.toggleClass(LOADING_CLASS);
     }
 
     $(document).bind("kiwoticum:start:CountryMapBuilder", function(event, builderOptions) {
@@ -151,9 +157,7 @@ jQuery(function($) {
         console.info(event.type, builderOptions);
     });
 
-    $(".load-display > *").click(function() {
-        toggleLoading();
-    });
+    $(".load-display > *").click(function() { toggleLoading(); });
 });
 
 // vim: set ts=4:sw=4:sts=4:
