@@ -21,7 +21,30 @@ body.playing {
         overflow: hidden;
         position: relative;
 
-        background-color: #232323;
+        background-color: #000000;
+        background: image-url("waaeloq.png");
+
+        #action-panel, #status-bar {
+            text-align: center;
+            width: 100%;
+            position: absolute;
+            z-index: 100;
+            left: 0;
+            height: 1.5em;
+        }
+
+        #action-panel {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            top: 0;
+        }
+        
+        #status-bar {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            text-align: center;
+            bottom: 0;
+        }
     }
 }
 
@@ -33,12 +56,12 @@ body.playing {
 
     body.playing {
         #battlefield {
-            width: 640px;
-            height: 480px;
+            width: 800px;
+            height: 600px;
             margin: 3em auto;
 
-            border-top: solid 1px white;
-            border-bottom: solid 1px white;
+            //border-top: solid 1px white;
+            //border-bottom: solid 1px white;
         }
     }
 }
@@ -52,8 +75,7 @@ body.playing {
             width: 100%;
             height: 480px;
 
-            border-top: solid 1px green;
-            border-bottom: solid 1px green;
+            border: solid 1px red;
         }
     }
 }

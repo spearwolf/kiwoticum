@@ -158,10 +158,10 @@ jQuery(function($) {
     });
 
     function calculatePlaygroundLayout() {
-        if (window.screen.availWidth <= 480) {
-            $("#battlefield").css({ width: $(window).width(), height: $(window).height()-2 });
+        if (window.screen.availWidth <= 1024) {
+            $("#battlefield").css({ width: $(window).width()-2, height: $(window).height()-2 });
         }
-        alert($(window).width() + 'x' + $(window).height());
+        //alert($(window).width() + 'x' + $(window).height());
     }
 
     $(document).bind("kiwoticum:start:playing", function(event) {
