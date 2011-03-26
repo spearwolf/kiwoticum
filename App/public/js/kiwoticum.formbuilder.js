@@ -170,6 +170,10 @@ jQuery(function($) {
         $("body").removeClass("loading").addClass("playing").bind("orientationchange", function(){
             calculatePlaygroundLayout();
         });
+        window.iScroll = new iScroll("battlefield", {
+            hScroll: true,
+            vScroll: true
+        }); 
         countryMapBuilder.drawGroundHexagons();
     });
 
