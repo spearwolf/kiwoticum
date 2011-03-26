@@ -159,9 +159,9 @@ jQuery(function($) {
 
     function calculatePlaygroundLayout() {
         if (window.screen.availWidth <= 1024) {
-            $("#battlefield").css({ width: $(window).width()-2, height: $(window).height()-2 });
+            $("#battlefield").css({ width: $(window).width(), height: $(window).height() });
         }
-        //alert($(window).width() + 'x' + $(window).height());
+        $("#status-bar").html('<p class="info">' + $(window).width() + 'x' + $(window).height() + "</p>");
     }
 
     $(document).bind("kiwoticum:start:playing", function(event) {

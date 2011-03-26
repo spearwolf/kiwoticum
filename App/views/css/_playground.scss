@@ -30,20 +30,31 @@ body.playing {
             position: absolute;
             z-index: 100;
             left: 0;
-            height: 1.5em;
+            height: 1em;
+
+            background-color: rgba(0, 0, 0, 0.3);
+            color: white;
         }
 
-        #action-panel {
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            top: 0;
-        }
+        #action-panel { top: 0; }
+        #status-bar { bottom: 0; }
         
+        #action-panel {
+            height: 35px;
+
+            .button.back {
+                margin-top: 2px;
+                margin-left: 20px;
+                float: left;
+            }
+        }
+
         #status-bar {
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            text-align: center;
-            bottom: 0;
+			padding: 2px 0 2px 0;
+
+            p.info {
+                display: inline-block;
+            }
         }
     }
 }
@@ -75,7 +86,7 @@ body.playing {
             width: 100%;
             height: 480px;
 
-            border: solid 1px red;
+            //border: solid 1px red;
         }
     }
 }
