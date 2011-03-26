@@ -48,6 +48,9 @@ window.kiwoticum.CreateCountryMapBuilder = function(container, options) {
         canvasWidth = ((conf.width - 1) * stepX) + ((conf.width - 1) * conf.paddingX) + conf.hexagonWidth,
         canvasHeight = ((conf.height - 1) * stepY) + ((conf.height - 1) * conf.paddingY) + conf.hexagonHeight + stepY1;
 
+    api.getCanvasWidth = function() { return canvasWidth; };
+    api.getCanvasHeight = function() { return canvasHeight; };
+
     var paper = Raphael(container, canvasWidth, canvasHeight);
 
     function extendObject(obj, extension) {

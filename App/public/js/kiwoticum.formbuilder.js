@@ -170,11 +170,16 @@ jQuery(function($) {
         $("body").removeClass("loading").addClass("playing").bind("orientationchange", function(){
             calculatePlaygroundLayout();
         });
+        countryMapBuilder.drawGroundHexagons();
+        $("#scrollable-canvas").css({ width: countryMapBuilder.getCanvasWidth()+100, height: countryMapBuilder.getCanvasHeight()+60 });
         window.iScroll = new iScroll("battlefield", {
             hScroll: true,
-            vScroll: true
+            vScroll: true,
+            lockDirection: false
+            //hScrollbar: false,
+            //vScrollbar: false
         }); 
-        countryMapBuilder.drawGroundHexagons();
+        iScroll.scrollTo(50, 50, 200, true);
     });
 
     $(".load-display > *").click(function() {
