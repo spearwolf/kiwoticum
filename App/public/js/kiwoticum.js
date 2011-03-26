@@ -2,7 +2,7 @@ window.kiwoticum = window.kiwoticum || {};
 
 window.kiwoticum.EVENT_NAMESPACE = 'kiwoticum';
 
-window.kiwoticum.CountryMapBuilder = function(options) {
+window.kiwoticum.CreateCountryMapBuilder = function(container, options) {
 
     var conf = _.extend({
             width: 10,
@@ -48,7 +48,7 @@ window.kiwoticum.CountryMapBuilder = function(options) {
         canvasWidth = ((conf.width - 1) * stepX) + ((conf.width - 1) * conf.paddingX) + conf.hexagonWidth,
         canvasHeight = ((conf.height - 1) * stepY) + ((conf.height - 1) * conf.paddingY) + conf.hexagonHeight + stepY1;
 
-    var paper = Raphael(10, 50, canvasWidth, canvasHeight);
+    var paper = Raphael(container, canvasWidth, canvasHeight);
 
     function extendObject(obj, extension) {
         if (typeof extension === 'object') {

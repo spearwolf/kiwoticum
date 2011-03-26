@@ -1,7 +1,7 @@
 window.kiwoticum = window.kiwoticum || {};
 
 (function($) {
-    window.kiwoticum.FormBuilder = function(container, options) {
+    window.kiwoticum.CreateFormBuilder = function(container, options) {
 
         var optionElements = [];
 
@@ -96,7 +96,7 @@ window.kiwoticum = window.kiwoticum || {};
 
 jQuery(function($) {
 
-    kiwoticum.FormBuilder('country-map-builder-form', {
+    kiwoticum.CreateFormBuilder('country-map-builder-form', {
         idPrefix: 'cmbf_',
         form: {
             legend: 'Country Map Builder',
@@ -155,6 +155,7 @@ jQuery(function($) {
     $(document).bind("kiwoticum:start:CountryMapBuilder", function(event, builderOptions) {
         toggleLoading();
         console.info(event.type, builderOptions);
+        window.countryMapBuilder = kiwoticum.CreateCountryMapBuilder("scrollable-canvas", builderOptions);
     });
 
     function calculatePlaygroundLayout() {
@@ -169,10 +170,10 @@ jQuery(function($) {
         $("body").removeClass("loading").addClass("playing").bind("orientationchange", function(){
             calculatePlaygroundLayout();
         });
+        countryMapBuilder.drawGroundHexagons();
     });
 
     $(".load-display > *").click(function() {
-        //toggleLoading();
         $(document).trigger("kiwoticum:start:playing");
     });
 });
