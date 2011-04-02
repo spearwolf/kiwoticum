@@ -1,8 +1,8 @@
 window.kiwoticum = window.kiwoticum || {};
 
-window.kiwoticum.EVENT_NAMESPACE = 'kiwoticum';
+kiwoticum.EVENT_NAMESPACE = 'kiwoticum';
 
-window.kiwoticum.CreateCountryMapBuilder = function(container, options) {
+kiwoticum.CreateCountryMapBuilder = function(container, options) {
 
     var conf = _.extend({
             width: 10,
@@ -18,7 +18,8 @@ window.kiwoticum.CreateCountryMapBuilder = function(container, options) {
             gridWidth: 4,
             gridHeight: 4,
             hexagonExtension: null,
-            countryExtension: null
+            countryExtension: null,
+            createCountries: null
         }, options),
         api = {};
 
@@ -220,20 +221,22 @@ window.kiwoticum.CreateCountryMapBuilder = function(container, options) {
         return api.countries[id];
     };
 
+    // ===============================================
+
+    api.createCountries = function() {
+        if (_.isFunction(conf.createCountries)) {
+            conf.createCountries(api, conf);
+        }
+    };
+
+    api.drawAll = function() {
+        if (_.isFunction(conf.drawAll)) {
+            conf.drawAll(api, conf);
+        } else {
+            api.drawGroundHexagons();
+        }
+    };
+
     return api;
-};
-
-
-// name : string
-// options.generate : function
-// options.draw : function
-window.kiwoticum.RegisterCountryAlgorithm = function(options) {
-    // TODO nearly same workflow as initCountryMapBuilder?
-    //      - merge options with FormBuilder example
-    //      - after submit
-    //         - show loading
-    //         - call generate fn
-    //         - switch to map display
-    //         - call draw fn
 };
 
