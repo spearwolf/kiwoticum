@@ -1,8 +1,7 @@
 window.kiwoticum = window.kiwoticum || {};
 
 (function($) {
-    window.kiwoticum.CreateFormBuilder = function(container, options) {
-
+    kiwoticum.CreateFormBuilder = function(container, options) {
         var optionElements = [];
 
         function build_form_elements(root, opts) {
@@ -80,111 +79,18 @@ window.kiwoticum = window.kiwoticum || {};
         var $container = build_form_elements(container, options.form).parent();
 
         $container.submit(function(event) {
+            event.stopPropagation();
             var builderOptions = {};
             _.each(optionElements, function (oe) {
                 var item = oe.data("itemDescription");
                 builderOptions[item.name] = item.type === 'number' ? parseInt(oe.val(), 10) : oe.val();
             });
-            event.stopPropagation();
-            $(document).trigger("kiwoticum:start:CountryMapBuilder", builderOptions);
+            kiwoticum.fire(options.fireSubmitEvent, builderOptions);
             return false;
         });
 
         $container.append($("<p>").addClass("actions").append($("<input>").attr("type", "submit").attr("value", "Start!").addClass("uniformjsBtn")));
     };
 })(jQuery);
-
-jQuery(function($) {
-
-    kiwoticum.CreateFormBuilder('country-map-builder-form', {
-        idPrefix: 'cmbf_',
-        form: {
-            legend: 'Country Map Builder',
-            cssClass: 'cmb-general',
-            inputs: [
-                { type: 'title', text: 'Hexagon Definition' },
-                { type: 'number', name: 'hexagonWidth', value: 30, min: 5, max: 99, label: 'pixel-width' },
-                { type: 'number', name: 'hexagonHeight', value: 20, min: 5, max: 99, label: 'pixel-height' },
-                { type: 'br' },
-                { type: 'number', name: 'paddingX', value: 4, min: 0, max: 99, label: 'padding-x' },
-                { type: 'number', name: 'paddingY', value: 4, min: 0, max: 99, label: 'padding-y' },
-                { type: 'br' },
-                { type: 'number', name: 'startAtAngle', value: 90, min: 0, max: 359, label: 'start-at-angle' },
-                { type: 'br' },
-                { type: 'text', name: 'hexagonFill', value: '#79b', label: 'even-fill-color' },
-                { type: 'text', name: 'hexagonFill2', value: '#68a', label: 'odd-fill-color' },
-                { type: 'text', name: 'hexagonStroke', value: '#024', label: 'stroke-color' },
-                { type: 'title', text: 'Map/Grid Definition' },
-                { type: 'number', name: 'width', value: 30, min: 10, max: 9999, label: 'width' },
-                { type: 'number', name: 'height', value: 20, min: 10, max: 9999, label: 'height' },
-                { type: 'number', name: 'gridWidth', value: 5, min: 1, max: 99, label: 'grid-width' },
-                { type: 'number', name: 'gridHeight', value: 5, min: 1, max: 99, label: 'grid-height' },
-                {
-                    type: 'fieldset',
-                    legend: 'Country Algorithm',
-                    cssClass: 'cmb-algorithm',
-                    inputs: [
-                        { type: 'title', text: 'General Definition' },
-                        { type: 'number', name: 'countryCount', value: 6, min: 1, max: 9999, size: 5, label: 'country-count' }
-                    ]
-                }
-            ]
-        }
-    });
-
-    function toggleLoading() {
-        var LOADING_CLASS = "loading",
-            $body = $("body");
-        if (!$body.hasClass(LOADING_CLASS)) {
-            var $loadImg = $('.load-display > img'),
-                imgWidth = $loadImg.width(),
-                imgHeight = $loadImg.height(),
-                imgTop, imgLeft;
-            if (_.isNumber(window.innerHeight) && _.isNumber(window.pageYOffset)) {
-                imgTop = window.innerHeight/2 + window.pageYOffset - imgHeight;
-                imgLeft = window.innerWidth/2 + window.pageXOffset - imgWidth/2;
-            } else {
-                imgTop = $(window).height()/2 - imgHeight;
-                imgLeft = $(window).width()/2 - imgWidth/2;
-            }
-            $loadImg.css({ top: Math.round(imgTop), left: Math.round(imgLeft)});
-        }
-        $body.toggleClass(LOADING_CLASS);
-    }
-
-    $(document).bind("kiwoticum:start:CountryMapBuilder", function(event, builderOptions) {
-        toggleLoading();
-        console.info(event.type, builderOptions);
-        window.countryMapBuilder = kiwoticum.CreateCountryMapBuilder("scrollable-canvas", builderOptions);
-    });
-
-    function calculatePlaygroundLayout() {
-        if (window.screen.availWidth <= 1024) {
-            $("#battlefield").css({ width: $(window).width(), height: $(window).height() });
-        }
-        $("#status-bar").html('<p class="info">' + $(window).width() + 'x' + $(window).height() + "</p>");
-    }
-
-    $(document).bind("kiwoticum:start:playing", function(event) {
-        calculatePlaygroundLayout();
-        $("body").removeClass("loading").addClass("playing").bind("orientationchange", function(){
-            calculatePlaygroundLayout();
-        });
-        countryMapBuilder.drawGroundHexagons();
-        $("#scrollable-canvas").css({ width: countryMapBuilder.getCanvasWidth()+100, height: countryMapBuilder.getCanvasHeight()+60 });
-        window.iScroll = new iScroll("battlefield", {
-            hScroll: true,
-            vScroll: true,
-            lockDirection: false
-            //hScrollbar: false,
-            //vScrollbar: false
-        }); 
-        iScroll.scrollTo(50, 50, 200, true);
-    });
-
-    $(".load-display > *").click(function() {
-        $(document).trigger("kiwoticum:start:playing");
-    });
-});
 
 // vim: set ts=4:sw=4:sts=4:

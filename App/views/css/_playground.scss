@@ -65,6 +65,7 @@ body.playing {
 
             svg {
                 margin: 50px 30px 50px 30px;
+                -webkit-transform:translate3d(0,0,0);
             }
         }
     }
