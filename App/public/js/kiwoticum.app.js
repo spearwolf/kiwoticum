@@ -3,9 +3,6 @@ window.kiwoticum = window.kiwoticum || {};
 (function($) {
     kiwoticum.App = function() {
 
-        kiwoticum.on = $CE.bind;
-        kiwoticum.fire = $CE.fire;
-
         function centerLoadingAnimation() {  // {{{
             var $loadImg = $('.load-display > img'),
                 imgWidth = $loadImg.width(),
@@ -38,58 +35,73 @@ window.kiwoticum = window.kiwoticum || {};
         }
         // }}}
 
-        kiwoticum.on("kiwoticum/init/country_map_builder_form", function() {  // {{{
+        Cevent.on("kiwoticum/country_map_builder/form", function() {  // {{{
 
-            // TODO merge form options from your country algorithm
-            kiwoticum.App.FormBuilder = kiwoticum.CreateFormBuilder('country-map-builder-form', {
-                idPrefix: 'cmbf_',
-                fireSubmitEvent: 'kiwoticum/start/country_map_builder',
-                form: {
-                    legend: 'Country Map Builder',
-                    cssClass: 'cmb-general',
-                    inputs: [
-                        { type: 'title', text: 'Hexagon Definition' },
-                        { type: 'number', name: 'hexagonWidth', value: 30, min: 5, max: 99, label: 'pixel-width' },
-                        { type: 'number', name: 'hexagonHeight', value: 30, min: 5, max: 99, label: 'pixel-height' },
-                        { type: 'br' },
-                        { type: 'number', name: 'paddingX', value: 4, min: 0, max: 99, label: 'padding-x' },
-                        { type: 'number', name: 'paddingY', value: 4, min: 0, max: 99, label: 'padding-y' },
-                        { type: 'br' },
-                        { type: 'number', name: 'startAtAngle', value: 90, min: 0, max: 359, label: 'start-at-angle' },
-                        { type: 'br' },
-                        { type: 'text', name: 'hexagonFill', value: '#79b', label: 'even-fill-color' },
-                        { type: 'text', name: 'hexagonFill2', value: '#68a', label: 'odd-fill-color' },
-                        { type: 'text', name: 'hexagonStroke', value: '#024', label: 'stroke-color' },
-                        { type: 'title', text: 'Map/Grid Definition' },
-                        { type: 'number', name: 'width', value: 40, min: 10, max: 9999, label: 'width' },
-                        { type: 'number', name: 'height', value: 40, min: 10, max: 9999, label: 'height' },
-                        { type: 'number', name: 'gridWidth', value: 8, min: 1, max: 99, label: 'grid-width' },
-                        { type: 'number', name: 'gridHeight', value: 8, min: 1, max: 99, label: 'grid-height' },
-                        {
-                            type: 'fieldset',
-                            legend: 'Country Algorithm',
-                            cssClass: 'cmb-algorithm',
-                            inputs: [
-                                { type: 'title', text: 'General Definition' },
-                                { type: 'number', name: 'countryCount', value: 6, min: 1, max: 9999, size: 5, label: 'country-count' }
-                            ]
-                        }
-                    ]
-                }
+            Cevent.emit("kiwoticum/country_map_builder/register/algorithm", function() {
+
+                var countryAlgorithms = _.select(arguments, function(algorithm) {
+                    return (typeof algorithm === 'object') && _.isString(algorithm.name);
+                });
+
+                _.each(countryAlgorithms, function(algorithm) {
+                    console.info("registered country algorithm:", algorithm.name);
+                });
+
+                // TODO merge form options from your country algorithm
+                kiwoticum.App.formBuilder = kiwoticum.CreateFormBuilder('country-map-builder-form', {
+                    idPrefix: 'cmbf_',
+                    fireSubmitEvent: 'kiwoticum/country_map_builder/start',
+                    form: {
+                        legend: 'Country Map Builder',
+                        cssClass: 'cmb-general',
+                        inputs: [
+                            { type: 'title', text: 'Hexagon Definition' },
+                            { type: 'number', name: 'hexagonWidth', value: 30, min: 5, max: 99, label: 'pixel-width' },
+                            { type: 'number', name: 'hexagonHeight', value: 30, min: 5, max: 99, label: 'pixel-height' },
+                            { type: 'br' },
+                            { type: 'number', name: 'paddingX', value: 4, min: 0, max: 99, label: 'padding-x' },
+                            { type: 'number', name: 'paddingY', value: 4, min: 0, max: 99, label: 'padding-y' },
+                            { type: 'br' },
+                            { type: 'number', name: 'startAtAngle', value: 90, min: 0, max: 359, label: 'start-at-angle' },
+                            { type: 'br' },
+                            { type: 'text', name: 'hexagonFill', value: '#79b', label: 'even-fill-color' },
+                            { type: 'text', name: 'hexagonFill2', value: '#68a', label: 'odd-fill-color' },
+                            { type: 'text', name: 'hexagonStroke', value: '#024', label: 'stroke-color' },
+                            { type: 'title', text: 'Map/Grid Definition' },
+                            { type: 'number', name: 'width', value: 40, min: 10, max: 9999, label: 'width' },
+                            { type: 'number', name: 'height', value: 40, min: 10, max: 9999, label: 'height' },
+                            { type: 'number', name: 'gridWidth', value: 8, min: 1, max: 99, label: 'grid-width' },
+                            { type: 'number', name: 'gridHeight', value: 8, min: 1, max: 99, label: 'grid-height' },
+                            {
+                                type: 'fieldset',
+                                legend: 'Country Algorithm',
+                                cssClass: 'cmb-select-algorithm',
+                                inputs: [
+                                    {
+                                        type: 'select-country-algorithms',
+                                        name: 'countryAlgorithm',
+                                        label: 'country-algorithm',
+                                        countryAlgorithms: countryAlgorithms
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                });
             });
         });
         // }}}
-        kiwoticum.on("kiwoticum/start/country_map_builder", function(builderOptions) {  // {{{
+        Cevent.on("kiwoticum/country_map_builder/start", function(builderOptions) {  // {{{
             toggleLoading();
             console.info("builderOptions", builderOptions);
 
             // TODO set builderOptions.createCountries + draw --> extend builderOptions
             kiwoticum.countryMapBuilder = kiwoticum.CreateCountryMapBuilder("scrollable-canvas", builderOptions);
             kiwoticum.countryMapBuilder.createCountries();
-            kiwoticum.fire("kiwoticum/show/battlefield");
+            Cevent.emit("kiwoticum/show/battlefield");
         });
         // }}}
-        kiwoticum.on("kiwoticum/show/battlefield", function() {  // {{{
+        Cevent.on("kiwoticum/show/battlefield", function() {  // {{{
             calculatePlaygroundLayout();
             $("body").removeClass("loading").addClass("playing").bind("orientationchange", function(){
                 calculatePlaygroundLayout();
@@ -117,7 +129,7 @@ window.kiwoticum = window.kiwoticum || {};
 
     $(function() {  // trigger kiwoticum App startup on DOMReady
         kiwoticum.App();
-        kiwoticum.fire("kiwoticum/init/country_map_builder_form");
+        Cevent.emit("kiwoticum/country_map_builder/form");
     });
 
 })(jQuery);

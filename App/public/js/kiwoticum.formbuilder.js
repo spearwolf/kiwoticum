@@ -44,6 +44,27 @@ window.kiwoticum = window.kiwoticum || {};
                                         .attr("value", item.value);
                             optionElements.push($input);
                             break;
+                        case "select-country-algorithms":
+                            $input = $("<select>")
+                                        .attr("id", options.idPrefix+item.name)
+                                        .attr("name", item.name)
+                                        .attr("size", "1");
+                            var first = true;
+                            _.each(item.countryAlgorithms, function(algorithm) {
+                                var $opt = $('<option>').html(algorithm.name);
+                                if (first) {
+                                    $opt.attr('selected', 'selected');
+                                    first = false;
+                                }
+                                $input.append($opt);
+                            });
+                            optionElements.push($input);
+                            build_form_elements(root, item.countryAlgorithms[0].form);
+                            // TODO
+                            //$input.change(function() {
+                                //build_form_elements(root, algorithm.);
+                            //});
+                            break;
                         case "br":
                             $input = $("<p>").addClass("br");
                             break;
@@ -79,17 +100,28 @@ window.kiwoticum = window.kiwoticum || {};
         var $container = build_form_elements(container, options.form).parent();
 
         $container.submit(function(event) {
-            event.stopPropagation();
             var builderOptions = {};
             _.each(optionElements, function (oe) {
                 var item = oe.data("itemDescription");
-                builderOptions[item.name] = item.type === 'number' ? parseInt(oe.val(), 10) : oe.val();
+                if (item.type === 'select-country-algorithms') {
+                    _.extend(builderOptions, item.countryAlgorithms[0].builder_options);  // TODO
+                } else {
+                    builderOptions[item.name] = item.type === 'number' ? parseInt(oe.val(), 10) : oe.val();
+                }
             });
-            kiwoticum.fire(options.fireSubmitEvent, builderOptions);
+            Cevent.emit(options.fireSubmitEvent, builderOptions);
+
+            event.stopPropagation();
             return false;
         });
 
         $container.append($("<p>").addClass("actions").append($("<input>").attr("type", "submit").attr("value", "Start!").addClass("uniformjsBtn")));
+
+        return {
+            destroy: function() {
+                $container.empty().html("");
+            }
+        };
     };
 })(jQuery);
 

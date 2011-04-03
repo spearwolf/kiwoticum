@@ -1,7 +1,7 @@
 // custom_event.js
 // Created 2010/05/07 by Wolfger Schramm <wolfger@spearwolf.de>
 
-var $CE = (function () {
+var Cevent = (function () {
 
     function EventNode(name, parentNode) {
         this.name = name;
@@ -145,8 +145,7 @@ var $CE = (function () {
     }
 
     return {
-        bind: registerEventListener,
-        fire: fireEvent
+        on: registerEventListener,
+        emit: fireEvent
     };
 })();
-
