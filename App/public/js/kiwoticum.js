@@ -1,7 +1,5 @@
 window.kiwoticum = window.kiwoticum || {};
 
-kiwoticum.EVENT_NAMESPACE = 'kiwoticum';
-
 kiwoticum.CreateCountryMapBuilder = function(container, options) {
 
     var conf = _.extend({
@@ -111,11 +109,15 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
         //===========================================================
         for (y = 0; y < conf.height; y++) {
             for (x = 0; x < conf.width; x++) {
+                var yOffset = x % 2,
+                    _y = y + yOffset;
                 hexagon = col[y][x];
                 if (x > 0) {
-                    hexagon.neighbor.southWest = col[y][x-1];
-                    if (y > 0) {
-                        hexagon.neighbor.northWest = col[y-1][x-1];
+                    if (_y < conf.height - 1) {
+                        hexagon.neighbor.southWest = col[_y][x-1];
+                    }
+                    if (_y > 0) {
+                        hexagon.neighbor.northWest = col[_y-1][x-1];
                     }
                 }
                 if (y > 0) {
@@ -125,10 +127,12 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
                     hexagon.neighbor.south = col[y+1][x];
                 }
                 if (x < conf.width - 1) {
-                    if (y > 0) {
-                        hexagon.neighbor.northEast = col[y-1][x+1];
+                    if (_y > 0) {
+                        hexagon.neighbor.northEast = col[_y-1][x+1];
                     }
-                    hexagon.neighbor.southEast = col[y][x+1];
+                    if (_y < conf.height - 1) {
+                        hexagon.neighbor.southEast = col[_y][x+1];
+                    }
                 }
             }
         }
@@ -147,7 +151,7 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
             showHexagon;
 
         function forwardOnClick(hexagon_) {
-            return function() { jQuery(document).trigger(kiwoticum.EVENT_NAMESPACE + ":hexagon:click", hexagon_); };
+            return function() { Cevent.emit("kiwoticum/battlefield/hexagon/click", hexagon_); };
         }
 
         for (y = 0; y < conf.height; y++) {
@@ -156,12 +160,12 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
                 if (_.isUndefined(showHexagonFn) || showHexagonFn(hexagon)) {
                     hexagon.elem = paper.path(baseHexPath);
 
-                    if (_.isUndefined(hexagon.data.color)) {
+                    if (_.isUndefined(hexagon.data.color) && hexagon.country === null) {
                         evenX = (Math.floor(x / conf.gridWidth) % 2) === 1;
                         evenY = (Math.floor(y / conf.gridHeight) % 2) === 1;
                         fillColor = (evenY ? evenX : !evenX) ? conf.hexagonFill : conf.hexagonFill2;
                     } else {
-                        fillColor = hexagon.data.color;
+                        fillColor = hexagon.country !== null ? hexagon.country.data.color : hexagon.data.color;
                     }
                     hexagon.elem.attr("fill", fillColor);
                     hexagon.elem.attr("stroke", conf.hexagonStroke);
@@ -207,6 +211,40 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
             this.neighbors.push(country);
         }
     };
+
+    Country.prototype.countryLessNeighborHexagons = function() {
+        var neighbors = [];
+
+        _.each(this.hexagons, function(hexagon) {
+            var hex = hexagon.neighbor.north;
+            if (hex !== null && hex.country === null) {
+                neighbors.push(hex);
+            }
+            hex = hexagon.neighbor.south;
+            if (hex !== null && hex.country === null) {
+                neighbors.push(hex);
+            }
+            hex = hexagon.neighbor.northWest;
+            if (hex !== null && hex.country === null) {
+                neighbors.push(hex);
+            }
+            hex = hexagon.neighbor.southWest;
+            if (hex !== null && hex.country === null) {
+                neighbors.push(hex);
+            }
+            hex = hexagon.neighbor.northEast;
+            if (hex !== null && hex.country === null) {
+                neighbors.push(hex);
+            }
+            hex = hexagon.neighbor.southEast;
+            if (hex !== null && hex.country === null) {
+                neighbors.push(hex);
+            }
+        });
+
+        return neighbors;
+    };
+
     //==============================================================
 
     api.countries = [];
