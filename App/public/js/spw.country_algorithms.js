@@ -2,14 +2,14 @@ jQuery(function($) {
 
     Cevent.on("kiwoticum/battlefield/hexagon/click", function(hexagon) {
         console.log(hexagon);
-        hexagon.setColor("#f0f0f0");
-        var col = "#e0e0e0";
-        hexagon.neighbor.north.setColor(col);
-        hexagon.neighbor.south.setColor(col);
-        hexagon.neighbor.northWest.setColor(col);
-        hexagon.neighbor.southWest.setColor(col);
-        hexagon.neighbor.northEast.setColor(col);
-        hexagon.neighbor.southEast.setColor(col);
+        //hexagon.setColor("#f0f0f0");
+        //var col = "#e0e0e0";
+        //hexagon.neighbor.north.setColor(col);
+        //hexagon.neighbor.south.setColor(col);
+        //hexagon.neighbor.northWest.setColor(col);
+        //hexagon.neighbor.southWest.setColor(col);
+        //hexagon.neighbor.northEast.setColor(col);
+        //hexagon.neighbor.southEast.setColor(col);
     });
 
     function createCountries(builder, options) {
@@ -67,13 +67,9 @@ jQuery(function($) {
                         continue;
                     }
 
-                    point = randomPointOfGrid(x, y);
-                    hexagon = builder.getHexagon(point[0], point[1]);
-
                     country = builder.createCountry();
-                    country.assignHexagon(hexagon);
-
-                    console.log('point:', point, 'hexagon:', hexagon, 'country:', country);
+                    point = randomPointOfGrid(x, y);
+                    country.assignHexagon(builder.getHexagon(point[0], point[1]));
                 }
             }
 
@@ -137,7 +133,9 @@ jQuery(function($) {
                             return null;
                         }
 
-                        var countryNeighborCount, hexagon;
+                        var countryNeighborCount,
+                            hexagon,
+                            prioNeighbors = [];
                         for (var i = 0; i < neighbors.length; i++) {
                             hexagon = neighbors[i];
                             countryNeighborCount = 0;
@@ -147,12 +145,17 @@ jQuery(function($) {
                             if (hexagon.neighbor.southWest !== null && null !== hexagon.neighbor.southWest.country) { ++countryNeighborCount; }
                             if (hexagon.neighbor.northEast !== null && null !== hexagon.neighbor.northEast.country) { ++countryNeighborCount; }
                             if (hexagon.neighbor.southEast !== null && null !== hexagon.neighbor.southEast.country) { ++countryNeighborCount; }
-                            if (countryNeighborCount >= 4) {
+                            if (countryNeighborCount >= 5) {
                                 return hexagon;
+                            } else if (countryNeighborCount >= 4) {
+                                prioNeighbors.push(hexagon);
                             }
                         }
-
-                        return neighbors[Math.round(Math.random() * (neighbors.length - 1))];
+                        if (prioNeighbors.length > 0) {
+                            return prioNeighbors[Math.round(Math.random() * (prioNeighbors.length - 1))];
+                        } else {
+                            return neighbors[Math.round(Math.random() * (neighbors.length - 1))];
+                        }
                     }
                 },
 

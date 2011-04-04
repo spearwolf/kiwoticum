@@ -27,11 +27,11 @@ window.kiwoticum = window.kiwoticum || {};
             $body.toggleClass(LOADING_CLASS);
         }
         // }}}
-        function calculatePlaygroundLayout() {  // {{{
+        function calculatePlaygroundLayout(moreInfo) {  // {{{
             if (window.screen.availWidth <= 1024) {
                 $("#battlefield").css({ width: $(window).width(), height: $(window).height() });
             }
-            $("#status-bar").html('<p class="info">' + $(window).width() + 'x' + $(window).height() + "</p>");
+            $("#status-bar").html('<p class="info">' + $(window).width() + 'x' + $(window).height() + " " + moreInfo + "</p>");
         }
         // }}}
 
@@ -95,19 +95,28 @@ window.kiwoticum = window.kiwoticum || {};
             toggleLoading();
             console.info("builderOptions", builderOptions);
 
-            // TODO set builderOptions.createCountries + draw --> extend builderOptions
             kiwoticum.countryMapBuilder = kiwoticum.CreateCountryMapBuilder("scrollable-canvas", builderOptions);
-            kiwoticum.countryMapBuilder.createCountries();
-            Cevent.emit("kiwoticum/show/battlefield");
+            setTimeout(function() {
+                var t = new Date();
+                kiwoticum.countryMapBuilder.createCountries();
+                window.benchmarkCreateCountries = new Date() - t;
+                console.log("createCountries: " + benchmarkCreateCountries + "ms");
+                Cevent.emit("kiwoticum/show/battlefield");
+            }, 1000);
         });
         // }}}
         Cevent.on("kiwoticum/show/battlefield", function() {  // {{{
-            calculatePlaygroundLayout();
-            $("body").removeClass("loading").addClass("playing").bind("orientationchange", function(){
-                calculatePlaygroundLayout();
-            });
-
+            var t = new Date();
             kiwoticum.countryMapBuilder.drawAll();
+            var benchmarkDrawAll = new Date() - t;
+            console.log("drawAll: " + benchmarkDrawAll + "ms");
+
+            var moreInfo = "&mdash; " + benchmarkCreateCountries + "ms / " + benchmarkDrawAll + "ms";
+
+            calculatePlaygroundLayout(moreInfo);
+            $("body").removeClass("loading").addClass("playing").bind("orientationchange", function(){
+                calculatePlaygroundLayout(moreInfo);
+            });
 
             $("#scrollable-canvas").css({
                 width: kiwoticum.countryMapBuilder.getCanvasWidth()+100,
