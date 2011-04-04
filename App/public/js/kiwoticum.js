@@ -157,7 +157,7 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
         for (y = 0; y < conf.height; y++) {
             for (x = 0; x < conf.width; x++) {
                 hexagon = api.getHexagon(x, y);
-                if (_.isUndefined(showHexagonFn) || showHexagonFn(hexagon)) {
+                if (!_.isFunction(showHexagonFn) || showHexagonFn(hexagon)) {
                     hexagon.elem = paper.path(baseHexPath);
 
                     if (_.isUndefined(hexagon.data.color) && hexagon.country === null) {

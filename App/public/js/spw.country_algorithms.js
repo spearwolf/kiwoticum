@@ -139,15 +139,21 @@ jQuery(function($) {
                         for (var i = 0; i < neighbors.length; i++) {
                             hexagon = neighbors[i];
                             countryNeighborCount = 0;
-                            if (hexagon.neighbor.north !== null && null !== hexagon.neighbor.north.country) { ++countryNeighborCount; }
-                            if (hexagon.neighbor.south !== null && null !== hexagon.neighbor.south.country) { ++countryNeighborCount; }
-                            if (hexagon.neighbor.northWest !== null && null !== hexagon.neighbor.northWest.country) { ++countryNeighborCount; }
-                            if (hexagon.neighbor.southWest !== null && null !== hexagon.neighbor.southWest.country) { ++countryNeighborCount; }
-                            if (hexagon.neighbor.northEast !== null && null !== hexagon.neighbor.northEast.country) { ++countryNeighborCount; }
-                            if (hexagon.neighbor.southEast !== null && null !== hexagon.neighbor.southEast.country) { ++countryNeighborCount; }
+                            //if (hexagon.neighbor.north !== null && null !== hexagon.neighbor.north.country) { ++countryNeighborCount; }
+                            //if (hexagon.neighbor.south !== null && null !== hexagon.neighbor.south.country) { ++countryNeighborCount; }
+                            //if (hexagon.neighbor.northWest !== null && null !== hexagon.neighbor.northWest.country) { ++countryNeighborCount; }
+                            //if (hexagon.neighbor.southWest !== null && null !== hexagon.neighbor.southWest.country) { ++countryNeighborCount; }
+                            //if (hexagon.neighbor.northEast !== null && null !== hexagon.neighbor.northEast.country) { ++countryNeighborCount; }
+                            //if (hexagon.neighbor.southEast !== null && null !== hexagon.neighbor.southEast.country) { ++countryNeighborCount; }
+                            if (hexagon.neighbor.north !== null && this === hexagon.neighbor.north.country) { ++countryNeighborCount; }
+                            if (hexagon.neighbor.south !== null && this === hexagon.neighbor.south.country) { ++countryNeighborCount; }
+                            if (hexagon.neighbor.northWest !== null && this === hexagon.neighbor.northWest.country) { ++countryNeighborCount; }
+                            if (hexagon.neighbor.southWest !== null && this === hexagon.neighbor.southWest.country) { ++countryNeighborCount; }
+                            if (hexagon.neighbor.northEast !== null && this === hexagon.neighbor.northEast.country) { ++countryNeighborCount; }
+                            if (hexagon.neighbor.southEast !== null && this === hexagon.neighbor.southEast.country) { ++countryNeighborCount; }
                             if (countryNeighborCount >= 5) {
                                 return hexagon;
-                            } else if (countryNeighborCount >= 4) {
+                            } else if (countryNeighborCount >= 2) {
                                 prioNeighbors.push(hexagon);
                             }
                         }
@@ -159,7 +165,13 @@ jQuery(function($) {
                     }
                 },
 
-                createCountries: createCountries
+                createCountries: createCountries,
+
+                drawAll: function(builder, options) {
+                    builder.drawGroundHexagons(function(hexagon) {
+                        return hexagon.country !== null;
+                    });
+                }
             }
         };
     });
