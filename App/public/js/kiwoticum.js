@@ -77,6 +77,7 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
                 southWest: null,
                 northEast: null,
                 southEast: null
+                // TODO sameCountryCount <-- see spw.country_algorithms.js:randomCountryLessNeighborHexagon()
             },
             builder: api
         };
@@ -107,41 +108,33 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
         //===========================================================
         // Phase II) Create neighbor references
         //===========================================================
+        var yOffset, _y;
+
         for (y = 0; y < conf.height; y++) {
             for (x = 0; x < conf.width; x++) {
-                var yOffset = x % 2,
-                    _y = y + yOffset;
+
+                yOffset = x % 2;
+                _y = y + yOffset;
                 hexagon = col[y][x];
+
                 if (x > 0) {
-                    if (_y < conf.height - 1) {
-                        hexagon.neighbor.southWest = col[_y][x-1];
-                    }
-                    if (_y > 0) {
-                        hexagon.neighbor.northWest = col[_y-1][x-1];
-                    }
+                    if (_y < conf.height - 1) { hexagon.neighbor.southWest = col[_y][x-1]; }
+                    if (_y > 0) { hexagon.neighbor.northWest = col[_y-1][x-1]; }
                 }
-                if (y > 0) {
-                    hexagon.neighbor.north = col[y-1][x];
-                }
-                if (y < conf.height - 1) {
-                    hexagon.neighbor.south = col[y+1][x];
-                }
+                if (y > 0) { hexagon.neighbor.north = col[y-1][x]; }
+                if (y < conf.height - 1) { hexagon.neighbor.south = col[y+1][x]; }
                 if (x < conf.width - 1) {
-                    if (_y > 0) {
-                        hexagon.neighbor.northEast = col[_y-1][x+1];
-                    }
-                    if (_y < conf.height - 1) {
-                        hexagon.neighbor.southEast = col[_y][x+1];
-                    }
+                    if (_y > 0) { hexagon.neighbor.northEast = col[_y-1][x+1]; }
+                    if (_y < conf.height - 1) { hexagon.neighbor.southEast = col[_y][x+1]; }
                 }
             }
         }
-
         return col;
     })();
 
-    api.getHexagon = function(x, y) {
-        return (x >= 0 && x < conf.width && y >= 0 && y < conf.height) ? hexagonModel[y][x] : null;
+    api.getHexagon = function(v) {
+        //return (x >= 0 && x < conf.width && y >= 0 && y < conf.height) ? hexagonModel[y][x] : null;
+        return (v[0] >= 0 && v[0] < conf.width && v[1] >= 0 && v[1] < conf.height) ? hexagonModel[v[1]][v[0]] : null;
     };
 
     api.drawGroundHexagons = function(showHexagonFn) {
@@ -156,7 +149,7 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
 
         for (y = 0; y < conf.height; y++) {
             for (x = 0; x < conf.width; x++) {
-                hexagon = api.getHexagon(x, y);
+                hexagon = api.getHexagon([x, y]);
                 if (!_.isFunction(showHexagonFn) || showHexagonFn(hexagon)) {
                     hexagon.elem = paper.path(baseHexPath);
 
@@ -187,6 +180,8 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
         this.data = {};
     }
 
+    // TODO refactoring
+    // TODO hexagon.neighbor.sameCountryCount
     Country.prototype.unassignHexagon = function(hexagon) {
         var i;
         if (typeof hexagon === 'object' && (i = _.indexOf(this.hexagons, hexagon)) >= 0) {
@@ -196,6 +191,8 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
         }
     };
 
+    // TODO refactoring
+    // TODO hexagon.neighbor.sameCountryCount
     Country.prototype.assignHexagon = function(hexagon) {
         if (typeof hexagon === 'object' && _.indexOf(this.hexagons, hexagon) < 0) {
             this.hexagons.push(hexagon);
@@ -206,12 +203,14 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
         }
     };
 
+    // TODO refactoring
     Country.prototype.addNeighbor = function(country) {
         if (typeof country === 'object' && _.indexOf(this.neighbors, country) < 0) {
             this.neighbors.push(country);
         }
     };
 
+    // TODO refactoring
     Country.prototype.countryLessNeighborHexagons = function() {
         var neighbors = [];
 
@@ -259,11 +258,15 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
         return api.countries[id];
     };
 
-    // ===============================================
+    // =================== country algorithm api ===================
 
     api.createCountries = function() {
         if (_.isFunction(conf.createCountries)) {
-            conf.createCountries(api, conf);
+            try {
+                conf.createCountries(api, conf);
+            } catch (ex) {
+                console.error("createCountries() Error:", ex);
+            }
         }
     };
 
@@ -274,6 +277,8 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
             api.drawGroundHexagons();
         }
     };
+
+    // =============================================================
 
     return api;
 };
