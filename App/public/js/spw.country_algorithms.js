@@ -162,15 +162,11 @@ jQuery(function($) {
     // }}}
 
     Cevent.on("kiwoticum/battlefield/hexagon/click", function(hexagon) {  // {{{
-        console.log(hexagon);
-        //hexagon.setColor("#f0f0f0");
-        //var col = "#e0e0e0";
-        //hexagon.neighbor.north.setColor(col);
-        //hexagon.neighbor.south.setColor(col);
-        //hexagon.neighbor.northWest.setColor(col);
-        //hexagon.neighbor.southWest.setColor(col);
-        //hexagon.neighbor.northEast.setColor(col);
-        //hexagon.neighbor.southEast.setColor(col);
+        var country = hexagon.country;
+        if (!country) { return; }
+
+        var borderHexagons = country.borderHexagons();
+        console.log(hexagon, borderHexagons.length, "hexagons at border!");
     });
     // }}}
 

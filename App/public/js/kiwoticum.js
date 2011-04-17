@@ -63,6 +63,7 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
 
     function createHexagon(x, y, positionLeft, positionTop) {
         var hex = {
+            type: 'Hexagon',
             x: x,
             y: y,
             top: positionTop,
@@ -77,7 +78,6 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
                 southWest: null,
                 northEast: null,
                 southEast: null
-                // TODO sameCountryCount <-- see spw.country_algorithms.js:randomCountryLessNeighborHexagon()
             },
             builder: api
         };
@@ -133,7 +133,6 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
     })();
 
     api.getHexagon = function(v) {
-        //return (x >= 0 && x < conf.width && y >= 0 && y < conf.height) ? hexagonModel[y][x] : null;
         return (v[0] >= 0 && v[0] < conf.width && v[1] >= 0 && v[1] < conf.height) ? hexagonModel[v[1]][v[0]] : null;
     };
 
@@ -174,27 +173,23 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
     // Country class
     //==============================================================
     function Country(id) {
+        this.type = 'Country';
         this.id = id;
         this.hexagons = [];
         this.neighbors = [];
         this.data = {};
     }
 
-    // TODO refactoring
-    // TODO hexagon.neighbor.sameCountryCount
     Country.prototype.unassignHexagon = function(hexagon) {
         var i;
-        if (typeof hexagon === 'object' && (i = _.indexOf(this.hexagons, hexagon)) >= 0) {
-            this.hexagons[i] = null;
-            this.hexagons = _.compact(this.hexagons);
+        if (hexagon && (i = _.indexOf(this.hexagons, hexagon)) >= 0) {
+            this.hexagons.splice(i, 1);
             hexagon.country = null;
         }
     };
 
-    // TODO refactoring
-    // TODO hexagon.neighbor.sameCountryCount
     Country.prototype.assignHexagon = function(hexagon) {
-        if (typeof hexagon === 'object' && _.indexOf(this.hexagons, hexagon) < 0) {
+        if (hexagon && _.indexOf(this.hexagons, hexagon) < 0) {
             this.hexagons.push(hexagon);
             if (hexagon.country !== null) {
                 hexagon.country.unassignHexagon(hexagon);
@@ -203,45 +198,63 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
         }
     };
 
-    // TODO refactoring
     Country.prototype.addNeighbor = function(country) {
-        if (typeof country === 'object' && _.indexOf(this.neighbors, country) < 0) {
+        if (country && _.indexOf(this.neighbors, country) < 0) {
             this.neighbors.push(country);
         }
     };
 
-    // TODO refactoring
-    Country.prototype.countryLessNeighborHexagons = function() {
+    // XXX return array is not uniq, may includes same hexagon more than once!
+    //     use countryLessNeighborHexagons(true) if you want to get an uniq hexagon array
+    Country.prototype.countryLessNeighborHexagons = function(uniq) {
         var neighbors = [];
 
         _.each(this.hexagons, function(hexagon) {
-            var hex = hexagon.neighbor.north;
-            if (hex !== null && hex.country === null) {
-                neighbors.push(hex);
+            if (hexagon.neighbor.north !== null && hexagon.neighbor.north.country === null) {
+                neighbors.push(hexagon.neighbor.north);
             }
-            hex = hexagon.neighbor.south;
-            if (hex !== null && hex.country === null) {
-                neighbors.push(hex);
+            if (hexagon.neighbor.south !== null && hexagon.neighbor.south.country === null) {
+                neighbors.push(hexagon.neighbor.south);
             }
-            hex = hexagon.neighbor.northWest;
-            if (hex !== null && hex.country === null) {
-                neighbors.push(hex);
+            if (hexagon.neighbor.northWest !== null && hexagon.neighbor.northWest.country === null) {
+                neighbors.push(hexagon.neighbor.northWest);
             }
-            hex = hexagon.neighbor.southWest;
-            if (hex !== null && hex.country === null) {
-                neighbors.push(hex);
+            if (hexagon.neighbor.southWest !== null && hexagon.neighbor.southWest.country === null) {
+                neighbors.push(hexagon.neighbor.southWest);
             }
-            hex = hexagon.neighbor.northEast;
-            if (hex !== null && hex.country === null) {
-                neighbors.push(hex);
+            if (hexagon.neighbor.northEast !== null && hexagon.neighbor.northEast.country === null) {
+                neighbors.push(hexagon.neighbor.northEast);
             }
-            hex = hexagon.neighbor.southEast;
-            if (hex !== null && hex.country === null) {
-                neighbors.push(hex);
+            if (hexagon.neighbor.southEast !== null && hexagon.neighbor.southEast.country === null) {
+                neighbors.push(hexagon.neighbor.southEast);
             }
         });
 
-        return neighbors;
+        return uniq ? _.uniq(neighbors) : neighbors;
+    };
+
+    Country.prototype.borderHexagons = function() {
+        var self = this;
+        return _.select(this.hexagons, function(hexagon) {
+            return hexagon.neighbor.north === null ||
+                    hexagon.neighbor.north.country === null ||
+                    hexagon.neighbor.north.country !== self ||
+                    hexagon.neighbor.south === null ||
+                    hexagon.neighbor.south.country === null ||
+                    hexagon.neighbor.south.country !== self ||
+                    hexagon.neighbor.northWest === null ||
+                    hexagon.neighbor.northWest.country === null ||
+                    hexagon.neighbor.northWest.country !== self ||
+                    hexagon.neighbor.southWest === null ||
+                    hexagon.neighbor.southWest.country === null ||
+                    hexagon.neighbor.southWest.country !== self ||
+                    hexagon.neighbor.northEast === null ||
+                    hexagon.neighbor.northEast.country === null ||
+                    hexagon.neighbor.northEast.country !== self ||
+                    hexagon.neighbor.southEast === null ||
+                    hexagon.neighbor.southEast.country === null ||
+                    hexagon.neighbor.southEast.country !== self;
+        });
     };
 
     //==============================================================
