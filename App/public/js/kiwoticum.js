@@ -68,6 +68,9 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
             y: y,
             top: positionTop,
             left: positionLeft,
+            getVertexCoords: function(i) {
+                return [baseHexCoords[i][0] + this.left, baseHexCoords[i][1] + this.top];
+            },
             elem: null,
             country: null,
             data: {},

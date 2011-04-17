@@ -171,6 +171,9 @@ jQuery(function($) {
         if (typeof hexagon.data.visitedEdges !== 'object') {
             hexagon.data.visitedEdges = [false, false, false, false, false, false];
         }
+        if (typeof hexagon.country.data.path !== 'object') {
+            hexagon.country.data.path = [];
+        }
 
         var neighbor = [hexagon.neighbor.northEast, hexagon.neighbor.north, hexagon.neighbor.northWest,
                             hexagon.neighbor.southWest, hexagon.neighbor.south, hexagon.neighbor.southEast];
@@ -179,7 +182,6 @@ jQuery(function($) {
         for (j = 0; j < 6; ++j) {
             i = (startAtIndex + j) % 6;
             if (hexagon.data.visitedEdges[i]) {
-                console.log("A findBorderPath(", hexagon, ",", startAtIndex, ")");
                 return false;
             }
             hexagon.data.visitedEdges[i] = true;
@@ -193,12 +195,14 @@ jQuery(function($) {
             return false;
         }
 
-        hexagon.country.data.path.push(i);
+        //hexagon.country.data.path.push(i);
+        hexagon.country.data.path.push(hexagon.getVertexCoords(i));
         i = (i+1) % 6;
         
         while(!hexagon.data.visitedEdges[i] &&
                 (neighbor[i] === null || neighbor[i].country !== hexagon.country)) {
-            hexagon.country.data.path.push(i);
+            //hexagon.country.data.path.push(i);
+            hexagon.country.data.path.push(hexagon.getVertexCoords(i));
             i = (i+1) % 6;
         }
 
@@ -221,21 +225,20 @@ jQuery(function($) {
             var country = hexagon.country;
             if (!country) { return; }
 
-            console.log(hexagon, country);
+            console.log("hexagon -->", hexagon, "country -->", country);
 
             var borderHexagons = country.borderHexagons();
             _.each(borderHexagons, function(hex) {
                 hex.setColor("#ffff00");
             });
 
-            country.data.path = [];
             var next = findBorderPath(borderHexagons[0], 0);
             while (!!next) {
-                console.log(next);
+                //console.log(next);
                 next = findBorderPath(next[0], next[1]);
             }
-            console.log(next);
-            console.log("country.path", country.data.path);
+            //console.log(next);
+            //console.log("country.path", country.data.path);
 
         } catch (ex) {
             console.error(ex);
