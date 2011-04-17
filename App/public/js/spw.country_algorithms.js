@@ -206,7 +206,7 @@ jQuery(function($) {
 
         hexagon.setColor("#00ff00");
 
-        var nextEdge, ok;
+        var nextEdge;
         switch (i) {
             case 0: nextEdge = 4; break;
             case 1: nextEdge = 5; break;
