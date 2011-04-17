@@ -195,13 +195,11 @@ jQuery(function($) {
             return false;
         }
 
-        //hexagon.country.data.path.push(i);
         hexagon.country.data.path.push(hexagon.getVertexCoords(i));
         i = (i+1) % 6;
         
         while(!hexagon.data.visitedEdges[i] &&
                 (neighbor[i] === null || neighbor[i].country !== hexagon.country)) {
-            //hexagon.country.data.path.push(i);
             hexagon.country.data.path.push(hexagon.getVertexCoords(i));
             i = (i+1) % 6;
         }
@@ -239,6 +237,12 @@ jQuery(function($) {
             }
             //console.log(next);
             //console.log("country.path", country.data.path);
+
+            var countrySvgPath = hexagon.builder.paper.path(hexagon.builder.createSvgPath(country.data.path));
+            countrySvgPath.attr("fill", country.data.color);
+            countrySvgPath.attr("stroke", "#000000");
+            //countrySvgPath.attr("stroke-width", "1");
+            //countrySvgPath.attr("stroke-linecap", "round");
 
         } catch (ex) {
             console.error(ex);

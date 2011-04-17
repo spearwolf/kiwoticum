@@ -52,6 +52,10 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
 
     var paper = Raphael(container, canvasWidth, canvasHeight);
 
+    // TODO move all raphael/svg stuff into own Renderer module
+    api.createSvgPath = createSvgPath;
+    api.paper = paper;
+
     function extendObject(obj, extension) {
         if (typeof extension === 'object') {
             return _.extend(obj, extension);
