@@ -161,12 +161,85 @@ jQuery(function($) {
     });
     // }}}
 
-    Cevent.on("kiwoticum/battlefield/hexagon/click", function(hexagon) {  // {{{
-        var country = hexagon.country;
-        if (!country) { return; }
+    function findBorderPath(hexagon, startAtIndex) {
+        //
+        //        _1
+        //     2/   \ 0
+        //     3\___/5
+        //        4
+        //
+        if (typeof hexagon.data.visitedEdges !== 'object') {
+            hexagon.data.visitedEdges = [false, false, false, false, false, false];
+        }
 
-        var borderHexagons = country.borderHexagons();
-        console.log(hexagon, borderHexagons.length, "hexagons at border!");
+        var neighbor = [hexagon.neighbor.northEast, hexagon.neighbor.north, hexagon.neighbor.northWest,
+                            hexagon.neighbor.southWest, hexagon.neighbor.south, hexagon.neighbor.southEast];
+
+        var i, j;
+        for (j = 0; j < 6; ++j) {
+            i = (startAtIndex + j) % 6;
+            if (hexagon.data.visitedEdges[i]) {
+                console.log("A findBorderPath(", hexagon, ",", startAtIndex, ")");
+                return false;
+            }
+            hexagon.data.visitedEdges[i] = true;
+            if (neighbor[i] === null || neighbor[i].country !== hexagon.country) {
+                break;
+            }
+        }
+        if (j === 6) {
+            hexagon.setColor("#ff0000");
+            console.error("EX findBorderPath(", hexagon, ") couldn't find an edge?");
+            return false;
+        }
+
+        hexagon.country.data.path.push(i);
+        i = (i+1) % 6;
+        
+        while(!hexagon.data.visitedEdges[i] &&
+                (neighbor[i] === null || neighbor[i].country !== hexagon.country)) {
+            hexagon.country.data.path.push(i);
+            i = (i+1) % 6;
+        }
+
+        hexagon.setColor("#00ff00");
+
+        var nextEdge, ok;
+        switch (i) {
+            case 0: nextEdge = 4; break;
+            case 1: nextEdge = 5; break;
+            case 2: nextEdge = 0; break;
+            case 3: nextEdge = 1; break;
+            case 4: nextEdge = 2; break;
+            default: nextEdge = 3;
+        }
+        return [neighbor[i], nextEdge];
+    }
+
+    Cevent.on("kiwoticum/battlefield/hexagon/click", function(hexagon) {  // {{{
+        try {
+            var country = hexagon.country;
+            if (!country) { return; }
+
+            console.log(hexagon, country);
+
+            var borderHexagons = country.borderHexagons();
+            _.each(borderHexagons, function(hex) {
+                hex.setColor("#ffff00");
+            });
+
+            country.data.path = [];
+            var next = findBorderPath(borderHexagons[0], 0);
+            while (!!next) {
+                console.log(next);
+                next = findBorderPath(next[0], next[1]);
+            }
+            console.log(next);
+            console.log("country.path", country.data.path);
+
+        } catch (ex) {
+            console.error(ex);
+        }
     });
     // }}}
 
