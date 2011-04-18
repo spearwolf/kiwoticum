@@ -198,7 +198,7 @@ jQuery(function($) {
         hexagon.country.data.path.push(hexagon.getVertexCoords(i));
         i = (i+1) % 6;
         
-        while(!hexagon.data.visitedEdges[i] &&
+        while (!hexagon.data.visitedEdges[i] &&
                 (neighbor[i] === null || neighbor[i].country !== hexagon.country)) {
             hexagon.country.data.path.push(hexagon.getVertexCoords(i));
             i = (i+1) % 6;
