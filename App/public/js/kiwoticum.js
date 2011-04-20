@@ -125,17 +125,18 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
                 hexagon = col[y][x];
 
                 if (x > 0) {
-                    if (_y < conf.height - 1) { hexagon.neighbor.southWest = col[_y][x-1]; }
+                    if (_y < conf.height) { hexagon.neighbor.southWest = col[_y][x-1]; }
                     if (_y > 0) { hexagon.neighbor.northWest = col[_y-1][x-1]; }
                 }
                 if (y > 0) { hexagon.neighbor.north = col[y-1][x]; }
                 if (y < conf.height - 1) { hexagon.neighbor.south = col[y+1][x]; }
                 if (x < conf.width - 1) {
                     if (_y > 0) { hexagon.neighbor.northEast = col[_y-1][x+1]; }
-                    if (_y < conf.height - 1) { hexagon.neighbor.southEast = col[_y][x+1]; }
+                    if (_y < conf.height) { hexagon.neighbor.southEast = col[_y][x+1]; }
                 }
             }
         }
+
         return col;
     })();
 
