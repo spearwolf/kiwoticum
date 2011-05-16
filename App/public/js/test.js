@@ -336,12 +336,12 @@ QUnitTests.init = function () {
         //    \__/  \__/  \__/  \__/  \__/  \
         //  4 /  \__/D \__/D \__/  \__/  \__/
         //    \__/D \_2/D \12/E \__/  \__/  \
-        //  5 /D \_3/d \_1/D \__/  \__/  \__/
+        //  5 /D \_3/d \_1/D \_2/  \__/  \__/
         //    \_4/d \__/d \11/E \__/  \__/  \
-        //  6 /D \__/D \__/D \__/  \__/  \__/
-        //    \_5/D \_8/D \10/E \__/  \__/  \
-        //  7 /D \_7/  \_9/E \__/  \__/  \__/
-        //    \_6/  \__/  \__/  \__/  \__/  \
+        //  6 /D \__/D \__/D \_1/  \__/  \__/
+        //    \_5/D \_8/D \10/E \__/E \__/  \
+        //  7 /D \_7/  \_9/E \_3/E \_6/  \__/
+        //    \_6/  \__/  \_4/  \_5/  \__/  \
         //  8 /  \__/  \__/  \__/  \__/  \__/
         //    \__/  \__/  \__/  \__/  \__/  \
         //  9 /  \__/  \__/  \__/  \__/  \__/
@@ -356,7 +356,7 @@ QUnitTests.init = function () {
                                                                 [0, 6], [3, 4], [4, 4],
                                                                 [0, 7], [1, 6], [1, 4], [1, 5], [3, 5], [4, 5],
                                                                 [0, 5], [2, 5], [4, 6] ]),
-            countryE = builder.createCountry().assignHexagons([[5, 4], [5, 5], [5, 6], [4, 7]]);
+            countryE = builder.createCountry().assignHexagons([[5, 4], [5, 5], [5, 6], [4, 7], [6, 7], [7, 6]]);
 
         // A
         var hexagon = builder.getHexagon([1, 1]),
@@ -428,6 +428,41 @@ QUnitTests.init = function () {
         strictEqual(typeof builder.getHexagon([2, 5]).data.visitedEdges, 'undefined');
         strictEqual(typeof builder.getHexagon([1, 5]).data.visitedEdges, 'undefined');
         strictEqual(typeof builder.getHexagon([3, 5]).data.visitedEdges, 'undefined');
+
+        // E
+        hexagon = builder.getHexagon([5, 5]);
+        next = countryE.nextShapeHexagonEdge(hexagon, 0);
+        assertNext(next, [5, 4], 5, 'E1');
+
+        next = countryE.nextShapeHexagonEdge(next[0], next[1]);
+        assertNext(next, [5, 5], 2, 'E2');
+
+        next = countryE.nextShapeHexagonEdge(next[0], next[1]);
+        assertNext(next, [5, 6], 2, 'E1');
+
+        next = countryE.nextShapeHexagonEdge(next[0], next[1]);
+        assertNext(next, [4, 7], 1, 'E3');
+
+        next = countryE.nextShapeHexagonEdge(next[0], next[1]);
+        assertNext(next, [5, 6], 4, 'E4');
+
+        next = countryE.nextShapeHexagonEdge(next[0], next[1]);
+        assertNext(next, [6, 7], 3, 'E3');
+
+        next = countryE.nextShapeHexagonEdge(next[0], next[1]);
+        assertNext(next, [7, 6], 4, 'E5');
+
+        next = countryE.nextShapeHexagonEdge(next[0], next[1]);
+        assertNext(next, [6, 7], 1, 'E6');
+
+        next = countryE.nextShapeHexagonEdge(next[0], next[1]);
+        assertNext(next, [5, 6], 0, 'E5');
+
+        next = countryE.nextShapeHexagonEdge(next[0], next[1]);
+        assertNext(next, [5, 5], 5, 'E3');
+
+        next = countryE.nextShapeHexagonEdge(next[0], next[1]);
+        strictEqual(next, false, 'after E3');
     });
     // }}}
 

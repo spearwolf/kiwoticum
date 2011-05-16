@@ -330,7 +330,7 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
             edge = (edge + 1) % 6;
         } while (!visitedEdges[edge] && (neighbor[edge] === null || neighbor[edge].country !== hexagon.country));
 
-        if (edge === startAtEdge) {
+        if (edge === startAtEdge || visitedEdges[edge]) {
             return false;
         }
 
