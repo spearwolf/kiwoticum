@@ -29,6 +29,17 @@ QUnitTests.init = function () {
         // }}}
     });
 
+    function includeHexagonAt(hexagons, x, y) {  // {{{
+        var found = false;
+        _.each(hexagons, function(hexagon) {
+            if (x === hexagon.x && y === hexagon.y) {
+                found = true;
+            }
+        });
+        return found;
+    }
+    // }}}
+
     test("CreateCountryMapBuilder()", 14, function () {  // {{{
 
         var builder = kiwoticum.CreateCountryMapBuilder("country-map-canvas", cmbOptions);
@@ -150,18 +161,7 @@ QUnitTests.init = function () {
     });
     // }}}
 
-    test("Country#countryLessNeighborHexagons", function () {  // {{{
-
-        function includeHexagonAt(hexagons, x, y) {  // {{{
-            var found = false;
-            _.each(hexagons, function(hexagon) {
-                if (x === hexagon.x && y === hexagon.y) {
-                    found = true;
-                }
-            });
-            return found;
-        }
-        // }}}
+    test("Country#uniqueCountryLessNeighborHexagons", function () {  // {{{
 
         var builder = kiwoticum.CreateCountryMapBuilder("country-map-canvas", cmbOptions);
 
@@ -199,7 +199,7 @@ QUnitTests.init = function () {
         countryC.assignHexagon(builder.getHexagon([9, 0]));
 
         // A
-        var hexagons = countryA.countryLessNeighborHexagons(true);
+        var hexagons = countryA.uniqueCountryLessNeighborHexagons();
 
         strictEqual(hexagons.length, 6);
 
@@ -213,7 +213,7 @@ QUnitTests.init = function () {
         strictEqual(includeHexagonAt(hexagons, 0, 2), true);
 
         // B
-        hexagons = countryB.countryLessNeighborHexagons(true);
+        hexagons = countryB.uniqueCountryLessNeighborHexagons();
 
         strictEqual(hexagons.length, 8);
 
@@ -230,7 +230,7 @@ QUnitTests.init = function () {
         strictEqual(includeHexagonAt(hexagons, 2, 2), true);
 
         // C
-        hexagons = countryC.countryLessNeighborHexagons(true);
+        hexagons = countryC.uniqueCountryLessNeighborHexagons();
         strictEqual(hexagons.length, 3);
 
         strictEqual(includeHexagonAt(hexagons, 9, 0), false);

@@ -212,9 +212,7 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
         }
     };
 
-    // XXX return array is not uniq, may includes same hexagon more than once!
-    //     use countryLessNeighborHexagons(true) if you want to get an uniq hexagon array
-    Country.prototype.countryLessNeighborHexagons = function(uniq) {
+    Country.prototype.nonUniqueCountryLessNeighborHexagons = function() {
         var neighbors = [];
 
         _.each(this.hexagons, function(hexagon) {
@@ -238,7 +236,11 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
             }
         });
 
-        return uniq ? _.uniq(neighbors) : neighbors;
+        return neighbors;
+    };
+
+    Country.prototype.uniqueCountryLessNeighborHexagons = function() {
+        return _.uniq(this.nonUniqueCountryLessNeighborHexagons());
     };
 
     Country.prototype.borderHexagons = function() {

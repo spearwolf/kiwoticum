@@ -109,7 +109,7 @@ jQuery(function($) {
 
                     // TODO refactoring -- optimize for performance -- use hexagon.neighbor.sameCountryCount
                     randomCountryLessNeighborHexagon: function() {
-                        var neighbors = this.countryLessNeighborHexagons();
+                        var neighbors = this.nonUniqueCountryLessNeighborHexagons();
 
                         if (neighbors.length === 0) {
                             return null;
