@@ -315,6 +315,14 @@ QUnitTests.init = function () {
 
     test("Country#nextShapeHexagonEdge", function () {  // {{{
 
+        function assertNext(next, hexCoords, edge, of) {
+            strictEqual(typeof next, 'object', 'typeof next('+of+')');
+            strictEqual(next.length, 2, 'next('+of+').length');
+            strictEqual(next[0].x, hexCoords[0], 'next('+of+')->hexagon->x');
+            strictEqual(next[0].y, hexCoords[1], 'next('+of+')->hexagon->y');
+            strictEqual(next[1], edge, 'next('+of+')->edge');
+        }
+
         var builder = kiwoticum.CreateCountryMapBuilder("country-map-canvas", cmbOptions);
 
         //     0_ 1  2_ 3  4_ 5  6_ 7  8_ 9
@@ -322,18 +330,18 @@ QUnitTests.init = function () {
         //    \__/  \__/  \__/  \__/  \__/C \
         //  1 /  \__/  \__/  \__/  \__/  \__/
         //    \__/A \__/B \__/  \__/  \__/  \
-        //  2 /  \__/  \__/B \__/  \__/  \__/
-        //    \__/  \__/  \__/  \__/  \__/  \
+        //  2 /  \__/  \_1/B \__/  \__/  \__/
+        //    \__/  \__/  \_2/  \__/  \__/  \
         //  3 /  \__/  \__/  \__/  \__/  \__/
         //    \__/  \__/  \__/  \__/  \__/  \
         //  4 /  \__/D \__/D \__/  \__/  \__/
-        //    \__/D \__/D \__/E \__/  \__/  \
-        //  5 /D \__/d \__/D \__/  \__/  \__/
-        //    \__/d \__/d \__/E \__/  \__/  \
+        //    \__/D \_2/D \12/E \__/  \__/  \
+        //  5 /D \_3/d \_1/D \__/  \__/  \__/
+        //    \_4/d \__/d \11/E \__/  \__/  \
         //  6 /D \__/D \__/D \__/  \__/  \__/
-        //    \__/D \__/D \__/E \__/  \__/  \
-        //  7 /D \__/  \__/E \__/  \__/  \__/
-        //    \__/  \__/  \__/  \__/  \__/  \
+        //    \_5/D \_8/D \10/E \__/  \__/  \
+        //  7 /D \_7/  \_9/E \__/  \__/  \__/
+        //    \_6/  \__/  \__/  \__/  \__/  \
         //  8 /  \__/  \__/  \__/  \__/  \__/
         //    \__/  \__/  \__/  \__/  \__/  \
         //  9 /  \__/  \__/  \__/  \__/  \__/
@@ -368,25 +376,54 @@ QUnitTests.init = function () {
         // B
         hexagon = builder.getHexagon([3, 1]);
         next = countryB.nextShapeHexagonEdge(hexagon, 0);
-
-        strictEqual(typeof next, 'object', 'typeof next');
-        strictEqual(next.length, 2, 'next.length');
-
-        strictEqual(next[0].x, 4, 'next->hexagon->x');
-        strictEqual(next[0].y, 2, 'next->hexagon->y');
-        strictEqual(next[1], 3, 'next->edge');
+        assertNext(next, [4, 2], 3, 'B1');
 
         next = countryB.nextShapeHexagonEdge(next[0], next[1]);
-
-        strictEqual(typeof next, 'object', 'typeof next(2)');
-        strictEqual(next.length, 2, 'next(2).length');
-
-        strictEqual(next[0].x, 3, 'next(2)->hexagon->x');
-        strictEqual(next[0].y, 1, 'next(2)->hexagon->y');
-        strictEqual(next[1], 0, 'next(2)->edge');
+        assertNext(next, [3, 1], 0, 'B2');
 
         next = countryB.nextShapeHexagonEdge(next[0], next[1]);
         strictEqual(next, false, 'next');
+
+        // D
+        hexagon = builder.getHexagon([3, 4]);
+        next = countryD.nextShapeHexagonEdge(hexagon, 0);
+        assertNext(next, [2, 4], 0, 'D1');
+
+        next = countryD.nextShapeHexagonEdge(next[0], next[1]);
+        assertNext(next, [1, 4], 1, 'D2');
+
+        next = countryD.nextShapeHexagonEdge(next[0], next[1]);
+        assertNext(next, [0, 5], 1, 'D3');
+
+        next = countryD.nextShapeHexagonEdge(next[0], next[1]);
+        assertNext(next, [0, 6], 2, 'D4');
+
+        next = countryD.nextShapeHexagonEdge(next[0], next[1]);
+        assertNext(next, [0, 7], 2, 'D5');
+
+        next = countryD.nextShapeHexagonEdge(next[0], next[1]);
+        assertNext(next, [1, 6], 4, 'D6');
+
+        next = countryD.nextShapeHexagonEdge(next[0], next[1]);
+        assertNext(next, [2, 6], 4, 'D7');
+
+        next = countryD.nextShapeHexagonEdge(next[0], next[1]);
+        assertNext(next, [3, 6], 3, 'D8');
+
+        next = countryD.nextShapeHexagonEdge(next[0], next[1]);
+        assertNext(next, [4, 6], 4, 'D9');
+
+        next = countryD.nextShapeHexagonEdge(next[0], next[1]);
+        assertNext(next, [4, 5], 5, 'D10');
+
+        next = countryD.nextShapeHexagonEdge(next[0], next[1]);
+        assertNext(next, [4, 4], 5, 'D11');
+
+        next = countryD.nextShapeHexagonEdge(next[0], next[1]);
+        assertNext(next, [3, 4], 1, 'D12');
+
+        next = countryD.nextShapeHexagonEdge(next[0], next[1]);
+        strictEqual(next, false, 'next after D12');
     });
     // }}}
 
