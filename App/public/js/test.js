@@ -189,14 +189,9 @@ QUnitTests.init = function () {
         //       \__/  \__/  \__/  \__/  \__/
         //
 
-        var countryA = builder.createCountry(),
-            countryB = builder.createCountry(),
-            countryC = builder.createCountry();
-
-        countryA.assignHexagon(builder.getHexagon([1, 1]));
-        countryB.assignHexagon(builder.getHexagon([3, 1]));
-        countryB.assignHexagon(builder.getHexagon([4, 2]));
-        countryC.assignHexagon(builder.getHexagon([9, 0]));
+        var countryA = builder.createCountry().assignHexagons([[1, 1]]),
+            countryB = builder.createCountry().assignHexagons([[3, 1], [4, 2]]),
+            countryC = builder.createCountry().assignHexagons([[9, 0]]);
 
         // A
         var hexagons = countryA.uniqueCountryLessNeighborHexagons();
@@ -241,6 +236,83 @@ QUnitTests.init = function () {
 
     });
     // }}}
+
+    test("Country#borderHexagons", function () {  // {{{
+
+        var builder = kiwoticum.CreateCountryMapBuilder("country-map-canvas", cmbOptions);
+
+        //     0_ 1  2_ 3  4_ 5  6_ 7  8_ 9
+        //  0 /  \__/  \__/  \__/  \__/  \__
+        //    \__/  \__/  \__/  \__/  \__/C \
+        //  1 /  \__/  \__/  \__/  \__/  \__/
+        //    \__/A \__/B \__/  \__/  \__/  \
+        //  2 /  \__/  \__/B \__/  \__/  \__/
+        //    \__/  \__/  \__/  \__/  \__/  \
+        //  3 /  \__/  \__/  \__/  \__/  \__/
+        //    \__/  \__/  \__/  \__/  \__/  \
+        //  4 /  \__/D \__/D \__/  \__/  \__/
+        //    \__/D \__/D \__/E \__/  \__/  \
+        //  5 /D \__/d \__/D \__/  \__/  \__/
+        //    \__/d \__/d \__/E \__/  \__/  \
+        //  6 /D \__/D \__/D \__/  \__/  \__/
+        //    \__/D \__/D \__/E \__/  \__/  \
+        //  7 /D \__/  \__/E \__/  \__/  \__/
+        //    \__/  \__/  \__/  \__/  \__/  \
+        //  8 /  \__/  \__/  \__/  \__/  \__/
+        //    \__/  \__/  \__/  \__/  \__/  \
+        //  9 /  \__/  \__/  \__/  \__/  \__/
+        //    \__/  \__/  \__/  \__/  \__/  \
+        //       \__/  \__/  \__/  \__/  \__/
+        //
+
+        var countryA = builder.createCountry().assignHexagons([[1, 1]]),
+            countryB = builder.createCountry().assignHexagons([[3, 1], [4, 2]]),
+            countryC = builder.createCountry().assignHexagons([[9, 0]]),
+            countryD = builder.createCountry().assignHexagons([ [0, 5], [1, 4], [2, 4],
+                                                                [0, 6], [1, 5], [2, 5], [3, 4], [4, 4],
+                                                                [0, 7], [1, 6], [2, 6], [3, 5], [4, 5],
+                                                                [3, 6], [4, 6] ]),
+            countryE = builder.createCountry().assignHexagons([[5, 4], [5, 5], [5, 6], [4, 7]]);
+
+        // A
+        var hexagons = countryA.borderHexagons();
+        strictEqual(hexagons.length, 1);
+        strictEqual(includeHexagonAt(hexagons, 1, 1), true);
+
+        // B
+        hexagons = countryB.borderHexagons();
+        strictEqual(hexagons.length, 2);
+        strictEqual(includeHexagonAt(hexagons, 3, 1), true);
+        strictEqual(includeHexagonAt(hexagons, 4, 2), true);
+
+        // C
+        hexagons = countryC.borderHexagons();
+        strictEqual(hexagons.length, 1);
+        strictEqual(includeHexagonAt(hexagons, 9, 0), true);
+
+        // D
+        hexagons = countryD.borderHexagons();
+        strictEqual(hexagons.length, 12);
+
+        strictEqual(includeHexagonAt(hexagons, 1, 5), false);
+        strictEqual(includeHexagonAt(hexagons, 2, 5), false);
+        strictEqual(includeHexagonAt(hexagons, 3, 5), false);
+
+        strictEqual(includeHexagonAt(hexagons, 0, 5), true);
+        strictEqual(includeHexagonAt(hexagons, 1, 4), true);
+        strictEqual(includeHexagonAt(hexagons, 2, 4), true);
+        strictEqual(includeHexagonAt(hexagons, 0, 6), true);
+        strictEqual(includeHexagonAt(hexagons, 3, 4), true);
+        strictEqual(includeHexagonAt(hexagons, 4, 4), true);
+        strictEqual(includeHexagonAt(hexagons, 0, 7), true);
+        strictEqual(includeHexagonAt(hexagons, 1, 6), true);
+        strictEqual(includeHexagonAt(hexagons, 2, 6), true);
+        strictEqual(includeHexagonAt(hexagons, 4, 5), true);
+        strictEqual(includeHexagonAt(hexagons, 3, 6), true);
+        strictEqual(includeHexagonAt(hexagons, 4, 6), true);
+    });
+    // }}}
+
 };
 
 (function ($) { QUnitTests.init(); })(jQuery);

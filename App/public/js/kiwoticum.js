@@ -186,6 +186,7 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
         this.hexagons = [];
         this.neighbors = [];
         this.data = {};
+        this.builder = api;
     }
 
     Country.prototype.unassignHexagon = function(hexagon) {
@@ -194,6 +195,7 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
             this.hexagons.splice(i, 1);
             hexagon.country = null;
         }
+        return this;
     };
 
     Country.prototype.assignHexagon = function(hexagon) {
@@ -204,12 +206,25 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
             }
             hexagon.country = this;
         }
+        return this;
+    };
+
+    Country.prototype.assignHexagons = function(coords) {
+        var i, hexagon;
+        for (i = 0; i < coords.length; i++) {
+            hexagon = this.builder.getHexagon(coords[i]);
+            if (hexagon) {
+                this.assignHexagon(hexagon);
+            }
+        }
+        return this;
     };
 
     Country.prototype.addNeighbor = function(country) {
         if (country && _.indexOf(this.neighbors, country) < 0) {
             this.neighbors.push(country);
         }
+        return this;
     };
 
     Country.prototype.nonUniqueCountryLessNeighborHexagons = function() {
