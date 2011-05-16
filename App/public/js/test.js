@@ -352,10 +352,10 @@ QUnitTests.init = function () {
         var countryA = builder.createCountry().assignHexagons([[1, 1]]),
             countryB = builder.createCountry().assignHexagons([[3, 1], [4, 2]]),
             countryC = builder.createCountry().assignHexagons([[9, 0]]),
-            countryD = builder.createCountry().assignHexagons([ [0, 5], [1, 4], [2, 4],
-                                                                [0, 6], [1, 5], [2, 5], [3, 4], [4, 4],
-                                                                [0, 7], [1, 6], [2, 6], [3, 5], [4, 5],
-                                                                [3, 6], [4, 6] ]),
+            countryD = builder.createCountry().assignHexagons([ [3, 6], [2, 4], [2, 6], 
+                                                                [0, 6], [3, 4], [4, 4],
+                                                                [0, 7], [1, 6], [1, 4], [1, 5], [3, 5], [4, 5],
+                                                                [0, 5], [2, 5], [4, 6] ]),
             countryE = builder.createCountry().assignHexagons([[5, 4], [5, 5], [5, 6], [4, 7]]);
 
         // A
@@ -424,6 +424,10 @@ QUnitTests.init = function () {
 
         next = countryD.nextShapeHexagonEdge(next[0], next[1]);
         strictEqual(next, false, 'next after D12');
+
+        strictEqual(typeof builder.getHexagon([2, 5]).data.visitedEdges, 'undefined');
+        strictEqual(typeof builder.getHexagon([1, 5]).data.visitedEdges, 'undefined');
+        strictEqual(typeof builder.getHexagon([3, 5]).data.visitedEdges, 'undefined');
     });
     // }}}
 
