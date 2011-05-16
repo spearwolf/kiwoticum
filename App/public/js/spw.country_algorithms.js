@@ -225,12 +225,12 @@ jQuery(function($) {
 
             console.log("hexagon -->", hexagon, "country -->", country);
 
-            var borderHexagons = country.borderHexagons();
-            _.each(borderHexagons, function(hex) {
+            var shapeHexagons = country.shapeHexagons();
+            _.each(shapeHexagons, function(hex) {
                 hex.setColor("#ffff00");
             });
 
-            var next = findBorderPath(borderHexagons[0], 0);
+            var next = findBorderPath(shapeHexagons[0], 0);
             while (!!next) {
                 //console.log(next);
                 next = findBorderPath(next[0], next[1]);

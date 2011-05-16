@@ -237,7 +237,7 @@ QUnitTests.init = function () {
     });
     // }}}
 
-    test("Country#borderHexagons", function () {  // {{{
+    test("Country#shapeHexagons", function () {  // {{{
 
         var builder = kiwoticum.CreateCountryMapBuilder("country-map-canvas", cmbOptions);
 
@@ -275,23 +275,23 @@ QUnitTests.init = function () {
             countryE = builder.createCountry().assignHexagons([[5, 4], [5, 5], [5, 6], [4, 7]]);
 
         // A
-        var hexagons = countryA.borderHexagons();
+        var hexagons = countryA.shapeHexagons();
         strictEqual(hexagons.length, 1);
         strictEqual(includeHexagonAt(hexagons, 1, 1), true);
 
         // B
-        hexagons = countryB.borderHexagons();
+        hexagons = countryB.shapeHexagons();
         strictEqual(hexagons.length, 2);
         strictEqual(includeHexagonAt(hexagons, 3, 1), true);
         strictEqual(includeHexagonAt(hexagons, 4, 2), true);
 
         // C
-        hexagons = countryC.borderHexagons();
+        hexagons = countryC.shapeHexagons();
         strictEqual(hexagons.length, 1);
         strictEqual(includeHexagonAt(hexagons, 9, 0), true);
 
         // D
-        hexagons = countryD.borderHexagons();
+        hexagons = countryD.shapeHexagons();
         strictEqual(hexagons.length, 12);
 
         strictEqual(includeHexagonAt(hexagons, 1, 5), false);

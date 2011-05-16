@@ -258,7 +258,7 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
         return _.uniq(this.nonUniqueCountryLessNeighborHexagons());
     };
 
-    Country.prototype.borderHexagons = function() {
+    Country.prototype.shapeHexagons = function() {
         var self = this;
         return _.select(this.hexagons, function(hexagon) {
             return hexagon.neighbor.north === null ||
