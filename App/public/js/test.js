@@ -313,6 +313,83 @@ QUnitTests.init = function () {
     });
     // }}}
 
+    test("Country#nextShapeHexagonEdge", function () {  // {{{
+
+        var builder = kiwoticum.CreateCountryMapBuilder("country-map-canvas", cmbOptions);
+
+        //     0_ 1  2_ 3  4_ 5  6_ 7  8_ 9
+        //  0 /  \__/  \__/  \__/  \__/  \__
+        //    \__/  \__/  \__/  \__/  \__/C \
+        //  1 /  \__/  \__/  \__/  \__/  \__/
+        //    \__/A \__/B \__/  \__/  \__/  \
+        //  2 /  \__/  \__/B \__/  \__/  \__/
+        //    \__/  \__/  \__/  \__/  \__/  \
+        //  3 /  \__/  \__/  \__/  \__/  \__/
+        //    \__/  \__/  \__/  \__/  \__/  \
+        //  4 /  \__/D \__/D \__/  \__/  \__/
+        //    \__/D \__/D \__/E \__/  \__/  \
+        //  5 /D \__/d \__/D \__/  \__/  \__/
+        //    \__/d \__/d \__/E \__/  \__/  \
+        //  6 /D \__/D \__/D \__/  \__/  \__/
+        //    \__/D \__/D \__/E \__/  \__/  \
+        //  7 /D \__/  \__/E \__/  \__/  \__/
+        //    \__/  \__/  \__/  \__/  \__/  \
+        //  8 /  \__/  \__/  \__/  \__/  \__/
+        //    \__/  \__/  \__/  \__/  \__/  \
+        //  9 /  \__/  \__/  \__/  \__/  \__/
+        //    \__/  \__/  \__/  \__/  \__/  \
+        //       \__/  \__/  \__/  \__/  \__/
+        //
+
+        var countryA = builder.createCountry().assignHexagons([[1, 1]]),
+            countryB = builder.createCountry().assignHexagons([[3, 1], [4, 2]]),
+            countryC = builder.createCountry().assignHexagons([[9, 0]]),
+            countryD = builder.createCountry().assignHexagons([ [0, 5], [1, 4], [2, 4],
+                                                                [0, 6], [1, 5], [2, 5], [3, 4], [4, 4],
+                                                                [0, 7], [1, 6], [2, 6], [3, 5], [4, 5],
+                                                                [3, 6], [4, 6] ]),
+            countryE = builder.createCountry().assignHexagons([[5, 4], [5, 5], [5, 6], [4, 7]]);
+
+        // A
+        var hexagon = builder.getHexagon([1, 1]),
+            next = countryA.nextShapeHexagonEdge(hexagon, 0);
+
+        strictEqual(next, false, 'next');
+
+        strictEqual(hexagon.data.visitedEdges[0], true, 'hexagon->visitedEdges[0]');
+        strictEqual(hexagon.data.visitedEdges[1], true, 'hexagon->visitedEdges[1]');
+        strictEqual(hexagon.data.visitedEdges[2], true, 'hexagon->visitedEdges[2]');
+        strictEqual(hexagon.data.visitedEdges[3], true, 'hexagon->visitedEdges[3]');
+        strictEqual(hexagon.data.visitedEdges[4], true, 'hexagon->visitedEdges[4]');
+        strictEqual(hexagon.data.visitedEdges[5], true, 'hexagon->visitedEdges[5]');
+
+        strictEqual(hexagon.country.data.shapePath.length, 6, 'shapePath.length');
+
+        // B
+        hexagon = builder.getHexagon([3, 1]);
+        next = countryB.nextShapeHexagonEdge(hexagon, 0);
+
+        strictEqual(typeof next, 'object', 'typeof next');
+        strictEqual(next.length, 2, 'next.length');
+
+        strictEqual(next[0].x, 4, 'next->hexagon->x');
+        strictEqual(next[0].y, 2, 'next->hexagon->y');
+        strictEqual(next[1], 3, 'next->edge');
+
+        next = countryB.nextShapeHexagonEdge(next[0], next[1]);
+
+        strictEqual(typeof next, 'object', 'typeof next(2)');
+        strictEqual(next.length, 2, 'next(2).length');
+
+        strictEqual(next[0].x, 3, 'next(2)->hexagon->x');
+        strictEqual(next[0].y, 1, 'next(2)->hexagon->y');
+        strictEqual(next[1], 0, 'next(2)->edge');
+
+        next = countryB.nextShapeHexagonEdge(next[0], next[1]);
+        strictEqual(next, false, 'next');
+    });
+    // }}}
+
 };
 
 (function ($) { QUnitTests.init(); })(jQuery);

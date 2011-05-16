@@ -282,6 +282,61 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
         });
     };
 
+    Country.prototype.nextShapeHexagonEdge = function(hexagon, startAtEdge) {
+        //
+        //       _1_
+        //     2/   \0
+        //     3\___/5
+        //        4
+        //
+
+        // hexagon->visitedEdges
+        if (typeof hexagon.data.visitedEdges !== 'object') {
+            hexagon.data.visitedEdges = [false, false, false, false, false, false];
+        }
+        var visitedEdges = hexagon.data.visitedEdges;
+
+        // country->shapePath
+        if (typeof hexagon.country.data.shapePath !== 'object') {
+            hexagon.country.data.shapePath = [];
+        }
+        var shapePath = hexagon.country.data.shapePath;
+
+        var neighbor = [hexagon.neighbor.northEast, hexagon.neighbor.north, hexagon.neighbor.northWest,
+                            hexagon.neighbor.southWest, hexagon.neighbor.south, hexagon.neighbor.southEast];
+
+        var edge, i;
+        for (i = 0; i < 6; ++i) {
+            edge = (startAtEdge + i) % 6;
+
+            if (visitedEdges[edge]) {
+                return false;
+            }
+            visitedEdges[edge] = true;
+
+            if (neighbor[edge] === null || neighbor[edge].country !== hexagon.country) {
+                break;
+            }
+        }
+        if (i === 6) {
+            console.error("Error: Country.nextShapeHexagonEdge() couldn't select an edge?");
+            return false;
+        }
+        // edge := first edge with adjacent (different|none) country
+
+        do {
+            shapePath.push(hexagon.getVertexCoords(edge));
+            visitedEdges[edge] = true;
+            edge = (edge + 1) % 6;
+        } while (!visitedEdges[edge] && (neighbor[edge] === null || neighbor[edge].country !== hexagon.country));
+
+        if (edge === startAtEdge) {
+            return false;
+        }
+
+        return [neighbor[edge], [4, 5, 0, 1, 2, 3][edge]];
+    };
+
     //==============================================================
 
     api.countries = [];
