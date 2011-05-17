@@ -199,12 +199,12 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
     };
 
     Country.prototype.assignHexagon = function(hexagon) {
-        if (hexagon && _.indexOf(this.hexagons, hexagon) < 0) {
-            this.hexagons.push(hexagon);
+        if (hexagon && hexagon.country != this) {
             if (hexagon.country !== null) {
                 hexagon.country.unassignHexagon(hexagon);
             }
             hexagon.country = this;
+            this.hexagons.push(hexagon);
         }
         return this;
     };
@@ -282,6 +282,33 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
         });
     };
 
+    Country.prototype.firstShapeHexagon = function() {
+        var i, hexagon;
+        for (i = 0; i < this.hexagons.length; i++) {
+            hexagon = this.hexagons[i];
+            if (hexagon.neighbor.north === null ||
+                hexagon.neighbor.north.country === null ||
+                hexagon.neighbor.north.country !== this ||
+                hexagon.neighbor.south === null ||
+                hexagon.neighbor.south.country === null ||
+                hexagon.neighbor.south.country !== this ||
+                hexagon.neighbor.northWest === null ||
+                hexagon.neighbor.northWest.country === null ||
+                hexagon.neighbor.northWest.country !== this ||
+                hexagon.neighbor.southWest === null ||
+                hexagon.neighbor.southWest.country === null ||
+                hexagon.neighbor.southWest.country !== this ||
+                hexagon.neighbor.northEast === null ||
+                hexagon.neighbor.northEast.country === null ||
+                hexagon.neighbor.northEast.country !== this ||
+                hexagon.neighbor.southEast === null ||
+                hexagon.neighbor.southEast.country === null ||
+                hexagon.neighbor.southEast.country !== this) {
+                return hexagon;
+            }
+        }
+    };
+
     Country.prototype.nextShapeHexagonEdge = function(hexagon, startAtEdge) {
         //
         //       _1_
@@ -354,7 +381,7 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
     };
 
     Country.prototype.createShapePath = function() {
-        var next = this.nextShapeHexagonEdge(this.shapeHexagons()[0]);
+        var next = this.nextShapeHexagonEdge(this.firstShapeHexagon());
         while (!!next) {
             next = this.nextShapeHexagonEdge(next.hexagon, next.edge);
         }
