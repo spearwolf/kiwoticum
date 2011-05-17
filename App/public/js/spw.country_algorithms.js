@@ -87,7 +87,7 @@ jQuery(function($) {
                 inputs: [
                     { type: 'title', text: 'General Definition' },
                     { type: 'number', name: 'createCountryThreshold', value: 25, min: 1, max: 100, size: 5, label: 'create-country-threshold' },
-                    { type: 'number', name: 'growIterations', value: 100, min: 1, max: 1000, size: 5, label: 'grow-iterations' }
+                    { type: 'number', name: 'growIterations', value: 25, min: 1, max: 1000, size: 5, label: 'grow-iterations' }
                 ]
             },
             builder_options: {
@@ -152,8 +152,15 @@ jQuery(function($) {
                 createCountries: spw_CreateCountries,
 
                 drawAll: function(builder, options) {
+                    
                     builder.drawGroundHexagons(function(hexagon) {
-                        return hexagon.country !== null;
+                        return hexagon.country === null;
+                    });
+
+                    _.each(builder.countries, function(country) {
+                        var countrySvgPath = builder.paper.path(builder.createSvgPath(country.createShapePath()));
+                        countrySvgPath.attr("fill", country.data.color);
+                        countrySvgPath.attr("stroke", "#000000");
                     });
                 }
             }
@@ -162,64 +169,6 @@ jQuery(function($) {
     // }}}
 
 /*
-    function findBorderPath(hexagon, startAtIndex) {
-        //
-        //        _1
-        //     2/   \ 0
-        //     3\___/5
-        //        4
-        //
-        if (typeof hexagon.data.visitedEdges !== 'object') {
-            hexagon.data.visitedEdges = [false, false, false, false, false, false];
-        }
-        if (typeof hexagon.country.data.path !== 'object') {
-            hexagon.country.data.path = [];
-        }
-
-        var neighbor = [hexagon.neighbor.northEast, hexagon.neighbor.north, hexagon.neighbor.northWest,
-                            hexagon.neighbor.southWest, hexagon.neighbor.south, hexagon.neighbor.southEast];
-
-        var i, j;
-        for (j = 0; j < 6; ++j) {
-            i = (startAtIndex + j) % 6;
-            if (hexagon.data.visitedEdges[i]) {
-                return false;
-            }
-            hexagon.data.visitedEdges[i] = true;
-            if (neighbor[i] === null || neighbor[i].country !== hexagon.country) {
-                break;
-            }
-        }
-        if (j === 6) {
-            hexagon.setColor("#ff0000");
-            console.error("EX findBorderPath(", hexagon, ") couldn't find an edge?");
-            return false;
-        }
-
-        hexagon.country.data.path.push(hexagon.getVertexCoords(i));
-        i = (i+1) % 6;
-        
-        while (!hexagon.data.visitedEdges[i] &&
-                (neighbor[i] === null || neighbor[i].country !== hexagon.country)) {
-            hexagon.country.data.path.push(hexagon.getVertexCoords(i));
-            i = (i+1) % 6;
-        }
-
-        hexagon.setColor("#00ff00");
-
-        var nextEdge;
-        switch (i) {
-            case 0: nextEdge = 4; break;
-            case 1: nextEdge = 5; break;
-            case 2: nextEdge = 0; break;
-            case 3: nextEdge = 1; break;
-            case 4: nextEdge = 2; break;
-            default: nextEdge = 3;
-        }
-        return [neighbor[i], nextEdge];
-    }
-*/
-
     Cevent.on("kiwoticum/battlefield/hexagon/click", function(hexagon) {  // {{{
         try {
             var country = hexagon.country;
@@ -250,5 +199,6 @@ jQuery(function($) {
         }
     });
     // }}}
+*/
 
 });

@@ -347,11 +347,18 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
             return false;
         }
 
-        //return [neighbor[edge], [4, 5, 0, 1, 2, 3][edge]];
         return { 
             hexagon: neighbor[edge], 
             edge: [4, 5, 0, 1, 2, 3][edge]
         };
+    };
+
+    Country.prototype.createShapePath = function() {
+        var next = this.nextShapeHexagonEdge(this.shapeHexagons()[0]);
+        while (!!next) {
+            next = this.nextShapeHexagonEdge(next.hexagon, next.edge);
+        }
+        return this.data.shapePath;
     };
 
     //==============================================================
