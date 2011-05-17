@@ -232,11 +232,11 @@ jQuery(function($) {
                 hex.setColor("#ffff00");
             });
 
-            console.log("start", shapeHexagons[0]);
-            var next = country.nextShapeHexagonEdge(shapeHexagons[0], 0);
+            //console.log("start", shapeHexagons[0]);
+            var next = country.nextShapeHexagonEdge(shapeHexagons[0]);
             while (!!next) {
-                console.log("next", next[0], 'Edge: ', next[1]);
-                next = country.nextShapeHexagonEdge(next[0], next[1]);
+                //console.log("next", next.hexagon, 'Edge: ', next.edge);
+                next = country.nextShapeHexagonEdge(next.hexagon, next.edge);
             }
 
             var countrySvgPath = hexagon.builder.paper.path(hexagon.builder.createSvgPath(country.data.shapePath));

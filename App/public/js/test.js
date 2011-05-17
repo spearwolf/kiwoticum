@@ -317,10 +317,9 @@ QUnitTests.init = function () {
 
         function assertNext(next, hexCoords, edge, of) {
             strictEqual(typeof next, 'object', 'typeof next('+of+')');
-            strictEqual(next.length, 2, 'next('+of+').length');
-            strictEqual(next[0].x, hexCoords[0], 'next('+of+')->hexagon->x');
-            strictEqual(next[0].y, hexCoords[1], 'next('+of+')->hexagon->y');
-            strictEqual(next[1], edge, 'next('+of+')->edge');
+            strictEqual(next.hexagon.x, hexCoords[0], 'next('+of+')->hexagon->x');
+            strictEqual(next.hexagon.y, hexCoords[1], 'next('+of+')->hexagon->y');
+            strictEqual(next.edge, edge, 'next('+of+')->edge');
         }
 
         var builder = kiwoticum.CreateCountryMapBuilder("country-map-canvas", cmbOptions);
@@ -379,10 +378,10 @@ QUnitTests.init = function () {
         next = countryB.nextShapeHexagonEdge(hexagon);
         assertNext(next, [4, 2], 3, 'B1');
 
-        next = countryB.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryB.nextShapeHexagonEdge(next.hexagon, next.edge);
         assertNext(next, [3, 1], 0, 'B2');
 
-        next = countryB.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryB.nextShapeHexagonEdge(next.hexagon, next.edge);
         strictEqual(next, false, 'next');
 
         // D
@@ -390,40 +389,40 @@ QUnitTests.init = function () {
         next = countryD.nextShapeHexagonEdge(hexagon);
         assertNext(next, [2, 4], 0, 'D1');
 
-        next = countryD.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryD.nextShapeHexagonEdge(next.hexagon, next.edge);
         assertNext(next, [1, 4], 1, 'D2');
 
-        next = countryD.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryD.nextShapeHexagonEdge(next.hexagon, next.edge);
         assertNext(next, [0, 5], 1, 'D3');
 
-        next = countryD.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryD.nextShapeHexagonEdge(next.hexagon, next.edge);
         assertNext(next, [0, 6], 2, 'D4');
 
-        next = countryD.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryD.nextShapeHexagonEdge(next.hexagon, next.edge);
         assertNext(next, [0, 7], 2, 'D5');
 
-        next = countryD.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryD.nextShapeHexagonEdge(next.hexagon, next.edge);
         assertNext(next, [1, 6], 4, 'D6');
 
-        next = countryD.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryD.nextShapeHexagonEdge(next.hexagon, next.edge);
         assertNext(next, [2, 6], 4, 'D7');
 
-        next = countryD.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryD.nextShapeHexagonEdge(next.hexagon, next.edge);
         assertNext(next, [3, 6], 3, 'D8');
 
-        next = countryD.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryD.nextShapeHexagonEdge(next.hexagon, next.edge);
         assertNext(next, [4, 6], 4, 'D9');
 
-        next = countryD.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryD.nextShapeHexagonEdge(next.hexagon, next.edge);
         assertNext(next, [4, 5], 5, 'D10');
 
-        next = countryD.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryD.nextShapeHexagonEdge(next.hexagon, next.edge);
         assertNext(next, [4, 4], 5, 'D11');
 
-        next = countryD.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryD.nextShapeHexagonEdge(next.hexagon, next.edge);
         assertNext(next, [3, 4], 1, 'D12');
 
-        next = countryD.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryD.nextShapeHexagonEdge(next.hexagon, next.edge);
         strictEqual(next, false, 'next after D12');
 
         strictEqual(typeof builder.getHexagon([2, 5]).data.visitedEdges, 'undefined');
@@ -435,34 +434,34 @@ QUnitTests.init = function () {
         next = countryE.nextShapeHexagonEdge(hexagon);
         assertNext(next, [5, 4], 5, 'E1');
 
-        next = countryE.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryE.nextShapeHexagonEdge(next.hexagon, next.edge);
         assertNext(next, [5, 5], 2, 'E2');
 
-        next = countryE.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryE.nextShapeHexagonEdge(next.hexagon, next.edge);
         assertNext(next, [5, 6], 2, 'E1');
 
-        next = countryE.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryE.nextShapeHexagonEdge(next.hexagon, next.edge);
         assertNext(next, [4, 7], 1, 'E3');
 
-        next = countryE.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryE.nextShapeHexagonEdge(next.hexagon, next.edge);
         assertNext(next, [5, 6], 4, 'E4');
 
-        next = countryE.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryE.nextShapeHexagonEdge(next.hexagon, next.edge);
         assertNext(next, [6, 7], 3, 'E3');
 
-        next = countryE.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryE.nextShapeHexagonEdge(next.hexagon, next.edge);
         assertNext(next, [7, 6], 4, 'E5');
 
-        next = countryE.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryE.nextShapeHexagonEdge(next.hexagon, next.edge);
         assertNext(next, [6, 7], 1, 'E6');
 
-        next = countryE.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryE.nextShapeHexagonEdge(next.hexagon, next.edge);
         assertNext(next, [5, 6], 0, 'E5');
 
-        next = countryE.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryE.nextShapeHexagonEdge(next.hexagon, next.edge);
         assertNext(next, [5, 5], 5, 'E3');
 
-        next = countryE.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryE.nextShapeHexagonEdge(next.hexagon, next.edge);
         strictEqual(next, false, 'after E3');
 
         // F
@@ -470,7 +469,7 @@ QUnitTests.init = function () {
         next = countryF.nextShapeHexagonEdge(hexagon);
         assertNext(next, [2, 3], 4, 'F1');
 
-        next = countryF.nextShapeHexagonEdge(next[0], next[1]);
+        next = countryF.nextShapeHexagonEdge(next.hexagon, next.edge);
         assertNext(next, [1, 2], 0, 'F2');
     });
     // }}}

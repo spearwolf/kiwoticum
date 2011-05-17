@@ -333,7 +333,6 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
             }
         }
         if (i === 6) {
-            console.error("Error: Country.nextShapeHexagonEdge() couldn't select an edge?");
             return false;
         }
         // edge := first edge with adjacent (different|none) country
@@ -348,7 +347,11 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
             return false;
         }
 
-        return [neighbor[edge], [4, 5, 0, 1, 2, 3][edge]];
+        //return [neighbor[edge], [4, 5, 0, 1, 2, 3][edge]];
+        return { 
+            hexagon: neighbor[edge], 
+            edge: [4, 5, 0, 1, 2, 3][edge]
+        };
     };
 
     //==============================================================
