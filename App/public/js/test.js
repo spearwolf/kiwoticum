@@ -331,11 +331,11 @@ QUnitTests.init = function () {
         //  1 /  \__/  \__/  \__/  \__/  \__/
         //    \__/A \__/B \__/  \__/  \__/  \
         //  2 /  \__/  \_1/B \__/  \__/  \__/
-        //    \__/  \__/  \_2/  \__/  \__/  \
-        //  3 /  \__/  \__/  \__/  \__/  \__/
-        //    \__/  \__/  \__/  \__/  \__/  \
-        //  4 /  \__/D \__/D \__/  \__/  \__/
-        //    \__/D \_2/D \12/E \__/  \__/  \
+        //    \__/F \__/  \_2/  \__/  \__/  \
+        //  3 /F \_3/F \__/  \__/  \__/  \__/
+        //    \_4/F \_2/  \__/  \__/  \__/  \
+        //  4 /F \_1/D \__/D \__/  \__/  \__/
+        //    \_5/D \_2/D \12/E \__/  \__/  \
         //  5 /D \_3/d \_1/D \_2/  \__/  \__/
         //    \_4/d \__/d \11/E \__/  \__/  \
         //  6 /D \__/D \__/D \_1/  \__/  \__/
@@ -356,11 +356,12 @@ QUnitTests.init = function () {
                                                                 [0, 6], [3, 4], [4, 4],
                                                                 [0, 7], [1, 6], [1, 4], [1, 5], [3, 5], [4, 5],
                                                                 [0, 5], [2, 5], [4, 6] ]),
-            countryE = builder.createCountry().assignHexagons([[5, 4], [5, 5], [5, 6], [4, 7], [6, 7], [7, 6]]);
+            countryE = builder.createCountry().assignHexagons([[5, 4], [5, 5], [5, 6], [4, 7], [6, 7], [7, 6]]),
+            countryF = builder.createCountry().assignHexagons([[0, 3], [1, 2], [2, 3], [0, 4], [1, 3]]);
 
         // A
         var hexagon = builder.getHexagon([1, 1]),
-            next = countryA.nextShapeHexagonEdge(hexagon, 0);
+            next = countryA.nextShapeHexagonEdge(hexagon);
 
         strictEqual(next, false, 'next');
 
@@ -375,7 +376,7 @@ QUnitTests.init = function () {
 
         // B
         hexagon = builder.getHexagon([3, 1]);
-        next = countryB.nextShapeHexagonEdge(hexagon, 0);
+        next = countryB.nextShapeHexagonEdge(hexagon);
         assertNext(next, [4, 2], 3, 'B1');
 
         next = countryB.nextShapeHexagonEdge(next[0], next[1]);
@@ -386,7 +387,7 @@ QUnitTests.init = function () {
 
         // D
         hexagon = builder.getHexagon([3, 4]);
-        next = countryD.nextShapeHexagonEdge(hexagon, 0);
+        next = countryD.nextShapeHexagonEdge(hexagon);
         assertNext(next, [2, 4], 0, 'D1');
 
         next = countryD.nextShapeHexagonEdge(next[0], next[1]);
@@ -431,7 +432,7 @@ QUnitTests.init = function () {
 
         // E
         hexagon = builder.getHexagon([5, 5]);
-        next = countryE.nextShapeHexagonEdge(hexagon, 0);
+        next = countryE.nextShapeHexagonEdge(hexagon);
         assertNext(next, [5, 4], 5, 'E1');
 
         next = countryE.nextShapeHexagonEdge(next[0], next[1]);
@@ -463,6 +464,14 @@ QUnitTests.init = function () {
 
         next = countryE.nextShapeHexagonEdge(next[0], next[1]);
         strictEqual(next, false, 'after E3');
+
+        // F
+        hexagon = builder.getHexagon([1, 3]);
+        next = countryF.nextShapeHexagonEdge(hexagon);
+        assertNext(next, [2, 3], 4, 'F1');
+
+        next = countryF.nextShapeHexagonEdge(next[0], next[1]);
+        assertNext(next, [1, 2], 0, 'F2');
     });
     // }}}
 

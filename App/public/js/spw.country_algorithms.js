@@ -161,6 +161,7 @@ jQuery(function($) {
     });
     // }}}
 
+/*
     function findBorderPath(hexagon, startAtIndex) {
         //
         //        _1
@@ -217,6 +218,7 @@ jQuery(function($) {
         }
         return [neighbor[i], nextEdge];
     }
+*/
 
     Cevent.on("kiwoticum/battlefield/hexagon/click", function(hexagon) {  // {{{
         try {
@@ -230,15 +232,14 @@ jQuery(function($) {
                 hex.setColor("#ffff00");
             });
 
-            var next = findBorderPath(shapeHexagons[0], 0);
+            console.log("start", shapeHexagons[0]);
+            var next = country.nextShapeHexagonEdge(shapeHexagons[0], 0);
             while (!!next) {
-                //console.log(next);
-                next = findBorderPath(next[0], next[1]);
+                console.log("next", next[0], 'Edge: ', next[1]);
+                next = country.nextShapeHexagonEdge(next[0], next[1]);
             }
-            //console.log(next);
-            //console.log("country.path", country.data.path);
 
-            var countrySvgPath = hexagon.builder.paper.path(hexagon.builder.createSvgPath(country.data.path));
+            var countrySvgPath = hexagon.builder.paper.path(hexagon.builder.createSvgPath(country.data.shapePath));
             countrySvgPath.attr("fill", country.data.color);
             countrySvgPath.attr("stroke", "#000000");
             //countrySvgPath.attr("stroke-width", "1");
