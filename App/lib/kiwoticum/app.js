@@ -54,8 +54,9 @@
                         cssClass: 'cmb-general',
                         inputs: [
                             { type: 'title', text: 'Hexagon Definition' },
-                            { type: 'number', name: 'hexagonWidth', value: 16, min: 5, max: 99, label: 'pixel-width' },
-                            { type: 'number', name: 'hexagonHeight', value: 16, min: 5, max: 99, label: 'pixel-height' },
+                            { type: 'number', name: 'hexagonWidth', value: 18, min: 5, max: 99, label: 'pixel-width' },
+                            { type: 'number', name: 'hexagonHeight', value: 18, min: 5, max: 99, label: 'pixel-height' },
+                            { type: 'number', name: 'hexagonInlineOffset', value: 4, min: 0, max: 99, label: 'inline-offset' },
                             { type: 'br' },
                             { type: 'number', name: 'paddingX', value: 0, min: 0, max: 99, label: 'padding-x' },
                             { type: 'number', name: 'paddingY', value: 0, min: 0, max: 99, label: 'padding-y' },

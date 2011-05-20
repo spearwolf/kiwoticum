@@ -30,8 +30,15 @@ kiwoticum.SvgRenderer = function(canvasContainer, builder) {
     api.drawCountry = function(country) {
         var countrySvgPath = paper.path(createSvgPath(country.createShapePath()));
         countrySvgPath.attr("fill", country.data.color);
+        countrySvgPath.attr("stroke-width", "1");
         countrySvgPath.attr("stroke", "#000000");
-        countrySvgPath.click(emitObj("kiwoticum/battlefield/country/click", country));
+
+        var inlineSvgPath = paper.path(createSvgPath(country.data.inlineShapePath));
+        inlineSvgPath.attr("fill", "rgba(0, 0, 0, 0.4)");
+        inlineSvgPath.attr("stroke-width", "0");
+
+        inlineSvgPath.click(emitObj("kiwoticum/battlefield/country/click", country));
+
     };
 
     return api;

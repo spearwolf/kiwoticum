@@ -5,7 +5,7 @@ jQuery(function($) {
         var width= builder.getWidth(), height= builder.getHeight(),
             COUNTRY_COLORS = [
                 "#cdada7",
-                "#140f0f",
+                "#241f1f",
                 "#9e6249", 
                 "#b6915f", 
                 "#5d4643", 

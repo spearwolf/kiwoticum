@@ -21,17 +21,24 @@ kiwoticum.CountryMapBuilder = function(container, options) {
     api.getWidth = function() { return conf.width; };
     api.getHeight = function() { return conf.height; };
 
-    api.createHexagonCoords = function(width, height) {
+    api.createHexagonCoords = function(width, height, inlineOffset) {
+        inlineOffset = inlineOffset !== undefined ? inlineOffset : 0;
+
         var mx = width/2.0, my = height/2.0,
-            lx = mx - 1, ly = my - 1;
+            lx = mx - inlineOffset - 1, ly = my - inlineOffset - 1;
 
         return _.map([0, 1, 2, 3, 4, 5], function(n) {
             var r = (n*(360/6) + conf.startAtAngle) * (Math.PI / 180.0);
-            return [Math.round(Math.sin(r) * lx + mx), Math.round(Math.cos(r) * ly + my)];
+            if (inlineOffset === 0) {
+                return [Math.round(Math.sin(r) * lx + mx), Math.round(Math.cos(r) * ly + my)];
+            } else {
+                return [Math.sin(r) * lx + mx, Math.cos(r) * ly + my];
+            }
         });
     };
 
     var baseHexCoords = api.baseHexCoords = api.createHexagonCoords(conf.hexagonWidth, conf.hexagonHeight),
+        inlineHexCoords = api.createHexagonCoords(conf.hexagonWidth, conf.hexagonHeight, conf.hexagonInlineOffset),
         stepX = baseHexCoords[5][0] - baseHexCoords[3][0],
         stepY = baseHexCoords[5][1] - baseHexCoords[1][1],
         stepY1 = baseHexCoords[0][1] - baseHexCoords[1][1],
@@ -59,6 +66,9 @@ kiwoticum.CountryMapBuilder = function(container, options) {
             left: positionLeft,
             getVertexCoords: function(i) {
                 return [baseHexCoords[i][0] + this.left, baseHexCoords[i][1] + this.top];
+            },
+            getInlineVertexCoords: function(i) {
+                return [inlineHexCoords[i][0] + this.left, inlineHexCoords[i][1] + this.top];
             },
             elem: null,
             country: null,
@@ -313,11 +323,13 @@ kiwoticum.CountryMapBuilder = function(container, options) {
         }
         var visitedEdges = hexagon.data.visitedEdges;
 
-        // country->shapePath
+        // country->shapePath & inlineShapePath
         if (typeof hexagon.country.data.shapePath !== 'object') {
             hexagon.country.data.shapePath = [];
+            hexagon.country.data.inlineShapePath = [];
         }
-        var shapePath = hexagon.country.data.shapePath;
+        var shapePath = hexagon.country.data.shapePath,
+            inlineShapePath = hexagon.country.data.inlineShapePath;
 
         var edge;
         for (i = 0; i < 6; ++i) {
@@ -339,6 +351,7 @@ kiwoticum.CountryMapBuilder = function(container, options) {
 
         do {
             shapePath.push(hexagon.getVertexCoords(edge));
+            inlineShapePath.push(hexagon.getInlineVertexCoords(edge));
             visitedEdges[edge] = true;
             edge = (edge + 1) % 6;
         } while (!visitedEdges[edge] && (neighbor[edge] === null || neighbor[edge].country !== hexagon.country));
