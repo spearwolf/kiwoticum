@@ -40,10 +40,10 @@ QUnitTests.init = function () {
     }
     // }}}
 
-    test("CreateCountryMapBuilder()", 14, function () {  // {{{
+    test("CountryMapBuilder()", 14, function () {  // {{{
 
-        var builder = kiwoticum.CreateCountryMapBuilder("country-map-canvas", cmbOptions);
-        ok(typeof builder === 'object', 'kiwoticum.CreateCountryMapBuilder() should return an object');
+        var builder = kiwoticum.CountryMapBuilder("country-map-canvas", cmbOptions);
+        ok(typeof builder === 'object', 'kiwoticum.CountryMapBuilder() should return an object');
 
         var hexagon;
         hexagon = builder.getHexagon([0, 0]);
@@ -73,7 +73,7 @@ QUnitTests.init = function () {
 
     test("Hexagon Neighbors", function () {  // {{{
 
-        var builder = kiwoticum.CreateCountryMapBuilder("country-map-canvas", cmbOptions);
+        var builder = kiwoticum.CountryMapBuilder("country-map-canvas", cmbOptions);
 
         //     __    __    __    __    __
         //    /0 \__/2 \__/  \__/  \__/8 \__
@@ -163,7 +163,7 @@ QUnitTests.init = function () {
 
     test("Country#uniqueCountryLessNeighborHexagons", function () {  // {{{
 
-        var builder = kiwoticum.CreateCountryMapBuilder("country-map-canvas", cmbOptions);
+        var builder = kiwoticum.CountryMapBuilder("country-map-canvas", cmbOptions);
 
         //     0_ 1  2_ 3  4_ 5  6_ 7  8_ 9
         //  0 /  \__/  \__/  \__/  \__/c \__
@@ -239,7 +239,7 @@ QUnitTests.init = function () {
 
     test("Country#shapeHexagons", function () {  // {{{
 
-        var builder = kiwoticum.CreateCountryMapBuilder("country-map-canvas", cmbOptions);
+        var builder = kiwoticum.CountryMapBuilder("country-map-canvas", cmbOptions);
 
         //     0_ 1  2_ 3  4_ 5  6_ 7  8_ 9
         //  0 /  \__/  \__/  \__/  \__/  \__
@@ -322,7 +322,7 @@ QUnitTests.init = function () {
             strictEqual(next.edge, edge, 'next('+of+')->edge');
         }
 
-        var builder = kiwoticum.CreateCountryMapBuilder("country-map-canvas", cmbOptions);
+        var builder = kiwoticum.CountryMapBuilder("country-map-canvas", cmbOptions);
 
         //     0_ 1  2_ 3  4_ 5  6_ 7  8_ 9
         //  0 /  \__/  \__/  \__/  \__/  \__

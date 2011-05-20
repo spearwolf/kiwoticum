@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-
 require "yui/compressor"
 
 ROOT = File.absolute_path(File.join(File.dirname(__FILE__), '..'))
@@ -28,7 +27,7 @@ class BuildJsLib
   class << self
 
     def compress(base_js, target_js)
-      puts new(base_js).compress
+      File.open(target_js, "w") {|f| f.write(new(base_js).compress) }
     end
   end
 
@@ -42,4 +41,5 @@ class BuildJsLib
 
 end
 
-BuildJsLib.compress("#{ROOT}/lib/kiwoticum.js", "#{ROOT}/kiwo.js")
+BuildJsLib.compress("#{ROOT}/lib/kiwoticum.js", "#{ROOT}/public/js/kiwoticum-min.js")
+

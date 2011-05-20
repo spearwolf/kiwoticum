@@ -92,14 +92,14 @@ jQuery(function($) {
             },
             builder_options: {
 
-                hexagonExtension: {
-                    setColor: function(color) {
-                        this.data.color = color;
-                        if (this.elem) {
-                            this.elem.attr("fill", color);
-                        }
-                    }
-                },
+                //hexagonExtension: {
+                    //setColor: function(color) {
+                        //this.data.color = color;
+                        //if (this.elem) {
+                            //this.elem.attr("fill", color);
+                        //}
+                    //}
+                //},
 
                 countryExtension: {
 
@@ -107,7 +107,6 @@ jQuery(function($) {
                         this.data.color = color;
                     },
 
-                    // TODO refactoring -- optimize for performance -- use hexagon.neighbor.sameCountryCount
                     randomCountryLessNeighborHexagon: function() {
                         var neighbors = this.nonUniqueCountryLessNeighborHexagons();
 
@@ -115,9 +114,7 @@ jQuery(function($) {
                             return null;
                         }
 
-                        var countryNeighborCount,
-                            hexagon,
-                            prioNeighbors = [];
+                        var countryNeighborCount, hexagon, prioNeighbors = [];
 
                         for (var i = 0; i < neighbors.length; i++) {
                             hexagon = neighbors[i];
@@ -153,9 +150,9 @@ jQuery(function($) {
 
                 drawAll: function(builder, options) {
                     
-                    builder.drawGroundHexagons(function(hexagon) {
-                        return hexagon.country === null;
-                    });
+                    //builder.drawGroundHexagons(function(hexagon) {
+                        //return hexagon.country === null;
+                    //});
 
                     _.each(builder.countries, function(country) {
                         builder.renderer.drawCountry(country);
