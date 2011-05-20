@@ -7,6 +7,8 @@
 # Automatic image dimension calculations
 # activate :automatic_image_sizes
 
+#activate :minify_javascript
+
 # Per-page layout changes
 # With no layout
 # page "/path/to/file.html", :layout => false
