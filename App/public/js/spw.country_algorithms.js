@@ -158,9 +158,7 @@ jQuery(function($) {
                     });
 
                     _.each(builder.countries, function(country) {
-                        var countrySvgPath = builder.paper.path(builder.createSvgPath(country.createShapePath()));
-                        countrySvgPath.attr("fill", country.data.color);
-                        countrySvgPath.attr("stroke", "#000000");
+                        builder.renderer.drawCountry(country);
                     });
                 }
             }
@@ -200,5 +198,4 @@ jQuery(function($) {
     });
     // }}}
 */
-
 });

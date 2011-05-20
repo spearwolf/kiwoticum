@@ -2,7 +2,7 @@ window.kiwoticum = window.kiwoticum || {};
 
 kiwoticum.CreateCountryMapBuilder = function(container, options) {
 
-    var conf = _.extend({
+    var api = {}, conf = api.config = _.extend({
             width: 10,
             height: 10,
             hexagonWidth: 20,
@@ -18,8 +18,7 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
             hexagonExtension: null,
             countryExtension: null,
             createCountries: null
-        }, options),
-        api = {};
+        }, options);
 
     api.getWidth = function() { return conf.width; };
     api.getHeight = function() { return conf.height; };
@@ -34,13 +33,7 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
         });
     };
 
-    function createSvgPath(coords) {
-        return _.reduce(coords, function(path, v) {
-            return path + (path === "" ? "M" : " L") + (Math.round(v[0]*100)/100) + " " + (Math.round(v[1]*100)/100);
-        }, "") + " z";
-    }
-
-    var baseHexCoords = api.createHexagonCoords(conf.hexagonWidth, conf.hexagonHeight),
+    var baseHexCoords = api.baseHexCoords = api.createHexagonCoords(conf.hexagonWidth, conf.hexagonHeight),
         stepX = baseHexCoords[5][0] - baseHexCoords[3][0],
         stepY = baseHexCoords[5][1] - baseHexCoords[1][1],
         stepY1 = baseHexCoords[0][1] - baseHexCoords[1][1],
@@ -49,12 +42,6 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
 
     api.getCanvasWidth = function() { return canvasWidth; };
     api.getCanvasHeight = function() { return canvasHeight; };
-
-    var paper = Raphael(container, canvasWidth, canvasHeight);
-
-    // TODO move all raphael/svg stuff into own Renderer module
-    api.createSvgPath = createSvgPath;
-    api.paper = paper;
 
     function extendObject(obj, extension) {
         if (typeof extension === 'object') {
@@ -145,20 +132,12 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
     };
 
     api.drawGroundHexagons = function(showHexagonFn) {
-        var baseHexPath = createSvgPath(baseHexCoords),
-            y, x, hexagon,
-            evenX, evenY, fillColor,
-            showHexagon;
-
-        function forwardOnClick(hexagon_) {
-            return function() { Cevent.emit("kiwoticum/battlefield/hexagon/click", hexagon_); };
-        }
+        var y, x, hexagon, evenX, evenY, fillColor, showHexagon; 
 
         for (y = 0; y < conf.height; y++) {
             for (x = 0; x < conf.width; x++) {
                 hexagon = api.getHexagon([x, y]);
                 if (!_.isFunction(showHexagonFn) || showHexagonFn(hexagon)) {
-                    hexagon.elem = paper.path(baseHexPath);
 
                     if (_.isUndefined(hexagon.data.color) && hexagon.country === null) {
                         evenX = (Math.floor(x / conf.gridWidth) % 2) === 1;
@@ -167,11 +146,7 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
                     } else {
                         fillColor = hexagon.country !== null ? hexagon.country.data.color : hexagon.data.color;
                     }
-                    hexagon.elem.attr("fill", fillColor);
-                    hexagon.elem.attr("stroke", conf.hexagonStroke);
-
-                    hexagon.elem.translate(hexagon.left, hexagon.top);
-                    hexagon.elem.click(forwardOnClick(hexagon));
+                    hexagon.elem = api.renderer.drawHexagon(hexagon, fillColor);
                 }
             }
         }
@@ -423,6 +398,8 @@ kiwoticum.CreateCountryMapBuilder = function(container, options) {
     };
 
     // =============================================================
+
+    api.renderer = kiwoticum.SvgRenderer(container, api);
 
     return api;
 };
