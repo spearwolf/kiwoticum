@@ -349,6 +349,7 @@ kiwoticum.CountryMapBuilder = function(container, options) {
         }
         // edge := first edge with adjacent (different|none) country
 
+        var prevEdge = edge;
         do {
             shapePath.push(hexagon.getVertexCoords(edge));
             inlineShapePath.push(hexagon.getInlineVertexCoords(edge));
@@ -358,6 +359,10 @@ kiwoticum.CountryMapBuilder = function(container, options) {
 
         if (edge === startAtEdge || visitedEdges[edge]) {
             return false;
+        }
+
+        if (prevEdge !== edge) {
+            inlineShapePath.push(hexagon.getInlineVertexCoords(edge));
         }
 
         return { 
