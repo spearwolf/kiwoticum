@@ -57,6 +57,7 @@
                             { type: 'number', name: 'hexagonWidth', value: 18, min: 5, max: 99, label: 'pixel-width' },
                             { type: 'number', name: 'hexagonHeight', value: 18, min: 5, max: 99, label: 'pixel-height' },
                             { type: 'number', name: 'hexagonInlineOffset', value: 4, min: 0, max: 99, label: 'inline-offset' },
+                            { type: 'number', name: 'hexagonInlineOffset2', value: 0.5, min: 0.01, max: 1.0, label: 'inline-offset-2' },
                             { type: 'br' },
                             { type: 'number', name: 'paddingX', value: 0, min: 0, max: 99, label: 'padding-x' },
                             { type: 'number', name: 'paddingY', value: 0, min: 0, max: 99, label: 'padding-y' },

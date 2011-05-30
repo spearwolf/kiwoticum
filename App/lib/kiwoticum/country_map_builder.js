@@ -8,6 +8,8 @@ kiwoticum.CountryMapBuilder = function(container, options) {
             startAtAngle: 90,
             paddingX: 4,
             paddingY: 4,
+            hexagonInlineOffset: undefined,
+            hexagonInlineOffset2: 0.5,
             hexagonFill: '#79b',
             hexagonFill2: '#68a',
             hexagonStroke: '#024',
@@ -328,10 +330,11 @@ kiwoticum.CountryMapBuilder = function(container, options) {
             hexagon.country.data.shapePath = [];
             hexagon.country.data.inlineShapePath = [];
         }
-        var shapePath = hexagon.country.data.shapePath,
-            inlineShapePath = hexagon.country.data.inlineShapePath;
 
-        var edge;
+        var shapePath = hexagon.country.data.shapePath,
+            inlineShapePath = hexagon.country.data.inlineShapePath,
+            edge;
+
         for (i = 0; i < 6; ++i) {
             edge = (startAtEdge + i) % 6;
 
@@ -363,12 +366,19 @@ kiwoticum.CountryMapBuilder = function(container, options) {
 
         if (prevEdge !== edge) {
             inlineShapePath.push(hexagon.getInlineVertexCoords(edge));
+
+            var coords = [hexagon.getVertexCoords(edge), hexagon.getVertexCoords((edge + 1) % 6)];
+            coords[1] = [
+                (coords[1][0] - coords[0][0]) * 0.5,  // x
+                (coords[1][1] - coords[0][1]) * 0.5   // y
+            ];
+            inlineShapePath.push([
+                    coords[0][0] + coords[1][0],  // x
+                    coords[0][1] + coords[1][1]   // y
+            ]);
         }
 
-        return { 
-            hexagon: neighbor[edge], 
-            edge: [4, 5, 0, 1, 2, 3][edge]
-        };
+        return { hexagon: neighbor[edge], edge: [4, 5, 0, 1, 2, 3][edge] };
     };
 
     Country.prototype.createShapePath = function() {
