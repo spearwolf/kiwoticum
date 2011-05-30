@@ -47,8 +47,8 @@ jQuery(function($) {
             gridWidth = Math.round(width / options.gridWidth),
             gridHeight = Math.round(height / options.gridHeight);
 
-        for (y = 0; y < gridHeight; y++) {
-            for (x = 0; x < gridWidth; x++) {
+        for (y = 1; y < gridHeight - 1; y++) {
+            for (x = 1; x < gridWidth - 1; x++) {
 
                 if (skipCountryGeneration()) {
                     continue;
