@@ -26,10 +26,12 @@
         }
         // }}}
         function calculatePlaygroundLayout(moreInfo) {  // {{{
-            if (window.screen.availWidth <= 1024) {
-                $("#battlefield").css({ width: $(window).width(), height: $(window).height() });
-            }
+            //if (window.screen.availWidth <= 1024) {
+            $("#battlefield").css({ width: $(window).width(), height: $(window).height() });
+            //}
             $("#status-bar").html('<p class="info">' + $(window).width() + 'x' + $(window).height() + " " + moreInfo + "</p>");
+
+            setTimeout(function() { if (window.iScroll !== undefined) { window.iScroll.refresh(); } }, 0);
         }
         // }}}
 
@@ -117,6 +119,11 @@
             $("body").removeClass("loading").addClass("playing").bind("orientationchange", function(){
                 calculatePlaygroundLayout(moreInfo);
             });
+
+            function resizePlayground(extraInfo) {
+                return function() { calculatePlaygroundLayout(extraInfo); };
+            }
+            $(window).resize(resizePlayground(moreInfo));
 
             $("#scrollable-canvas").css({
                 width: kiwoticum.countryMapBuilder.getCanvasWidth()+100,
