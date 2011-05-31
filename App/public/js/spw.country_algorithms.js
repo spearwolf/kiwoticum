@@ -39,8 +39,14 @@ jQuery(function($) {
             return clampHexagonCoords(coords);
         }
 
-        function skipCountryGeneration() {
-            return (Math.random() * 100) < options.createCountryThreshold;
+        //function skipCountryGeneration() {
+            //return (Math.random() * 100) < options.createCountryThreshold;
+        //}
+
+        var noise = new SimplexNoise();
+
+        function skipCountryGeneration(x, y) {
+            return noise.noise(x / (options.gridWidth * 0.5), y / (options.gridHeight * 0.5)) < -0.3;
         }
 
         var x, y, point, hexagon, country,
@@ -50,7 +56,7 @@ jQuery(function($) {
         for (y = 1; y < gridHeight - 1; y++) {
             for (x = 1; x < gridWidth - 1; x++) {
 
-                if (skipCountryGeneration()) {
+                if (skipCountryGeneration(x, y)) {
                     continue;
                 }
 
@@ -86,7 +92,6 @@ jQuery(function($) {
                 cssClass: 'cmb-algorithm',
                 inputs: [
                     { type: 'title', text: 'General Definition' },
-                    { type: 'number', name: 'createCountryThreshold', value: 25, min: 1, max: 100, size: 5, label: 'create-country-threshold' },
                     { type: 'number', name: 'growIterations', value: 25, min: 1, max: 1000, size: 5, label: 'grow-iterations' }
                 ]
             },
