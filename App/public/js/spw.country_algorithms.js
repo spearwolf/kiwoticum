@@ -8,7 +8,7 @@ jQuery(function($) {
                 "#241f1f",
                 "#9e6249", 
                 "#b6915f", 
-                "#5d4643", 
+                "#6d5653", 
                 "#697297", 
                 "#c4c1be",
                 "#422927",
@@ -66,13 +66,16 @@ jQuery(function($) {
         }
 
         function growCountry(country) {
-            var hexagon = country.randomCountryLessNeighborHexagon();
-            if (hexagon) {
-                country.assignHexagon(hexagon);
+            if (typeof country.couldNotGrowAnymore === 'undefined') {
+                var hexagon = country.randomCountryLessNeighborHexagon();
+                if (hexagon) {
+                    country.assignHexagon(hexagon);
+                } else {
+                    country.couldNotGrowAnymore = true;
+                }
             }
         }
 
-        // TODO do not grow country which are not growable anymore after some iterations
         for (var i = 0; i < options.growIterations; i++) {
             _.each(builder.countries, growCountry);
         }
