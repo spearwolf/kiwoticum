@@ -65,6 +65,8 @@ jQuery(function($) {
             }
         }
 
+        // returns true if country is growable and has no neighbor countries
+        //   (..after assigning hexagon to it)
         function growCountry(country) {
             if (typeof country.couldNotGrowAnymore === 'undefined') {
                 var hexagon = country.randomCountryLessNeighborHexagon();
@@ -72,12 +74,22 @@ jQuery(function($) {
                     country.assignHexagon(hexagon);
                 } else {
                     country.couldNotGrowAnymore = true;
+                    return false;
                 }
             }
+            return country.neighbors.length === 0;
         }
 
         for (var i = 0; i < options.growIterations; i++) {
             _.each(builder.countries, growCountry);
+        }
+
+        var neighborLessCountries = _.select(builder.countries, function(country) {
+            return country.neighbors.length === 0;
+        });
+
+        while (neighborLessCountries.length) {
+            neighborLessCountries = _.select(neighborLessCountries, growCountry);
         }
 
         for (i = 0; i < builder.countries.length; i++) {

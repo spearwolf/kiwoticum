@@ -190,6 +190,13 @@ kiwoticum.CountryMapBuilder = function(container, options) {
             }
             hexagon.country = this;
             this.hexagons.push(hexagon);
+
+            if (hexagon.neighbor.north) { this.addNeighbor(hexagon.neighbor.north.country); }
+            if (hexagon.neighbor.south) { this.addNeighbor(hexagon.neighbor.south.country); }
+            if (hexagon.neighbor.northWest) { this.addNeighbor(hexagon.neighbor.northWest.country); }
+            if (hexagon.neighbor.southWest) { this.addNeighbor(hexagon.neighbor.southWest.country); }
+            if (hexagon.neighbor.northEast) { this.addNeighbor(hexagon.neighbor.northEast.country); }
+            if (hexagon.neighbor.southEast) { this.addNeighbor(hexagon.neighbor.southEast.country); }
         }
         return this;
     };
@@ -206,7 +213,7 @@ kiwoticum.CountryMapBuilder = function(container, options) {
     };
 
     Country.prototype.addNeighbor = function(country) {
-        if (country && _.indexOf(this.neighbors, country) < 0) {
+        if (country && country !== this && _.indexOf(this.neighbors, country) < 0) {
             this.neighbors.push(country);
         }
         return this;
