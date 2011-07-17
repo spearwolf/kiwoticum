@@ -129,6 +129,7 @@
                 width: kiwoticum.countryMapBuilder.getCanvasWidth()+100,
                 height: kiwoticum.countryMapBuilder.getCanvasHeight()+60
             });
+
             window.iScroller = new iScroll("battlefield", {
                 hScroll: true,
                 vScroll: true,
@@ -138,6 +139,10 @@
                 //vScrollbar: false
             }); 
             iScroller.scrollTo(50, 50, 200, true);
+
+            $("#reset-action").click(function() {
+                window.location.reload();
+            });
         });
         // }}}
 
