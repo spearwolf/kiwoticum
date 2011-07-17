@@ -98,7 +98,7 @@ jQuery(function($) {
     }
     // }}}
 
-    Cevent.on("kiwoticum/country_map_builder/register/algorithm", function() {  // {{{
+    _E.on("kiwoticum/country_map_builder/register/algorithm", function() {  // {{{
         return {
             name: "wolfger's country algorithm",
             form: {
@@ -184,7 +184,7 @@ jQuery(function($) {
     // }}}
 
 /*
-    Cevent.on("kiwoticum/battlefield/hexagon/click", function(hexagon) {  // {{{
+    _E.on("kiwoticum/battlefield/hexagon/click", function(hexagon) {  // {{{
         try {
             var country = hexagon.country;
             if (!country) { return; }

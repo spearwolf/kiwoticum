@@ -35,9 +35,9 @@
         }
         // }}}
 
-        Cevent.on("kiwoticum/country_map_builder/form", function() {  // {{{
+        _E.on("kiwoticum/country_map_builder/form", function() {  // {{{
 
-            Cevent.emit("kiwoticum/country_map_builder/register/algorithm", function() {
+            _E.emit("kiwoticum/country_map_builder/register/algorithm", function() {
 
                 var countryAlgorithms = _.select(arguments, function(algorithm) {
                     return (typeof algorithm === 'object') && _.isString(algorithm.name);
@@ -93,7 +93,7 @@
             });
         });
         // }}}
-        Cevent.on("kiwoticum/country_map_builder/start", function(builderOptions) {  // {{{
+        _E.on("kiwoticum/country_map_builder/start", function(builderOptions) {  // {{{
             toggleLoading();
             console.info("builderOptions", builderOptions);
 
@@ -103,11 +103,11 @@
                 kiwoticum.countryMapBuilder.createCountries();
                 window.benchmarkCreateCountries = new Date() - t;
                 console.log("createCountries: " + benchmarkCreateCountries + "ms");
-                Cevent.emit("kiwoticum/show/battlefield");
+                _E.emit("kiwoticum/show/battlefield");
             }, 1000);
         });
         // }}}
-        Cevent.on("kiwoticum/show/battlefield", function() {  // {{{
+        _E.on("kiwoticum/show/battlefield", function() {  // {{{
             var t = new Date();
             kiwoticum.countryMapBuilder.drawAll();
             var benchmarkDrawAll = new Date() - t;
@@ -145,7 +145,7 @@
 
     $(function() {  // trigger kiwoticum App startup on DOMReady
         kiwoticum.App();
-        Cevent.emit("kiwoticum/country_map_builder/form");
+        _E.emit("kiwoticum/country_map_builder/form");
     });
 
 })(jQuery);

@@ -12,7 +12,7 @@ kiwoticum.SvgRenderer = function(canvasContainer, builder) {
     var baseHexSvgPath = createSvgPath(builder.baseHexCoords);
 
     function emitObj(eventName, eventObj) {
-        return function() { Cevent.emit(eventName, eventObj); };
+        return function() { _E.emit(eventName, eventObj); };
     }
 
     api.drawHexagon = function(hexagon, fillColor) {

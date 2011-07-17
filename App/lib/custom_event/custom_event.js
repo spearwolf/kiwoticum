@@ -1,18 +1,26 @@
 // custom_event.js
 // Created 2010/05/07 by Wolfger Schramm <wolfger@spearwolf.de>
+(function() {
 
-window.Cevent = (function () {
+    var root = this, _E = { VERSION: "0.6.3" };
+
+    // Export the API object for **CommonJS**, with backwards-compatibility
+    // for the old `require()` API. If we're not in CommonJS, add `_E` to the
+    // global object.
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports = _E;
+    } else {
+        root._E = _E;
+    }
 
     function logError() {   // {{{
-        if (typeof console !== 'undefined') {
-            console.error.apply(window, arguments);
+        if (typeof root.console !== 'undefined') {
+            console.error(Array.prototype.slice.call(arguments).join(" "));
         }
     }
     // }}}
 
-    var nextCallId = 1;
-
-    function EventNode(name, parentNode) {
+    function EventNode(name, parentNode) {  // {{{
         this.name = name;
         this.parentNode = parentNode;
         this.children = [];
@@ -20,23 +28,24 @@ window.Cevent = (function () {
         this.insatiableChildren = [];
         this.callbacks = [];
     }
+    // }}}
 
-    var rootNode = new EventNode();
+    var rootNode = new EventNode(), nextCallbackId = 1;
 
     EventNode.prototype.fullPathName = function () {  // {{{
-        return (typeof this.name === 'undefined') ? Cevent.pathSeparator : this._fullPathName();
+        return (typeof this.name === 'undefined') ? _E.options.pathSeparator : this._fullPathName();
     };
 
     EventNode.prototype._fullPathName = function () {
-        return (typeof this.name === 'undefined') ? '' : this.parentNode._fullPathName() + Cevent.pathSeparator + this.name;
+        return (typeof this.name === 'undefined') ? '' : this.parentNode._fullPathName() + _E.options.pathSeparator + this.name;
     };
     // }}}
 
     EventNode.prototype.addChild = function (name) {  // {{{
         var node = new EventNode(name, this);
-        if (name === Cevent.greedyChar) {
+        if (name === _E.options.greedyChar) {
             this.greedyChildren.push(node);
-        } else if (name === Cevent.insatiableSequence) {
+        } else if (name === _E.options.insatiableSequence) {
             this.insatiableChildren.push(node);
         } else {
             this.children.push(node);
@@ -46,26 +55,26 @@ window.Cevent = (function () {
     // }}}
 
     EventNode.prototype.splitPath = function (path) {  // {{{
-        var all_names = path.split(Cevent.pathSeparator),
+        var all_names = path.split(_E.options.pathSeparator),
             name = null;
 
         while (name === null || name.length === 0) {
             name = all_names.shift();
         }
 
-        if (name === Cevent.insatiableSequence) {
+        if (name === _E.options.insatiableSequence) {
             return [name, ''];
         }
 
         var rest = [];
         for (var i=0; i < all_names.length; i++) {
             rest.push(all_names[i]);
-            if (all_names[i] === Cevent.insatiableSequence) {
+            if (all_names[i] === _E.options.insatiableSequence) {
                 break;
             }
         }
 
-        return [name, rest.length === 0 ? '' : rest.join(Cevent.pathSeparator)];
+        return [name, rest.length === 0 ? '' : rest.join(_E.options.pathSeparator)];
     };
     // }}}
 
@@ -75,10 +84,13 @@ window.Cevent = (function () {
             rest = split_path[1],
             child, i;
 
+        for (i = 0; i < this.insatiableChildren.length; i++) {
+            fn(this.insatiableChildren[i]);
+        }
         if (rest.length > 0) {
             for (i = 0; i < this.children.length; i++) {
                 child = this.children[i];
-                if (name === Cevent.greedyChar || name === child.name) {
+                if (name === _E.options.greedyChar || name === child.name) {
                     child.matchNodes(rest, fn);
                 }
             }
@@ -88,16 +100,13 @@ window.Cevent = (function () {
         } else {
             for (i = 0; i < this.children.length; i++) {
                 child = this.children[i];
-                if (name === Cevent.greedyChar || name === child.name) {
+                if (name === _E.options.greedyChar || name === child.name) {
                     fn(child);
                 }
             }
             for (i = 0; i < this.greedyChildren.length; i++) {
                 fn(this.greedyChildren[i]);
             }
-        }
-        for (i = 0; i < this.insatiableChildren.length; i++) {
-            fn(this.insatiableChildren[i]);
         }
     };
     // }}}
@@ -141,13 +150,13 @@ window.Cevent = (function () {
 
     EventNode.prototype.addCallback = function (callbackFn, options) {  // {{{
         var callback = {
-            id: nextCallId++,
-            fn: callbackFn
-            // TODO unbind api
+            id: nextCallbackId++,
+            name: options.name,
+            fn: callbackFn,
+            once: !!options.once,
+            binding: options.binding,
+            paused: false
         };
-        if (typeof options === 'object') {
-            callback.once = !!options.once;
-        }
         this.callbacks.push(callback);
         return callback;
     };
@@ -174,27 +183,68 @@ window.Cevent = (function () {
     // }}}
 
     function registerEventListener(eventPath, callbackFn, options) {  // {{{
-        return rootNode.findOrCreateNode(eventPath).addCallback(callbackFn, options || {}).id;
-        // TODO return unbind() api
-    }
-
-    function registerEventListenerOnce(eventPath, callbackFn) {
-        return registerEventListener(eventPath, callbackFn, { once: true });
+        var opts = options || {};
+        opts.name = eventPath;
+        var listener = rootNode.findOrCreateNode(eventPath).addCallback(callbackFn, opts);
+        return {
+            id: listener.id,
+            name: listener.name,
+            unbind: function() { _E.unbind(listener.id); },
+            emit: function() { _E.emit.apply(root, [listener.name].concat(Array.prototype.slice.call(arguments))); },
+            pause: function(pause) { 
+                if (typeof pause === 'boolean') {
+                    listener.paused = pause;
+                }
+                return listener.paused;
+            }
+        };
     }
     // }}}
 
-    function fireEvent(eventName, fn) {  // {{{
+    function registerEventListenerOnce(eventPath, callbackFn, options) {  // {{{
+        var opts = options || {};
+        opts.once = true;
+        return registerEventListener(eventPath, callbackFn, opts);
+    }
+    // }}}
+
+    function createEmitStackTrace() {  // {{{
+        if (typeof _E._emitStackTrace !== 'object') {
+            _E._emitStackTrace = { currentLevel: 1 };
+        } else {
+            ++_E._emitStackTrace.currentLevel;
+        }
+        return _E._emitStackTrace;
+    }
+    // }}}
+
+    function clearEmitStackTrace() {  // {{{
+        --_E._emitStackTrace.currentLevel;
+        if (_E._emitStackTrace.currentLevel === 0) {
+            _E._emitStackTrace = { currentLevel: 0 };
+        }
+    }
+    // }}}
+
+    function emitEvent(eventName) {  // {{{
         var args = [],
             results = [],
-            i;
+            result_fn,
+            i, len;
 
-        for (i = 1; i < arguments.length; i++) {
-            args.push(arguments[i]);
+        for (i = 1, len = arguments.length; i < len; ++i) {
+            if (i === len - 1 && typeof arguments[i] === 'function') {
+                result_fn = arguments[i];
+            } else {
+                args.push(arguments[i]);
+            }
         }
+
+        var stacktrace = createEmitStackTrace();
 
         rootNode.matchNodes(eventName, function (node) {
             try {
-                var destroy_callback_ids = [],
+                var destroy_callback_ids = [], call_count,
 
                     unbind = function(id) {
                         return function() {
@@ -202,20 +252,42 @@ window.Cevent = (function () {
                         };
                     },
 
+                    pause = function(callback) {
+                        return function() {
+                            callback.paused = true;
+                        };
+                    },
+
                     result,
+                    context,
                     callback;
 
                 for (i = 0; i < node.callbacks.length; i++) {
                     callback = node.callbacks[i];
 
-                    result = callback.fn.apply({ name: eventName, unbind: unbind(callback.id) }, args);
-
-                    if (callback.once) {
-                        destroy_callback_ids.push(callback.id);
+                    if (callback.paused) {
+                        continue;
                     }
 
-                    if (result !== null && typeof result !== 'undefined') {
-                        results.push(result);
+                    if (!(callback.id in _E._emitStackTrace)) {
+                        stacktrace[callback.id] = 1;
+
+                        context = callback.binding || {};
+                        context.name = eventName;
+                        context.unbind = unbind(callback.id);
+                        if (typeof context.pause !== 'function') {  // don't overwrite _E.Module's pause()
+                            context.pause = pause(callback);
+                        }
+
+                        result = callback.fn.apply(context, args);
+
+                        if (callback.once) {
+                            destroy_callback_ids.push(callback.id);
+                        }
+
+                        if (result !== null && typeof result !== 'undefined') {
+                            results.push(result);
+                        }
                     }
                 }
 
@@ -226,8 +298,10 @@ window.Cevent = (function () {
             }
         });
 
-        if (typeof fn === 'function' && results.length > 0) {
-            fn.apply(window, results);
+        clearEmitStackTrace();
+
+        if (result_fn && results.length > 0) {
+            result_fn.apply(root, results);
         }
     }
     // }}}
@@ -261,17 +335,93 @@ window.Cevent = (function () {
     }
     // }}}
 
-    return {
-        on: registerEventListener,
-        once: registerEventListenerOnce,
-        emit: fireEvent,
-        unbind: unbind,
-        
+    function connectEventListener() {  // {{{
+        var listener = Array.prototype.slice.call(arguments),
+            action = listener.shift();
+        return _E.on(action, function() {
+            var args = Array.prototype.slice.call(arguments);
+            for (var j = 0; j < listener.length; ++j) {
+                _E.emit.apply(this, [listener[j]].concat(args));
+            }
+        });
+    }
+    // }}}
+
+    function createModule(rootPath, module) {  // {{{
+        rootPath = rootPath.replace(/\/+$/, '');
+        var listener = [], sub_modules = [], annotation;
+
+        if (_E.options.debug) { console.group("_E.Module ->", rootPath); }
+
+        if ("_init" in module) {
+            if (_E.options.debug) { console.log("constructor", rootPath); }
+            listener.push(_E.once(rootPath+"/"+_E.options.insatiableSequence, module._init, { binding: module }));
+        }
+        for (var prop in module) {
+            if (module.hasOwnProperty(prop)) {
+                annotation = prop.match(/^(on|module) (.+)$/);
+                if (annotation) {
+                    if (annotation[1] === 'on' && typeof module[prop] === 'function') {
+                        if (prop !== '_init') {
+                            if (_E.options.debug) { console.log("on", rootPath+"/"+annotation[2]); }
+                            listener.push(_E.on(rootPath+"/"+annotation[2], module[prop], { binding: module }));
+                        }
+                    }
+                    if (annotation[1] === 'module' && typeof module[prop] === 'object') {
+                        sub_modules.push(createModule(rootPath+"/"+annotation[2], module[prop]));
+                    }
+                }
+            }
+        }
+        if (_E.options.debug) { console.groupEnd(); }
+
+        module.destroy = function() {
+            var i;
+            for (i= 0; i < listener.length; ++i) {
+                listener[i].unbind();
+            }
+            for (i= 0; i < sub_modules.length; ++i) {
+                sub_modules[i].destroy();
+            }
+        };
+
+        var paused = false;
+        module.pause = function(pause) {
+            if (typeof pause === 'boolean') {
+                paused = pause;
+                var i;
+                for (i= 0; i < listener.length; ++i) {
+                    listener[i].pause(pause);
+                }
+                for (i= 0; i < sub_modules.length; ++i) {
+                    sub_modules[i].pause(pause);
+                }
+            }
+            return paused;
+        };
+
+        return module;
+    }
+    // }}}
+
+    // custom event API
+    _E.on = registerEventListener;
+    _E.once = registerEventListenerOnce;
+    _E.emit = emitEvent;
+    _E.connect = connectEventListener;  // TODO connect groups API
+    _E.unbind = unbind;
+    
+    // module API
+    _E.Module = createModule;
+
+    // options
+    _E.options = {
         pathSeparator: '/',
         greedyChar: '*',
         insatiableSequence: '**',
-
-        rootNode: rootNode  // just for debugging puprposes
+        debug: false
     };
-})();
 
+    // debug
+    _E._rootNode = rootNode;
+})();

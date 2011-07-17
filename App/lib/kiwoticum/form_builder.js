@@ -107,7 +107,7 @@
                     builderOptions[item.name] = item.type === 'number' ? parseInt(oe.val(), 10) : oe.val();
                 }
             });
-            Cevent.emit(options.fireSubmitEvent, builderOptions);
+            _E.emit(options.fireSubmitEvent, builderOptions);
 
             event.stopPropagation();
             return false;
