@@ -4,6 +4,7 @@
 *.pbxuser
 .DS_Store
 build
+build_old
 iOS/www/phonegap.js
 deploy.sh
 App.old

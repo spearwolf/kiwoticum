@@ -31,7 +31,7 @@
             //}
             $("#status-bar").html('<p class="info">' + $(window).width() + 'x' + $(window).height() + " " + moreInfo + "</p>");
 
-            setTimeout(function() { if (window.iScroll !== undefined) { window.iScroll.refresh(); } }, 0);
+            setTimeout(function() { if (window.iScroller !== undefined) { window.iScroller.refresh(); } }, 0);
         }
         // }}}
 
@@ -129,7 +129,7 @@
                 width: kiwoticum.countryMapBuilder.getCanvasWidth()+100,
                 height: kiwoticum.countryMapBuilder.getCanvasHeight()+60
             });
-            window.iScroll = new iScroll("battlefield", {
+            window.iScroller = new iScroll("battlefield", {
                 hScroll: true,
                 vScroll: true,
                 lockDirection: false,
@@ -137,7 +137,7 @@
                 //hScrollbar: false,
                 //vScrollbar: false
             }); 
-            iScroll.scrollTo(50, 50, 200, true);
+            iScroller.scrollTo(50, 50, 200, true);
         });
         // }}}
 

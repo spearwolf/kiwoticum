@@ -1,13 +1,12 @@
-# Automatic sitemaps
-# activate :slickmap
-
 # CodeRay syntax highlighting in Haml
 # activate :code_ray
 
+# Automatic sitemaps (gem install middleman-slickmap)
+# require "middleman-slickmap"
+# activate :slickmap
+
 # Automatic image dimension calculations
 # activate :automatic_image_sizes
-
-#activate :minify_javascript
 
 # Per-page layout changes
 # With no layout
@@ -23,34 +22,38 @@ helpers do
 end
 
 # Change the CSS directory
+# set :css_dir, "alternative_css_directory"
 set :css_dir, "css"
 
 # Change the JS directory
+# set :js_dir, "alternative_js_directory"
 set :js_dir, "js"
 
 # Change the images directory
 # set :images_dir, "alternative_image_directory"
 
-
-# Build-specific configuration
 configure :build do
-  set :http_prefix, "/kiwoticum/"
-
   # For example, change the Compass output style for deployment
-  #activate :minify_css
+  activate :minify_css
   
   # Minify Javascript on build
-  #activate :minify_javascript
-  
-  # Shrink/smush PNG/JPEGs on build
-  # activate :smush_pngs
+  activate :minify_javascript
   
   # Enable cache buster
   # activate :cache_buster
+  
+  # Use relative URLs
+  # activate :relative_assets
+  
+  # Compress PNGs after build (gem install middleman-smusher)
+  # require "middleman-smusher"
+  # activate :smusher
 
   # Generate ugly/obfuscated HTML from Haml
-  # activate :ugly_haml
+  #activate :ugly_haml
   
   # Or use a different image path
   # set :http_path, "/Content/images/"
+  set :http_prefix, "/kiwoticum/"
 end
+

@@ -423,16 +423,19 @@ kiwoticum.CountryMapBuilder = function(container, options) {
     };
 
     api.drawAll = function() {
+        if (typeof api.renderer.beginRender === 'function') { api.renderer.beginRender(); }
         if (_.isFunction(conf.drawAll)) {
             conf.drawAll(api, conf);
         } else {
             api.drawGroundHexagons();
         }
+        if (typeof api.renderer.endRender === 'function') { api.renderer.endRender(); }
     };
 
     // =============================================================
 
     api.renderer = kiwoticum.SvgRenderer(container, api);
+    //api.renderer = kiwoticum.WebGLRenderer(container, api);
 
     return api;
 };
