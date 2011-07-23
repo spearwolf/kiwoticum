@@ -1,5 +1,5 @@
 !!! 5
-%html
+%html(manifest="kiwoticum.appcache")
   %head
     %meta(charset="utf-8")
     %meta(http-equiv="X-UA-Compatible" content="IE=edge,chrome=1")
@@ -14,10 +14,13 @@
     %link(rel="apple-touch-icon" href="apple-touch-icon.png")
 
     = stylesheet_link_tag "site.css"
+    = javascript_include_tag "modernizr2.min.js"
+
     = yield_content :head
 
   %body{ :class => page_classes }
     = yield
-    = javascript_include_tag "jquery-1.6.1.min.js", "raphael-min.js", "underscore-min.js", "iscroll-min.js", "perlin-noise-simplex.js"
-    -#= javascript_include_tag "topup172/javascripts/top_up-min.js"
-    = javascript_include_tag "spw.country_algorithms.js", "kiwoticum-min.js"
+
+    - for js in %w(jquery-1.6.2.min.js raphael-min.js underscore-min.js iscroll-min.js perlin-noise-simplex.js spw.country_algorithms.js kiwoticum-min.js)
+      = javascript_include_tag js
+
