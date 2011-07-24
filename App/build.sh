@@ -1,3 +1,3 @@
 #!/bin/bash
-./utils/build_kiwoticum.rb
+./utils/build_all.rb
 mm-build

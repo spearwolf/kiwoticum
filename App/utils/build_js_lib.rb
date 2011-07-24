@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 require "yui/compressor"
 
-ROOT = File.absolute_path(File.join(File.dirname(__FILE__), '..'))
-
 class BuildJsLib
 
   attr_accessor :base_js
@@ -40,6 +38,4 @@ class BuildJsLib
   end
 
 end
-
-BuildJsLib.compress("#{ROOT}/lib/kiwoticum.js", "#{ROOT}/public/js/kiwoticum-min.js")
 
