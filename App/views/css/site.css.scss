@@ -1,11 +1,10 @@
 @import "compass/reset";
 
-@import "colors";
+@import "common/colors";
+@import "common/typography";
 
-@import "typography";
-@import "uniformjs_btn";
-@import "country_map_form_builder";
+@import "legacy/uniformjs_btn";
 
-@import "loading";
-
-@import "playground";
+@import "page/country_map_form_builder";
+@import "page/loading";
+@import "page/playground";

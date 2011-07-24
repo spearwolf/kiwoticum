@@ -1,21 +1,18 @@
 - content_for :head do
   %title kiwoticum!
 
-%article.country-map-builder
+%section.page.country-map-builder
   %form#country-map-builder-form
 
-%article.load-display
+%section.page.load-display
   = image_tag 'ajax-load-dark.gif', :alt => 'loading ..'
 
-%article.playground
+%section.page.playground
   #battlefield
-
     #scrollable-canvas
-
     #action-panel
       #reset-action.button.bordered.back
         %span.label< Reset
-
     #status-bar
       status-bar
 
