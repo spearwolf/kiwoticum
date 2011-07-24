@@ -21,6 +21,6 @@
   %body{ :class => page_classes }
     = yield
 
-    - for js in %w(jquery-1.6.2.min.js raphael-min.js underscore-min.js iscroll-min.js perlin-noise-simplex.js spw.country_algorithms.js kiwoticum-min.js)
+    - for js in %w(jquery-1.6.2.min.js raphael-min.js underscore-min.js iscroll-min.js perlin-noise-simplex.js custom_event-min.js spw.country_algorithms.js kiwoticum-min.js)
       = javascript_include_tag js
 

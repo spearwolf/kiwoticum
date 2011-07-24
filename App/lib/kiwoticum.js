@@ -3,7 +3,6 @@
 
 window.kiwoticum = window.kiwoticum||{};
 
-// @include custom_event/custom_event.js
 // @include kiwoticum/svg_renderer.js
 // @include kiwoticum/webgl_renderer.js
 // @include kiwoticum/country_map_builder.js
