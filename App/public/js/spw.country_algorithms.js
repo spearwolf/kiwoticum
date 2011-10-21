@@ -39,14 +39,11 @@ jQuery(function($) {
             return clampHexagonCoords(coords);
         }
 
-        //function skipCountryGeneration() {
-            //return (Math.random() * 100) < options.createCountryThreshold;
-        //}
-
         var noise = new SimplexNoise();
 
         function skipCountryGeneration(x, y) {
-            return noise.noise(x / (options.gridWidth * 0.5), y / (options.gridHeight * 0.5)) < -0.3;
+            return x === 0 || y === 0 || x === options.gridWidth - 1 || y === options.gridHeight - 1 ||
+                (noise.noise(x / (options.gridWidth * 0.5), y / (options.gridHeight * 0.5)) < -0.3);
         }
 
         var x, y, point, hexagon, country,
@@ -112,15 +109,6 @@ jQuery(function($) {
             },
             builder_options: {
 
-                //hexagonExtension: {
-                    //setColor: function(color) {
-                        //this.data.color = color;
-                        //if (this.elem) {
-                            //this.elem.attr("fill", color);
-                        //}
-                    //}
-                //},
-
                 countryExtension: {
 
                     setColor: function(color) {
@@ -139,12 +127,6 @@ jQuery(function($) {
                         for (var i = 0; i < neighbors.length; i++) {
                             hexagon = neighbors[i];
                             countryNeighborCount = 0;
-                            //if (hexagon.neighbor.north !== null && null !== hexagon.neighbor.north.country) { ++countryNeighborCount; }
-                            //if (hexagon.neighbor.south !== null && null !== hexagon.neighbor.south.country) { ++countryNeighborCount; }
-                            //if (hexagon.neighbor.northWest !== null && null !== hexagon.neighbor.northWest.country) { ++countryNeighborCount; }
-                            //if (hexagon.neighbor.southWest !== null && null !== hexagon.neighbor.southWest.country) { ++countryNeighborCount; }
-                            //if (hexagon.neighbor.northEast !== null && null !== hexagon.neighbor.northEast.country) { ++countryNeighborCount; }
-                            //if (hexagon.neighbor.southEast !== null && null !== hexagon.neighbor.southEast.country) { ++countryNeighborCount; }
                             if (hexagon.neighbor.north !== null && this === hexagon.neighbor.north.country) { ++countryNeighborCount; }
                             if (hexagon.neighbor.south !== null && this === hexagon.neighbor.south.country) { ++countryNeighborCount; }
                             if (hexagon.neighbor.northWest !== null && this === hexagon.neighbor.northWest.country) { ++countryNeighborCount; }
