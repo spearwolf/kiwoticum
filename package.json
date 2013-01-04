@@ -1,15 +1,11 @@
 {
   "name": "kiwoticum",
   "version": "0.0.2",
-  "maintainers":[{
-      "name": "Wolfger Schramm",
-      "email": "wolfger@spearwolf.de",
-      "web": "https://github.com/spearwolf"
-  }],
-  "engines": {
+  "author": "Wolfger Schramm <wolfger@spearwolf.de>",
+  "engines":{
     "node": "0.8.11"
   },
-  "scripts": {
+  "scripts":{
       "test": "./node_modules/coffee-script/bin/cake test"
   },
   "dependencies":{
