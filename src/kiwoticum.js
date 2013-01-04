@@ -1,0 +1,1 @@
+window.kiwoticum = window.kiwoticum||{};
