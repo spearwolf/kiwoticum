@@ -1,4 +1,6 @@
-kiwoticum.SvgRenderer = function(canvasContainer, builder) {
+kiwoticum.ui = kiwoticum.ui||{};
+
+kiwoticum.ui.SvgRenderer = function(canvasContainer, builder) {
 
     var api = {},
         paper = Raphael(canvasContainer, builder.getCanvasWidth(), builder.getCanvasHeight());
@@ -47,3 +49,4 @@ kiwoticum.SvgRenderer = function(canvasContainer, builder) {
 
     return api;
 };
+

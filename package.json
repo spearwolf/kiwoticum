@@ -13,6 +13,7 @@
     "should": "latest",
     "sinon": "latest",
     "coffee-script": "latest",
-    "uglify-js": "latest"
+    "uglify-js": "latest",
+    "underscore": "latest"
   }
 }
