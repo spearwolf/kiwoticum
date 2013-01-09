@@ -20,18 +20,18 @@ uglifyjs = (sources, outFile, options...) ->
         console.log output
 
 
-task "build-www", "build www library", ->
+task "build-www", "build www library -> 'public/javascripts/kiwoticum-min.js'", ->
     uglifyjs SOURCES_KIWOTICUM_WWW, 'public/javascripts/kiwoticum-min.js', '--wrap kiwoticum'
 
-task "build-node", "build node library", ->
+task "build-node", "build node library -> 'src/kiwoticum.js'", ->
     uglifyjs SOURCES_KIWOTICUM_NODE, 'src/kiwoticum.js', '-b'
 
-task "build", "build sources", ->
+task "build", "build all", ->
     invoke 'build-node'
     invoke 'build-www'
 
 
-task "test", "run tests", ->
+task "test", "run all tests from test/*", ->
     invoke 'build-node'
     exec "NODE_ENV=test ./node_modules/.bin/mocha --reporter #{REPORTER} --colors", (err, output) ->
         throw err if err
