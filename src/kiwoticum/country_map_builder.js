@@ -1,3 +1,4 @@
+
 kiwoticum.CountryMapBuilder = function(options) {
 
     var api = {}, conf = api.config = _.extend({
