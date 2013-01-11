@@ -5,7 +5,8 @@ REPORTER = "spec"  # "nyan"
 SOURCES_KIWOTICUM_BASE = [
     'src/kiwoticum/country_map_builder.js',
     'src/kiwoticum/spw.country_algorithms.js',
-    'src/kiwoticum/perlin-noise-simplex.js'
+    'src/kiwoticum/perlin-noise-simplex.js',
+    'src/kiwoticum/json_renderer.js'
 ]
 
 SOURCES_KIWOTICUM_NODE = ['src/kiwoticum-node.js'].concat SOURCES_KIWOTICUM_BASE

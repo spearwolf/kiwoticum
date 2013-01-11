@@ -24,7 +24,8 @@ kiwoticum.CountryMapBuilder = function(options) {
     // XXX refactor
     //api.renderer = kiwoticum.SvgRenderer(container, api);
     //api.renderer = kiwoticum.WebGLRenderer(container, api);
-    api.renderer = options.renderer;
+    //api.renderer = options.renderer;
+    api.renderer = null;
 
     api.getWidth = function() { return conf.width; };
     api.getHeight = function() { return conf.height; };

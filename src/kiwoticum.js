@@ -24,7 +24,7 @@ kiwoticum.CountryMapBuilder = function(options) {
         countryExtension: null,
         createCountries: null
     }, options);
-    api.renderer = options.renderer;
+    api.renderer = null;
     api.getWidth = function() {
         return conf.width;
     };
@@ -411,7 +411,81 @@ kiwoticum.spw.createCountries = function(builder, options) {
     }
 };
 
+kiwoticum.spw.getBuilderConfig = function() {
+    return {
+        countryExtension: {
+            setColor: function(color) {
+                this.data.color = color;
+            },
+            randomCountryLessNeighborHexagon: function() {
+                var neighbors = this.nonUniqueCountryLessNeighborHexagons();
+                if (neighbors.length === 0) {
+                    return null;
+                }
+                var countryNeighborCount, hexagon, prioNeighbors = [];
+                for (var i = 0; i < neighbors.length; i++) {
+                    hexagon = neighbors[i];
+                    countryNeighborCount = 0;
+                    if (hexagon.neighbor.north !== null && this === hexagon.neighbor.north.country) {
+                        ++countryNeighborCount;
+                    }
+                    if (hexagon.neighbor.south !== null && this === hexagon.neighbor.south.country) {
+                        ++countryNeighborCount;
+                    }
+                    if (hexagon.neighbor.northWest !== null && this === hexagon.neighbor.northWest.country) {
+                        ++countryNeighborCount;
+                    }
+                    if (hexagon.neighbor.southWest !== null && this === hexagon.neighbor.southWest.country) {
+                        ++countryNeighborCount;
+                    }
+                    if (hexagon.neighbor.northEast !== null && this === hexagon.neighbor.northEast.country) {
+                        ++countryNeighborCount;
+                    }
+                    if (hexagon.neighbor.southEast !== null && this === hexagon.neighbor.southEast.country) {
+                        ++countryNeighborCount;
+                    }
+                    if (countryNeighborCount >= 5) {
+                        return hexagon;
+                    } else if (countryNeighborCount >= 2) {
+                        prioNeighbors.push(hexagon);
+                    }
+                }
+                if (prioNeighbors.length > 0) {
+                    return prioNeighbors[Math.round(Math.random() * (prioNeighbors.length - 1))];
+                } else {
+                    return neighbors[Math.round(Math.random() * (neighbors.length - 1))];
+                }
+            }
+        },
+        drawAll: function(builder, options) {
+            _.each(builder.countries, function(country) {
+                builder.renderer.drawCountry(country);
+            });
+        },
+        createCountries: kiwoticum.spw.createCountries
+    };
+};
+
 kiwoticum.spw.getCountryMapBuilderConfig = function() {
+    return _.extend({
+        width: 100,
+        height: 100,
+        gridHeight: 5,
+        gridWidth: 5,
+        growIterations: 25,
+        hexagonWidth: 18,
+        hexagonHeight: 18,
+        hexagonInlineOffset: 4,
+        hexagonInlineOffset2: .5,
+        hexagonStroke: "#333",
+        hexagonFill: "rgba(128,128,128,0.5)",
+        hexagonFill2: "rgba(128,128,128,0.25)",
+        paddingX: 0,
+        paddingY: 0
+    }, kiwoticum.spw.getBuilderConfig());
+};
+
+kiwoticum.spw.getCountryMapBuilderFormConfig = function() {
     return {
         name: "wolfger's country algorithm",
         form: {
@@ -431,58 +505,7 @@ kiwoticum.spw.getCountryMapBuilderConfig = function() {
                 label: "grow-iterations"
             } ]
         },
-        builder_options: {
-            countryExtension: {
-                setColor: function(color) {
-                    this.data.color = color;
-                },
-                randomCountryLessNeighborHexagon: function() {
-                    var neighbors = this.nonUniqueCountryLessNeighborHexagons();
-                    if (neighbors.length === 0) {
-                        return null;
-                    }
-                    var countryNeighborCount, hexagon, prioNeighbors = [];
-                    for (var i = 0; i < neighbors.length; i++) {
-                        hexagon = neighbors[i];
-                        countryNeighborCount = 0;
-                        if (hexagon.neighbor.north !== null && this === hexagon.neighbor.north.country) {
-                            ++countryNeighborCount;
-                        }
-                        if (hexagon.neighbor.south !== null && this === hexagon.neighbor.south.country) {
-                            ++countryNeighborCount;
-                        }
-                        if (hexagon.neighbor.northWest !== null && this === hexagon.neighbor.northWest.country) {
-                            ++countryNeighborCount;
-                        }
-                        if (hexagon.neighbor.southWest !== null && this === hexagon.neighbor.southWest.country) {
-                            ++countryNeighborCount;
-                        }
-                        if (hexagon.neighbor.northEast !== null && this === hexagon.neighbor.northEast.country) {
-                            ++countryNeighborCount;
-                        }
-                        if (hexagon.neighbor.southEast !== null && this === hexagon.neighbor.southEast.country) {
-                            ++countryNeighborCount;
-                        }
-                        if (countryNeighborCount >= 5) {
-                            return hexagon;
-                        } else if (countryNeighborCount >= 2) {
-                            prioNeighbors.push(hexagon);
-                        }
-                    }
-                    if (prioNeighbors.length > 0) {
-                        return prioNeighbors[Math.round(Math.random() * (prioNeighbors.length - 1))];
-                    } else {
-                        return neighbors[Math.round(Math.random() * (neighbors.length - 1))];
-                    }
-                }
-            },
-            createCountries: kiwoticum.spw.createCountries,
-            drawAll: function(builder, options) {
-                _.each(builder.countries, function(country) {
-                    builder.renderer.drawCountry(country);
-                });
-            }
-        }
+        builder_options: kiwoticum.spw.getBuilderConfig()
     };
 };
 
@@ -655,4 +678,26 @@ kiwoticum.utils.SimplexNoise.prototype.noise3d = function(xin, yin, zin) {
         n3 = t3 * t3 * this.dot(this.grad3[gi3], x3, y3, z3);
     }
     return 32 * (n0 + n1 + n2 + n3);
+};
+
+kiwoticum.ui = kiwoticum.ui || {};
+
+kiwoticum.ui.JsonRenderer = function(builder) {
+    var api = {};
+    api.countryMapConfig = {
+        hexagonSize: [ builder.getWidth(), builder.getHeight() ],
+        canvasSize: [ builder.getCanvasWidth(), builder.getCanvasHeight() ],
+        baseHexagonPath: builder.baseHexCoords,
+        countries: []
+    };
+    api.drawHexagon = function(hexagon, fillColor) {};
+    api.drawCountry = function(country) {
+        var countryConfig = {};
+        countryConfig.color = country.data.color;
+        countryConfig.outlinePath = country.createShapePath();
+        countryConfig.inlinePath = country.data.inlineShapePath;
+        api.countryMapConfig.countries.push(countryConfig);
+        countryConfig.id = api.countryMapConfig.countries.length;
+    };
+    return api;
 };
