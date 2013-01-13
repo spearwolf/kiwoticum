@@ -19,19 +19,19 @@ var cmbOptions = {  // {{{
 
 describe("kiwoticum", function() {
 
-    it("should have CountryMapBuilder()", function() {
-        should.exist(kiwoticum.CountryMapBuilder);
-        kiwoticum.CountryMapBuilder.should.be.a('function');
+    it("should have builder.CountryMapBuilder()", function() {
+        should.exist(kiwoticum.builder.CountryMapBuilder);
+        kiwoticum.builder.CountryMapBuilder.should.be.a('function');
     });
 
-    it("should have spw.createCountries()", function() {
-        should.exist(kiwoticum.spw.createCountries);
-        kiwoticum.spw.createCountries.should.be.a('function');
+    it("should have builder.spw.createCountries()", function() {
+        should.exist(kiwoticum.builder.spw.createCountries);
+        kiwoticum.builder.spw.createCountries.should.be.a('function');
     });
 
-    it("should have spw.getCountryMapBuilderConfig()", function() {
-        should.exist(kiwoticum.spw.getCountryMapBuilderConfig);
-        kiwoticum.spw.getCountryMapBuilderConfig.should.be.a('function');
+    it("should have builder.spw.getCountryMapBuilderConfig()", function() {
+        should.exist(kiwoticum.builder.spw.getCountryMapBuilderConfig);
+        kiwoticum.builder.spw.getCountryMapBuilderConfig.should.be.a('function');
     });
 
     it("should have utils.SimplexNoise()", function() {

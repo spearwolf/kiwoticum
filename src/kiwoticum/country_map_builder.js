@@ -1,5 +1,6 @@
+kiwoticum.builder = kiwoticum.builder||{};
 
-kiwoticum.CountryMapBuilder = function(options) {
+kiwoticum.builder.CountryMapBuilder = function(options) {
 
     var api = {}, conf = api.config = _.extend({
             width: 10,

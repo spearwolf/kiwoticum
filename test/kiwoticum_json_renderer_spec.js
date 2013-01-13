@@ -3,20 +3,20 @@ var should = require("should"),
     kiwoticum = require("../src/kiwoticum");
 
 
-describe("kiwoticum.ui.JsonRenderer", function() {
+describe("kiwoticum.builder.JsonRenderer", function() {
 
     var cmbOptions, builder;
 
-    it("Fetch builder-config from kiwoticum.spw.getCountryMapBuilderConfig()", function() {
-        cmbOptions = kiwoticum.spw.getCountryMapBuilderConfig();
+    it("Fetch builder-config from kiwoticum.builder.spw.getCountryMapBuilderConfig()", function() {
+        cmbOptions = kiwoticum.builder.spw.getCountryMapBuilderConfig();
 
         should.exist(cmbOptions);
         should.exist(cmbOptions.createCountries);
         should.exist(cmbOptions.drawAll);
     });
 
-    it("Create builder from config with kiwoticum.CountryMapBuilder()", function() {
-        builder = kiwoticum.CountryMapBuilder(cmbOptions);
+    it("Create builder from config with kiwoticum.builder.CountryMapBuilder()", function() {
+        builder = kiwoticum.builder.CountryMapBuilder(cmbOptions);
 
         should.exist(builder);
 
@@ -27,8 +27,8 @@ describe("kiwoticum.ui.JsonRenderer", function() {
         builder.drawAll.should.be.a('function');
     });
 
-    it("Add kiwoticum.ui.JsonRenderer() to builder", function() {
-        builder.renderer = kiwoticum.ui.JsonRenderer(builder);
+    it("Add kiwoticum.builder.JsonRenderer() to builder", function() {
+        builder.renderer = kiwoticum.builder.JsonRenderer(builder);
 
         should.exist(builder.renderer.countryMapConfig);
         builder.renderer.countryMapConfig.should.be.a('object');

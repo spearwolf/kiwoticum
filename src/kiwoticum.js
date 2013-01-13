@@ -4,7 +4,9 @@ var kiwoticum = {};
 
 module.exports = kiwoticum;
 
-kiwoticum.CountryMapBuilder = function(options) {
+kiwoticum.builder = kiwoticum.builder || {};
+
+kiwoticum.builder.CountryMapBuilder = function(options) {
     var api = {}, conf = api.config = _.extend({
         width: 10,
         height: 10,
@@ -351,9 +353,11 @@ kiwoticum.CountryMapBuilder = function(options) {
     return api;
 };
 
-kiwoticum.spw = kiwoticum.spw || {};
+kiwoticum.builder = kiwoticum.builder || {};
 
-kiwoticum.spw.createCountries = function(builder, options) {
+kiwoticum.builder.spw = kiwoticum.builder.spw || {};
+
+kiwoticum.builder.spw.createCountries = function(builder, options) {
     var width = builder.getWidth(), height = builder.getHeight(), COUNTRY_COLORS = [ "#cdada7", "#241f1f", "#9e6249", "#b6915f", "#6d5653", "#697297", "#c4c1be", "#422927", "#9f1d08", "#99798e", "#b85b3e", "#b38d6a" ];
     function randomPoint() {
         var x = Math.random() * (width - 1), y = Math.random() * (height - 1);
@@ -411,7 +415,7 @@ kiwoticum.spw.createCountries = function(builder, options) {
     }
 };
 
-kiwoticum.spw.getBuilderConfig = function() {
+kiwoticum.builder.spw.getBuilderConfig = function() {
     return {
         countryExtension: {
             setColor: function(color) {
@@ -462,11 +466,11 @@ kiwoticum.spw.getBuilderConfig = function() {
                 builder.renderer.drawCountry(country);
             });
         },
-        createCountries: kiwoticum.spw.createCountries
+        createCountries: kiwoticum.builder.spw.createCountries
     };
 };
 
-kiwoticum.spw.getCountryMapBuilderConfig = function() {
+kiwoticum.builder.spw.getCountryMapBuilderConfig = function() {
     return _.extend({
         width: 100,
         height: 100,
@@ -482,10 +486,10 @@ kiwoticum.spw.getCountryMapBuilderConfig = function() {
         hexagonFill2: "rgba(128,128,128,0.25)",
         paddingX: 0,
         paddingY: 0
-    }, kiwoticum.spw.getBuilderConfig());
+    }, kiwoticum.builder.spw.getBuilderConfig());
 };
 
-kiwoticum.spw.getCountryMapBuilderFormConfig = function() {
+kiwoticum.builder.spw.getCountryMapBuilderFormConfig = function() {
     return {
         name: "wolfger's country algorithm",
         form: {
@@ -505,7 +509,7 @@ kiwoticum.spw.getCountryMapBuilderFormConfig = function() {
                 label: "grow-iterations"
             } ]
         },
-        builder_options: kiwoticum.spw.getBuilderConfig()
+        builder_options: kiwoticum.builder.spw.getBuilderConfig()
     };
 };
 
@@ -680,9 +684,9 @@ kiwoticum.utils.SimplexNoise.prototype.noise3d = function(xin, yin, zin) {
     return 32 * (n0 + n1 + n2 + n3);
 };
 
-kiwoticum.ui = kiwoticum.ui || {};
+kiwoticum.builder = kiwoticum.builder || {};
 
-kiwoticum.ui.JsonRenderer = function(builder) {
+kiwoticum.builder.JsonRenderer = function(builder) {
     var api = {};
     api.countryMapConfig = {
         hexagonSize: [ builder.getWidth(), builder.getHeight() ],

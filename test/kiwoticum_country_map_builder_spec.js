@@ -30,12 +30,12 @@ function includeHexagonAt(hexagons, x, y) {
 }
 
 
-describe("kiwoticum.CountryMapBuilder()", function() {
+describe("kiwoticum.builder.CountryMapBuilder()", function() {
     
     var builder, hexagon;
 
     before(function() {
-        builder = kiwoticum.CountryMapBuilder(cmbOptions);
+        builder = kiwoticum.builder.CountryMapBuilder(cmbOptions);
     });
 
     it("should return API", function() {
@@ -332,7 +332,7 @@ describe("kiwoticum.CountryMapBuilder()", function() {
                 hexagons;
 
             before(function() {
-                builder = kiwoticum.CountryMapBuilder(cmbOptions);
+                builder = kiwoticum.builder.CountryMapBuilder(cmbOptions);
 
                 countryA = builder.createCountry().assignHexagons([[1, 1]]);
                 countryB = builder.createCountry().assignHexagons([[3, 1], [4, 2]]);
@@ -431,7 +431,7 @@ describe("kiwoticum.CountryMapBuilder()", function() {
             }
 
             before(function() {
-                builder = kiwoticum.CountryMapBuilder(cmbOptions);
+                builder = kiwoticum.builder.CountryMapBuilder(cmbOptions);
 
                 countryA = builder.createCountry().assignHexagons([[1, 1]]);
                 countryB = builder.createCountry().assignHexagons([[3, 1], [4, 2]]);

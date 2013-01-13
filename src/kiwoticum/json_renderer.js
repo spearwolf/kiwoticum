@@ -1,6 +1,6 @@
-kiwoticum.ui = kiwoticum.ui||{};
+kiwoticum.builder = kiwoticum.builder||{};
 
-kiwoticum.ui.JsonRenderer = function(builder) {
+kiwoticum.builder.JsonRenderer = function(builder) {
 
     var api = {};
 
