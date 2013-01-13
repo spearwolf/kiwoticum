@@ -3,14 +3,14 @@
 REPORTER = "spec"  # "nyan"
 
 SOURCES_KIWOTICUM_BASE = [
-    'src/kiwoticum/country_map_builder.js',
-    'src/kiwoticum/spw.country_algorithms.js',
-    'src/kiwoticum/perlin-noise-simplex.js',
-    'src/kiwoticum/json_renderer.js'
+    'src/kiwoticum/builder/country_map_builder.js',
+    'src/kiwoticum/builder/spw.country_algorithm.js',
+    'src/kiwoticum/utils/perlin-noise-simplex.js',
+    'src/kiwoticum/builder/json_renderer.js'
 ]
 
 SOURCES_KIWOTICUM_NODE = ['src/kiwoticum-node.js'].concat SOURCES_KIWOTICUM_BASE
-SOURCES_KIWOTICUM_WWW = SOURCES_KIWOTICUM_BASE.concat ['src/kiwoticum/svg_renderer.js']
+SOURCES_KIWOTICUM_WWW = SOURCES_KIWOTICUM_BASE.concat ['src/kiwoticum/ui/svg_renderer.js']
 
 
 uglifyjs = (sources, outFile, options...) ->
