@@ -14,7 +14,7 @@ kiwoticum.ui.SvgRenderer = function(canvasContainer, builder) {
     var baseHexSvgPath = createSvgPath(builder.baseHexCoords);
 
     function emitObj(eventName, eventObj) {
-        return function() { _E.emit(eventName, eventObj); };
+        return function() { _e.emit(eventName, eventObj); };
     }
 
     api.drawHexagon = function(hexagon, fillColor) {
@@ -30,21 +30,29 @@ kiwoticum.ui.SvgRenderer = function(canvasContainer, builder) {
     };
 
     api.drawCountry = function(country) {
-        var path;
+        var shapePath, inlinePath;
 
         // country outline shape (polygon)
-        path = paper.path(createSvgPath(country.createShapePath()));
-        path.attr("fill", country.data.color);
-        path.attr("stroke-width", "1");
-        path.attr("stroke", "#000000");
+        shapePath = paper.path(createSvgPath(country.createShapePath()));
+        shapePath.attr("fill", country.data.color);
+        shapePath.attr("stroke-width", "1");
+        shapePath.attr("stroke", "#000000");
 
         // inline shape
-        path = paper.path(createSvgPath(country.data.inlineShapePath));
-        path.attr("fill", "rgba(0, 0, 0, 0.4)");
-        path.attr("stroke-width", "0");
+        inlinePath = paper.path(createSvgPath(country.data.inlineShapePath));
+        inlinePath.attr("fill", "rgba(0, 0, 0, 0.4)");
+        inlinePath.attr("stroke-width", "0");
 
-        path.click(emitObj("kiwoticum/battlefield/country/click", country));
+        inlinePath.click(emitObj("kiwoticum/ui/select/country", country));
 
+        // mouse over animation
+        inlinePath.mouseover(function () {
+            shapePath.stop().toFront().animate({ transform: "s1.2 1.2" }, 500, "elastic");
+            inlinePath.stop().toFront().animate({ transform: "s1.2 1.2" }, 500, "elastic");
+        }).mouseout(function () {
+            shapePath.stop().animate({ transform: "" },  500, "elastic");
+            inlinePath.stop().animate({ transform: "" },  500, "elastic");
+        });
     };
 
     return api;
