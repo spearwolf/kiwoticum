@@ -5,18 +5,39 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
 
     var width= builder.getWidth(), height= builder.getHeight(),
         COUNTRY_COLORS = [
-            "#cdada7",
-            "#241f1f",
-            "#9e6249",
-            "#b6915f",
-            "#6d5653",
-            "#697297",
-            "#c4c1be",
-            "#422927",
-            "#9f1d08",
-            "#99798e",
-            "#b85b3e",
-            "#b38d6a"
+            //"#cdada7",
+            //"#241f1f",
+            //"#9e6249",
+            //"#b6915f",
+            //"#6d5653",
+            //"#697297",
+            //"#c4c1be",
+            //"#422927",
+            //"#9f1d08",
+            //"#99798e",
+            //"#b85b3e",
+            //"#b38d6a"
+
+            // http://www.colourlovers.com/palette/694737/Thought_Provoking
+            //"#ECD078",
+            //"#D95B43",
+            //"#C02942",
+            //"#542437",
+            //"#53777A"
+
+            // http://www.colourlovers.com/palette/1930/cheer_up_emo_kid
+            //"#556270",
+            //"#4ECDC4",
+            //"#C7F464",
+            //"#FF6B6B",
+            //"#C44D58"
+
+            // spw // http://www.colourlovers.com/palettes/add 
+            "#B59C7E",
+            "#6E786F",
+            "#A6A671",
+            "#7192A6",
+            "#A671A2"
         ];
 
     function randomPoint() {
