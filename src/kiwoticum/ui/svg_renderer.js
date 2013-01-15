@@ -47,8 +47,8 @@ kiwoticum.ui.SvgRenderer = function(canvasContainer, builder) {
 
         // mouse over animation
         inlinePath.mouseover(function () {
-            shapePath.stop().toFront().animate({ transform: "s1.2 1.2" }, 500, "elastic");
-            inlinePath.stop().toFront().animate({ transform: "s1.2 1.2" }, 500, "elastic");
+            shapePath.stop().toFront().animate({ transform: "s1.1 1.1" }, 500, "elastic");
+            inlinePath.stop().toFront().animate({ transform: "s1.1 1.1" }, 500, "elastic");
         }).mouseout(function () {
             shapePath.stop().animate({ transform: "" },  500, "elastic");
             inlinePath.stop().animate({ transform: "" },  500, "elastic");

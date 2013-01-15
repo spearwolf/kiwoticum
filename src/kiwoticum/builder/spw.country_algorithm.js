@@ -32,12 +32,24 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
             //"#FF6B6B",
             //"#C44D58"
 
+            "#556270",
+            "#556270",
+            "#556270",
+            "#556270",
+            "#556270",
+            "#556270",
+            "#556270",
+            "#556270",
+            "#556270",
+            "#FF6B6B",
+            "#4ECDC4"
+
             // spw // http://www.colourlovers.com/palettes/add 
-            "#B59C7E",
-            "#6E786F",
-            "#A6A671",
-            "#7192A6",
-            "#A671A2"
+            //"#B59C7E",
+            //"#6E786F",
+            //"#A6A671",
+            //"#7192A6",
+            //"#A671A2"
         ];
 
     function randomPoint() {
@@ -181,24 +193,24 @@ kiwoticum.builder.spw.getBuilderConfig = function() {
 kiwoticum.builder.spw.getCountryMapBuilderConfig = function() {
     return _.extend({
 
-        width: 100,
-        height: 100,
-        gridHeight: 5,
-        gridWidth: 5,
+        width: 72, //100,
+        height: 72, //100,
+        gridHeight: 6, //5,
+        gridWidth: 6, //5,
 
-        growIterations: 25,
+        growIterations: 36,
 
-        hexagonWidth: 18,
-        hexagonHeight: 18,
+        hexagonWidth: 20,
+        hexagonHeight: 20,
         hexagonInlineOffset: 4,
-        hexagonInlineOffset2: 0.5,
+        hexagonInlineOffset2: 0,
 
         hexagonStroke: "#333",
         hexagonFill: "rgba(128,128,128,0.5)",
         hexagonFill2: "rgba(128,128,128,0.25)",
 
-        paddingX: 0,
-        paddingY: 0
+        paddingX: 1,
+        paddingY: 1
 
     }, kiwoticum.builder.spw.getBuilderConfig());
 };
