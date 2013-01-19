@@ -17,14 +17,16 @@ kiwoticum.ui.SvgRenderer = function(canvasContainer, builder) {
         return function() { _e.emit(eventName, eventObj); };
     }
 
-    api.drawHexagon = function(hexagon, fillColor) {
-        var hex = paper.path(baseHexSvgPath);
+    api.drawHexagon = function(hexagon, fillColor, strokeColor) {
+        var hex = paper.path(baseHexSvgPath),
+            stroke = (typeof strokeColor === 'undefined') ? builder.config.hexagonStroke : strokeColor;
 
         hex.attr("fill", fillColor);
-        hex.attr("stroke", builder.config.hexagonStroke);
+        //hex.attr("stroke", builder.config.hexagonStroke);
+        hex.attr("stroke", stroke);
 
         hex.translate(hexagon.left, hexagon.top);
-        hex.click(emitObj("kiwoticum/battlefield/hexagon/click", hexagon));
+        //hex.click(emitObj("kiwoticum/battlefield/hexagon/click", hexagon));
 
         return hex;
     };
@@ -43,15 +45,28 @@ kiwoticum.ui.SvgRenderer = function(canvasContainer, builder) {
         inlinePath.attr("fill", "rgba(0, 0, 0, 0.4)");
         inlinePath.attr("stroke-width", "0");
 
+        // base hexagons
+        //var hexagonShapes = [];
+        //country.data.baseHexagons.forEach(function(hexagon) {
+            //hexagonShapes.push(api.drawHexagon(hexagon, "rgba(0, 0, 0, 0.2)", "rgba(0, 0, 0, 0.2)"));
+        //});
+
         inlinePath.click(emitObj("kiwoticum/ui/select/country", country));
 
         // mouse over animation
         inlinePath.mouseover(function () {
             shapePath.stop().toFront().animate({ transform: "s1.1 1.1" }, 500, "elastic");
             inlinePath.stop().toFront().animate({ transform: "s1.1 1.1" }, 500, "elastic");
+            //hexagonShapes.forEach(function(hexPath) { hexPath.toFront(); });
         }).mouseout(function () {
             shapePath.stop().animate({ transform: "" },  500, "elastic");
             inlinePath.stop().animate({ transform: "" },  500, "elastic");
+        });
+
+        inlinePath.click(function() {
+            shapePath.remove();
+            inlinePath.remove();
+            //hexagonShapes.forEach(function(hexPath) { hexPath.remove(); });
         });
     };
 

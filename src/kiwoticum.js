@@ -358,7 +358,7 @@ kiwoticum.builder = kiwoticum.builder || {};
 kiwoticum.builder.spw = kiwoticum.builder.spw || {};
 
 kiwoticum.builder.spw.createCountries = function(builder, options) {
-    var width = builder.getWidth(), height = builder.getHeight(), COUNTRY_COLORS = [ "#cdada7", "#241f1f", "#9e6249", "#b6915f", "#6d5653", "#697297", "#c4c1be", "#422927", "#9f1d08", "#99798e", "#b85b3e", "#b38d6a" ];
+    var width = builder.getWidth(), height = builder.getHeight(), COUNTRY_COLORS = [ "#556270", "#556270", "#556270", "#556270", "#556270", "#556270", "#556270", "#556270", "#556270", "#FF6B6B", "#4ECDC4" ];
     function randomPoint() {
         var x = Math.random() * (width - 1), y = Math.random() * (height - 1);
         return [ Math.round(x), Math.round(y) ];
@@ -369,10 +369,10 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {
     function gridToHexagonCoords(gridX, gridY) {
         return [ gridX * options.gridWidth, gridY * options.gridHeight ];
     }
-    function randomPointOfGrid(gridX, gridY) {
-        var coords = gridToHexagonCoords(gridX, gridY);
-        coords[0] += Math.round(Math.random() * (options.gridWidth - 1));
-        coords[1] += Math.round(Math.random() * (options.gridWidth - 1));
+    function randomPointOfGrid(gridX, gridY, paddingX, paddingY) {
+        var coords = gridToHexagonCoords(gridX, gridY), px = typeof paddingX === "undefined" ? 0 : paddingX, py = typeof paddingY === "undefined" ? 0 : paddingY;
+        coords[0] += px + Math.round(Math.random() * (options.gridWidth - 1 - px * 2));
+        coords[1] += px + Math.round(Math.random() * (options.gridHeight - 1 - py * 2));
         return clampHexagonCoords(coords);
     }
     var noise = new kiwoticum.utils.SimplexNoise();
@@ -380,13 +380,32 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {
         return x === 0 || y === 0 || x === options.gridWidth - 1 || y === options.gridHeight - 1 || noise.noise(x / (options.gridWidth * .5), y / (options.gridHeight * .5)) < -.3;
     }
     var x, y, point, hexagon, country, gridWidth = Math.round(width / options.gridWidth), gridHeight = Math.round(height / options.gridHeight);
+    function assignBaseHexagon(country, hexagon) {
+        country.assignHexagon(hexagon);
+        country.data.baseHexagons.push(hexagon);
+    }
     for (y = 1; y < gridHeight - 1; y++) {
         for (x = 1; x < gridWidth - 1; x++) {
             if (skipCountryGeneration(x, y)) {
                 continue;
             }
             country = builder.createCountry();
-            country.assignHexagon(builder.getHexagon(point = randomPointOfGrid(x, y)));
+            point = randomPointOfGrid(x, y, options.insideGridPaddingX, options.insideGridPaddingY);
+            hexagon = builder.getHexagon(point);
+            country.assignHexagon(hexagon);
+            country.data.baseHexagons = [ hexagon ];
+            assignBaseHexagon(country, hexagon.neighbor.northWest);
+            assignBaseHexagon(country, hexagon.neighbor.north);
+            assignBaseHexagon(country, hexagon.neighbor.northEast);
+            assignBaseHexagon(country, hexagon.neighbor.southWest);
+            assignBaseHexagon(country, hexagon.neighbor.south);
+            assignBaseHexagon(country, hexagon.neighbor.southEast);
+            country.assignHexagon(hexagon.neighbor.north.neighbor.northWest);
+            country.assignHexagon(hexagon.neighbor.north.neighbor.north);
+            country.assignHexagon(hexagon.neighbor.north.neighbor.northEast);
+            country.assignHexagon(hexagon.neighbor.south.neighbor.southWest);
+            country.assignHexagon(hexagon.neighbor.south.neighbor.south);
+            country.assignHexagon(hexagon.neighbor.south.neighbor.southEast);
         }
     }
     function growCountry(country) {
@@ -472,20 +491,22 @@ kiwoticum.builder.spw.getBuilderConfig = function() {
 
 kiwoticum.builder.spw.getCountryMapBuilderConfig = function() {
     return _.extend({
-        width: 100,
-        height: 100,
-        gridHeight: 5,
-        gridWidth: 5,
-        growIterations: 25,
-        hexagonWidth: 18,
-        hexagonHeight: 18,
+        width: 72,
+        height: 72,
+        gridHeight: 6,
+        gridWidth: 6,
+        insideGridPaddingX: 2,
+        insideGridPaddingY: 2,
+        growIterations: 36,
+        hexagonWidth: 20,
+        hexagonHeight: 20,
         hexagonInlineOffset: 4,
-        hexagonInlineOffset2: .5,
+        hexagonInlineOffset2: 0,
         hexagonStroke: "#333",
         hexagonFill: "rgba(128,128,128,0.5)",
         hexagonFill2: "rgba(128,128,128,0.25)",
-        paddingX: 0,
-        paddingY: 0
+        paddingX: 1,
+        paddingY: 1
     }, kiwoticum.builder.spw.getBuilderConfig());
 };
 

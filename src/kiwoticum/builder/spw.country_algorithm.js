@@ -4,7 +4,7 @@ kiwoticum.builder.spw = kiwoticum.builder.spw||{};
 kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
 
     var width= builder.getWidth(), height= builder.getHeight(),
-        COUNTRY_COLORS = [
+        COUNTRY_COLORS = [ // {{{
             //"#cdada7",
             //"#241f1f",
             //"#9e6249",
@@ -19,11 +19,11 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
             //"#b38d6a"
 
             // http://www.colourlovers.com/palette/694737/Thought_Provoking
-            //"#ECD078",
-            //"#D95B43",
-            //"#C02942",
-            //"#542437",
-            //"#53777A"
+            "#ECD078",
+            "#D95B43",
+            "#C02942",
+            "#542437",
+            "#53777A"
 
             // http://www.colourlovers.com/palette/1930/cheer_up_emo_kid
             //"#556270",
@@ -32,17 +32,17 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
             //"#FF6B6B",
             //"#C44D58"
 
-            "#556270",
-            "#556270",
-            "#556270",
-            "#556270",
-            "#556270",
-            "#556270",
-            "#556270",
-            "#556270",
-            "#556270",
-            "#FF6B6B",
-            "#4ECDC4"
+            //"#556270",
+            //"#556270",
+            //"#556270",
+            //"#556270",
+            //"#556270",
+            //"#556270",
+            //"#556270",
+            //"#556270",
+            //"#556270",
+            //"#FF6B6B",
+            //"#4ECDC4"
 
             // spw // http://www.colourlovers.com/palettes/add 
             //"#B59C7E",
@@ -51,6 +51,7 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
             //"#7192A6",
             //"#A671A2"
         ];
+        // }}}
 
     function randomPoint() {
         var x = Math.random() * (width - 1),
@@ -66,10 +67,13 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
         return [gridX * options.gridWidth, gridY * options.gridHeight];
     }
 
-    function randomPointOfGrid(gridX, gridY) {
-        var coords = gridToHexagonCoords(gridX, gridY);
-        coords[0] += Math.round(Math.random() * (options.gridWidth - 1));
-        coords[1] += Math.round(Math.random() * (options.gridWidth - 1));
+    function randomPointOfGrid(gridX, gridY, paddingX, paddingY) {
+        var coords = gridToHexagonCoords(gridX, gridY),
+            px = (typeof paddingX === 'undefined') ? 0 : paddingX,
+            py = (typeof paddingY === 'undefined') ? 0 : paddingY;
+
+        coords[0] += px + Math.round(Math.random() * (options.gridWidth - 1 - (px*2)));
+        coords[1] += px + Math.round(Math.random() * (options.gridHeight - 1 - (py*2)));
         return clampHexagonCoords(coords);
     }
 
@@ -77,12 +81,20 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
 
     function skipCountryGeneration(x, y) {
         return x === 0 || y === 0 || x === options.gridWidth - 1 || y === options.gridHeight - 1 ||
-            (noise.noise(x / (options.gridWidth * 0.5), y / (options.gridHeight * 0.5)) < -0.3);
+            (noise.noise(x / (options.gridWidth * 0.5), y / (options.gridHeight * 0.5)) < -0.5);
     }
 
     var x, y, point, hexagon, country,
         gridWidth = Math.round(width / options.gridWidth),
         gridHeight = Math.round(height / options.gridHeight);
+
+    // A) Create Countries
+    // ===================
+    //
+    function assignBaseHexagon(country, hexagon) {
+        country.assignHexagon(hexagon);
+        country.data.baseHexagons.push(hexagon);
+    }
 
     for (y = 1; y < gridHeight - 1; y++) {
         for (x = 1; x < gridWidth - 1; x++) {
@@ -92,9 +104,58 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
             }
 
             country = builder.createCountry();
-            country.assignHexagon(builder.getHexagon(point = randomPointOfGrid(x, y)));
+            point = randomPointOfGrid(x, y, options.insideGridPaddingX, options.insideGridPaddingY);
+            hexagon = builder.getHexagon(point);
+            country.assignHexagon(hexagon);
+            country.data.baseHexagons = [hexagon];
+
+            //     __    __    __    __    __
+            //    /  \__/  \__/  \__/  \__/  \__
+            //    \__/  \__/  \__/  \__/  \__/  \
+            //    /  \__/  \__/  \__/  \__/  \__/
+            //    \__/  \__/  \__/  \__/  \__/  \
+            //    /  \__/  \__/  \__/  \__/  \__/
+            //    \__/  \__/  \__/  \__/  \__/  \
+            //    /  \__/  \__/n \__/  \__/  \__/
+            //    \__/  \__/nw\__/ne\__/  \__/  \
+            //    /  \__/nw\__/n \__/ne\__/  \__/
+            //    \__/  \__/nw\_x/ne\__/  \__/  \
+            //    /  \__/sw\_x/x \_x/se\__/  \__/
+            //    \__/  \__/sw\__/se\__/  \__/  \
+            //    /  \__/sw\_x/s \_x/se\__/  \__/
+            //    \__/  \__/sw\_x/se\__/  \__/  \
+            //    /  \__/  \__/s \__/  \__/  \__/
+            //    \__/  \__/  \__/  \__/  \__/  \
+            //    /  \__/  \__/  \__/  \__/  \__/
+            //    \__/  \__/  \__/  \__/  \__/  \
+            //    /  \__/  \__/  \__/  \__/  \__/
+            //    \__/  \__/  \__/  \__/  \__/  \
+            //       \__/  \__/  \__/  \__/  \__/
+            //
+            assignBaseHexagon(country, hexagon.neighbor.northWest);
+            assignBaseHexagon(country, hexagon.neighbor.north);
+            assignBaseHexagon(country, hexagon.neighbor.northEast);
+            assignBaseHexagon(country, hexagon.neighbor.southWest);
+            assignBaseHexagon(country, hexagon.neighbor.south);
+            assignBaseHexagon(country, hexagon.neighbor.southEast);
+
+            country.assignHexagon(hexagon.neighbor.north.neighbor.northWest);
+            country.assignHexagon(hexagon.neighbor.north.neighbor.north);
+            country.assignHexagon(hexagon.neighbor.north.neighbor.northEast);
+            country.assignHexagon(hexagon.neighbor.south.neighbor.southWest);
+            country.assignHexagon(hexagon.neighbor.south.neighbor.south);
+            country.assignHexagon(hexagon.neighbor.south.neighbor.southEast);
+            country.assignHexagon(hexagon.neighbor.northWest.neighbor.northWest);
+            country.assignHexagon(hexagon.neighbor.northWest.neighbor.southWest);
+            country.assignHexagon(hexagon.neighbor.southWest.neighbor.southWest);
+            country.assignHexagon(hexagon.neighbor.northEast.neighbor.northEast);
+            country.assignHexagon(hexagon.neighbor.northEast.neighbor.southEast);
+            country.assignHexagon(hexagon.neighbor.southEast.neighbor.southEast);
         }
     }
+
+    // B) Grow Countries
+    // =================
 
     // returns true if country is growable and has no neighbor countries
     //   (..after assigning hexagon to it)
@@ -115,6 +176,9 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
         _.each(builder.countries, growCountry);
     }
 
+    // C) Grow Countries Without Neighbors Until They Have One
+    // =======================================================
+
     var neighborLessCountries = _.select(builder.countries, function(country) {
         return country.neighbors.length === 0;
     });
@@ -122,6 +186,9 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
     while (neighborLessCountries.length) {
         neighborLessCountries = _.select(neighborLessCountries, growCountry);
     }
+
+    // D) Set Country Colors (obsolete in future)
+    // ==========================================
 
     for (i = 0; i < builder.countries.length; i++) {
         builder.countries[i].setColor(COUNTRY_COLORS[i % COUNTRY_COLORS.length]);
@@ -193,15 +260,17 @@ kiwoticum.builder.spw.getBuilderConfig = function() {
 kiwoticum.builder.spw.getCountryMapBuilderConfig = function() {
     return _.extend({
 
-        width: 72, //100,
-        height: 72, //100,
-        gridHeight: 6, //5,
-        gridWidth: 6, //5,
+        width: 80, //100,
+        height: 80, //100,
+        gridHeight: 8, //5,
+        gridWidth: 8, //5,
+        insideGridPaddingX: 2,
+        insideGridPaddingY: 2,
 
-        growIterations: 36,
+        growIterations: 30,
 
-        hexagonWidth: 20,
-        hexagonHeight: 20,
+        hexagonWidth: 18,
+        hexagonHeight: 18,
         hexagonInlineOffset: 4,
         hexagonInlineOffset2: 0,
 
