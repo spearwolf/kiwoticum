@@ -3,12 +3,13 @@ jQuery(function($) {
     console.log("%ckiwoticum developer documentation", "font-weight:bold;font-size:120%;");
 
     function makeBaseHexagonDiagram(el) {
-        var STROKE_WIDTH = 3,
-            SCALE_HEIGHT = 0.8;
-
         var $el = $(el),
             width = $el.width(),
             height = $el.height(),
+
+            STROKE_WIDTH = 4,
+            SCALE_HEIGHT = height/width,
+
             hexSize = _.max([width-STROKE_WIDTH, height-STROKE_WIDTH]),
 
             paper = Raphael(el, width, height),
@@ -29,7 +30,8 @@ jQuery(function($) {
         shape.attr("stroke-width", STROKE_WIDTH);
         shape.attr("stroke", "#204060");
         shape.attr("fill", "#f0f0ff");
-        shape.translate(STROKE_WIDTH>>1, (hexSize * ((1.0 - SCALE_HEIGHT)/2.0))|0);
+        //shape.translate(STROKE_WIDTH>>1, (hexSize * ((1.0 - SCALE_HEIGHT)/2.0))|0);
+        shape.translate(STROKE_WIDTH>>1, 0);
     }
 
     $("[data-behavior=diagram]").each(function(n, el) {
