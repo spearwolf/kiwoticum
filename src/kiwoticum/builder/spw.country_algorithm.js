@@ -80,8 +80,10 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
     var noise = new kiwoticum.utils.SimplexNoise();
 
     function skipCountryGeneration(x, y) {
-        return x === 0 || y === 0 || x === options.gridWidth - 1 || y === options.gridHeight - 1 ||
+        return x === 0 || y === 0 || x > gridWidth - 2 || y > gridHeight - 2 ||
             (noise.noise(x / (options.gridWidth * 0.5), y / (options.gridHeight * 0.5)) < -0.5);
+        //return x === 0 || y === 0 || x > options.gridWidth - 1 || y > options.gridHeight - 1 ||
+            //(noise.noise(x / (options.gridWidth * 0.5), y / (options.gridHeight * 0.5)) < -0.5);
     }
 
     var x, y, point, hexagon, country,
@@ -96,61 +98,115 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
         country.data.baseHexagons.push(hexagon);
     }
 
-    for (y = 1; y < gridHeight - 1; y++) {
-        for (x = 1; x < gridWidth - 1; x++) {
+    function makeCountry(gridX, gridY) {
+        var country = builder.createCountry();
+        country.data.gridPos = [gridX, gridY];
+
+        var point = randomPointOfGrid(gridX, gridY, options.insideGridPaddingX, options.insideGridPaddingY);
+        var hexagon = builder.getHexagon(point);
+        country.assignHexagon(hexagon);
+        country.data.baseHexagons = [hexagon];
+
+        //     __    __    __    __    __
+        //    /  \__/  \__/  \__/  \__/  \__
+        //    \__/  \__/  \__/  \__/  \__/  \
+        //    /  \__/  \__/  \__/  \__/  \__/
+        //    \__/  \__/  \__/  \__/  \__/  \
+        //    /  \__/  \__/  \__/  \__/  \__/
+        //    \__/  \__/  \__/  \__/  \__/  \
+        //    /  \__/  \__/n \__/  \__/  \__/
+        //    \__/  \__/nw\__/ne\__/  \__/  \
+        //    /  \__/nw\__/n \__/ne\__/  \__/
+        //    \__/  \__/nw\_x/ne\__/  \__/  \
+        //    /  \__/sw\_x/x \_x/se\__/  \__/
+        //    \__/  \__/sw\__/se\__/  \__/  \
+        //    /  \__/sw\_x/s \_x/se\__/  \__/
+        //    \__/  \__/sw\_x/se\__/  \__/  \
+        //    /  \__/  \__/s \__/  \__/  \__/
+        //    \__/  \__/  \__/  \__/  \__/  \
+        //    /  \__/  \__/  \__/  \__/  \__/
+        //    \__/  \__/  \__/  \__/  \__/  \
+        //    /  \__/  \__/  \__/  \__/  \__/
+        //    \__/  \__/  \__/  \__/  \__/  \
+        //       \__/  \__/  \__/  \__/  \__/
+        //
+        assignBaseHexagon(country, hexagon.neighbor.northWest);
+        assignBaseHexagon(country, hexagon.neighbor.north);
+        assignBaseHexagon(country, hexagon.neighbor.northEast);
+        assignBaseHexagon(country, hexagon.neighbor.southWest);
+        assignBaseHexagon(country, hexagon.neighbor.south);
+        assignBaseHexagon(country, hexagon.neighbor.southEast);
+
+        country.assignHexagon(hexagon.neighbor.north.neighbor.northWest);
+        country.assignHexagon(hexagon.neighbor.north.neighbor.north);
+        country.assignHexagon(hexagon.neighbor.north.neighbor.northEast);
+        country.assignHexagon(hexagon.neighbor.south.neighbor.southWest);
+        country.assignHexagon(hexagon.neighbor.south.neighbor.south);
+        country.assignHexagon(hexagon.neighbor.south.neighbor.southEast);
+        country.assignHexagon(hexagon.neighbor.northWest.neighbor.northWest);
+        country.assignHexagon(hexagon.neighbor.northWest.neighbor.southWest);
+        country.assignHexagon(hexagon.neighbor.southWest.neighbor.southWest);
+        country.assignHexagon(hexagon.neighbor.northEast.neighbor.northEast);
+        country.assignHexagon(hexagon.neighbor.northEast.neighbor.southEast);
+        country.assignHexagon(hexagon.neighbor.southEast.neighbor.southEast);
+
+        return country;
+    }
+
+    var countryGridCell = new Array(gridHeight);
+
+    for (y = 0; y < gridHeight; y++) {
+        countryGridCell[y] = new Array(gridWidth);
+        for (x = 0; x < gridWidth; x++) {
 
             if (skipCountryGeneration(x, y)) {
+                countryGridCell[y][x] = { type: 'Cell', x: x, y: y };
                 continue;
             }
 
-            country = builder.createCountry();
-            point = randomPointOfGrid(x, y, options.insideGridPaddingX, options.insideGridPaddingY);
-            hexagon = builder.getHexagon(point);
-            country.assignHexagon(hexagon);
-            country.data.baseHexagons = [hexagon];
+            countryGridCell[y][x] = makeCountry(x, y);
+        }
+    }
 
-            //     __    __    __    __    __
-            //    /  \__/  \__/  \__/  \__/  \__
-            //    \__/  \__/  \__/  \__/  \__/  \
-            //    /  \__/  \__/  \__/  \__/  \__/
-            //    \__/  \__/  \__/  \__/  \__/  \
-            //    /  \__/  \__/  \__/  \__/  \__/
-            //    \__/  \__/  \__/  \__/  \__/  \
-            //    /  \__/  \__/n \__/  \__/  \__/
-            //    \__/  \__/nw\__/ne\__/  \__/  \
-            //    /  \__/nw\__/n \__/ne\__/  \__/
-            //    \__/  \__/nw\_x/ne\__/  \__/  \
-            //    /  \__/sw\_x/x \_x/se\__/  \__/
-            //    \__/  \__/sw\__/se\__/  \__/  \
-            //    /  \__/sw\_x/s \_x/se\__/  \__/
-            //    \__/  \__/sw\_x/se\__/  \__/  \
-            //    /  \__/  \__/s \__/  \__/  \__/
-            //    \__/  \__/  \__/  \__/  \__/  \
-            //    /  \__/  \__/  \__/  \__/  \__/
-            //    \__/  \__/  \__/  \__/  \__/  \
-            //    /  \__/  \__/  \__/  \__/  \__/
-            //    \__/  \__/  \__/  \__/  \__/  \
-            //       \__/  \__/  \__/  \__/  \__/
-            //
-            assignBaseHexagon(country, hexagon.neighbor.northWest);
-            assignBaseHexagon(country, hexagon.neighbor.north);
-            assignBaseHexagon(country, hexagon.neighbor.northEast);
-            assignBaseHexagon(country, hexagon.neighbor.southWest);
-            assignBaseHexagon(country, hexagon.neighbor.south);
-            assignBaseHexagon(country, hexagon.neighbor.southEast);
+    function neighborCells(x, y) {
+        return _.compact(_.map([[x-1, y-1], [x, y-1], [x+1, y-1],
+                      [x-1, y],             [x+1, y],
+                      [x-1, y+1], [x, y+1], [x+1, y+1]
+            ], function(coord) {
+                if (coord[0] >= 0 &&
+                    coord[0] < gridWidth &&
+                    coord[1] >= 0 &&
+                    coord[1] < gridHeight) {
+                    return countryGridCell[ coord[1] ][ coord[0] ];
+                }
+            }));
+    }
 
-            country.assignHexagon(hexagon.neighbor.north.neighbor.northWest);
-            country.assignHexagon(hexagon.neighbor.north.neighbor.north);
-            country.assignHexagon(hexagon.neighbor.north.neighbor.northEast);
-            country.assignHexagon(hexagon.neighbor.south.neighbor.southWest);
-            country.assignHexagon(hexagon.neighbor.south.neighbor.south);
-            country.assignHexagon(hexagon.neighbor.south.neighbor.southEast);
-            country.assignHexagon(hexagon.neighbor.northWest.neighbor.northWest);
-            country.assignHexagon(hexagon.neighbor.northWest.neighbor.southWest);
-            country.assignHexagon(hexagon.neighbor.southWest.neighbor.southWest);
-            country.assignHexagon(hexagon.neighbor.northEast.neighbor.northEast);
-            country.assignHexagon(hexagon.neighbor.northEast.neighbor.southEast);
-            country.assignHexagon(hexagon.neighbor.southEast.neighbor.southEast);
+    // Check if each country-grid-cell has at least one neighbor
+    function isCountry(cell) {
+        return cell.type === 'Country';
+    }
+
+    function isInnerCell(cell) {
+        return cell.type === 'Cell' && cell.x > 0 && cell.y > 0 && cell.x < gridWidth - 2 && cell.y < gridHeight - 2;
+    }
+
+    var neighborCountries, cells, cell;
+
+    for (y = 0; y < gridHeight; y++) {
+        for (x = 0; x < gridWidth; x++) {
+            cell = countryGridCell[y][x];
+            if (cell && cell.type === 'Country') {
+                cells = neighborCells(x, y);
+                neighborCountries = _.filter(cells, isCountry);
+                //console.log("neighborCountries.length=", neighborCountries.length);
+                if (neighborCountries.length === 0) {
+                    cells = _.filter(cells, isInnerCell);
+                    cell = cells[_.random(0, cells.length-1)];
+                    //console.log("Cell ->", cell);
+                    countryGridCell[cell.y][cell.x] = makeCountry(cell.x, cell.y);
+                }
+            }
         }
     }
 
@@ -261,7 +317,7 @@ kiwoticum.builder.spw.getCountryMapBuilderConfig = function() {
     return _.extend({
 
         width: 80, //100,
-        height: 80, //100,
+        height: 56, //100,
         gridHeight: 8, //5,
         gridWidth: 8, //5,
         insideGridPaddingX: 2,
