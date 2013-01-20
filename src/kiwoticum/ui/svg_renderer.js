@@ -1,17 +1,20 @@
 kiwoticum.ui = kiwoticum.ui||{};
+kiwoticum.ui.utils = kiwoticum.ui.utils||{};
+
+
+kiwoticum.ui.utils.createSvgPath = function(coords) {
+    return _.reduce(coords, function(path, v) {
+        return path + (path === "" ? "M" : " L") + (Math.round(v[0]*100)/100) + " " + (Math.round(v[1]*100)/100);
+    }, "") + " z";
+};
+
 
 kiwoticum.ui.SvgRenderer = function(canvasContainer, builder) {
 
     var api = {},
         paper = Raphael(canvasContainer, builder.getCanvasWidth(), builder.getCanvasHeight());
 
-    function createSvgPath(coords) {
-        return _.reduce(coords, function(path, v) {
-            return path + (path === "" ? "M" : " L") + (Math.round(v[0]*100)/100) + " " + (Math.round(v[1]*100)/100);
-        }, "") + " z";
-    }
-
-    var baseHexSvgPath = createSvgPath(builder.baseHexCoords);
+    var baseHexSvgPath = kiwoticum.ui.utils.createSvgPath(builder.baseHexCoords);
 
     function emitObj(eventName, eventObj) {
         return function() { _e.emit(eventName, eventObj); };
@@ -35,13 +38,13 @@ kiwoticum.ui.SvgRenderer = function(canvasContainer, builder) {
         var shapePath, inlinePath;
 
         // country outline shape (polygon)
-        shapePath = paper.path(createSvgPath(country.createShapePath()));
+        shapePath = paper.path(kiwoticum.ui.utils.createSvgPath(country.createShapePath()));
         shapePath.attr("fill", country.data.color);
         shapePath.attr("stroke-width", "1");
         shapePath.attr("stroke", "#000000");
 
         // inline shape
-        inlinePath = paper.path(createSvgPath(country.data.inlineShapePath));
+        inlinePath = paper.path(kiwoticum.ui.utils.createSvgPath(country.data.inlineShapePath));
         inlinePath.attr("fill", "rgba(0, 0, 0, 0.4)");
         inlinePath.attr("stroke-width", "0");
 

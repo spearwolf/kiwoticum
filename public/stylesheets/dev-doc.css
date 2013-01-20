@@ -1,0 +1,28 @@
+
+body {
+    background-color: #ffffff;
+}
+
+body, p {
+    color: #333333;
+    font-family: 'Palatino', sans-serif;
+    font-size: 13pt;
+    font-weight: normal;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #000000;
+    font-family: 'GillSans', serif;
+    font-weight: bold;
+}
+
+h1 { font-size: 21pt; }
+h2 { font-size: 18pt; }
+h3 { font-size: 15pt; }
+
+.diagram.baseHexagon {
+    width: 300px;
+    height: 300px;
+    background-color: #f0f0f0;
+}
+
