@@ -36,7 +36,6 @@ uglifyjs = (sources, outFile, options...) ->
     return "./node_modules/uglify-js/bin/uglifyjs #{cmdLine}"
 
 add_header = (headerFile, outFile, onFinish) ->
-    console.log "> add #{headerFile} to #{outFile}"
     _exec "cat #{headerFile} > #{outFile}", ->
         _exec "cat #{outFile}.tmp >> #{outFile}", ->
             _exec "rm #{outFile}.tmp", onFinish
