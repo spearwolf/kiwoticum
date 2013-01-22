@@ -28,9 +28,8 @@ jQuery(function($) {
 
         var shape = paper.path(baseHexPath);
         shape.attr("stroke-width", STROKE_WIDTH);
-        shape.attr("stroke", "#204060");
-        shape.attr("fill", "#f0f0ff");
-        //shape.translate(STROKE_WIDTH>>1, (hexSize * ((1.0 - SCALE_HEIGHT)/2.0))|0);
+        shape.attr("stroke", "#406020");
+        shape.attr("fill", "#e0ffe0");
         shape.translate(STROKE_WIDTH>>1, 0);
     }
 

@@ -1,5 +1,6 @@
-var _ = require("underscore");
+"use strict";
 
-var kiwoticum = {};
+var _ = require("underscore"),
+    kiwoticum = {};
 
 module.exports = kiwoticum;
