@@ -65,9 +65,9 @@ isUncaughtException = no
 
 process.on "uncaughtException", (error) ->
     isUncaughtException = yes
-    console.error "#{C_BOLD}#{C_RED}Aborted because of errors.#{C_RESET}"
+    console.error "#{C_BOLD}#{C_RED}Aborted because of errors.#{C_RESET}\n"
 
 process.on "exit", ->
-    console.log "#{C_BOLD}#{C_YELLOW}Ready.#{C_RESET}" unless isUncaughtException
+    console.log "#{C_BOLD}#{C_YELLOW}Ready.#{C_RESET}\n" unless isUncaughtException
 
 
