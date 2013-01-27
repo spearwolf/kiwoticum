@@ -379,6 +379,48 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {
     function skipCountryGeneration(x, y) {
         return x === 0 || y === 0 || x > gridWidth - 2 || y > gridHeight - 2 || noise.noise(x / (options.gridWidth * .5), y / (options.gridHeight * .5)) < -.5;
     }
+    var mainlands = [];
+    function clearMainlands() {
+        mainlands = _.reject(mainlands, function(mainland) {
+            return mainland.countries.length === 0;
+        });
+        mainlands = _.sortBy(mainlands, function(mainland) {
+            return -mainland.countries.length;
+        });
+    }
+    function isBiggestMainland(mainland) {
+        return mainland == mainlands[0];
+    }
+    function Mainland(country) {
+        this.countries = [ country ];
+        country.data.mainland = this;
+        mainlands.push(this);
+    }
+    Mainland.prototype.assignCountry = function(country) {
+        if (this != country.data.mainland) {
+            this.countries.push(country);
+            country.data.mainland = this;
+        }
+    };
+    Mainland.prototype.merge = function(otherMainland) {
+        if (this != otherMainland) {
+            var self = this;
+            otherMainland.countries.forEach(function(otherCountry) {
+                self.assignCountry(otherCountry);
+            });
+            otherMainland.countries = [];
+            clearMainlands();
+        }
+    };
+    function assignHexagon(country, hexagon) {
+        var neighborBeforeCount = country.neighbors.length;
+        country.assignHexagon(hexagon);
+        if (country.neighbors.length > neighborBeforeCount) {
+            country.neighbors.forEach(function(_country) {
+                country.data.mainland.merge(_country.data.mainland);
+            });
+        }
+    }
     var x, y, point, hexagon, country, gridWidth = Math.round(width / options.gridWidth), gridHeight = Math.round(height / options.gridHeight);
     function assignBaseHexagon(country, hexagon) {
         country.assignHexagon(hexagon);
@@ -387,6 +429,7 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {
     function makeCountry(gridX, gridY) {
         var country = builder.createCountry();
         country.data.gridPos = [ gridX, gridY ];
+        country.data.mainland = new Mainland(country);
         var point = randomPointOfGrid(gridX, gridY, options.insideGridPaddingX, options.insideGridPaddingY);
         var hexagon = builder.getHexagon(point);
         country.assignHexagon(hexagon);
@@ -397,18 +440,18 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {
         assignBaseHexagon(country, hexagon.neighbor.southWest);
         assignBaseHexagon(country, hexagon.neighbor.south);
         assignBaseHexagon(country, hexagon.neighbor.southEast);
-        country.assignHexagon(hexagon.neighbor.north.neighbor.northWest);
-        country.assignHexagon(hexagon.neighbor.north.neighbor.north);
-        country.assignHexagon(hexagon.neighbor.north.neighbor.northEast);
-        country.assignHexagon(hexagon.neighbor.south.neighbor.southWest);
-        country.assignHexagon(hexagon.neighbor.south.neighbor.south);
-        country.assignHexagon(hexagon.neighbor.south.neighbor.southEast);
-        country.assignHexagon(hexagon.neighbor.northWest.neighbor.northWest);
-        country.assignHexagon(hexagon.neighbor.northWest.neighbor.southWest);
-        country.assignHexagon(hexagon.neighbor.southWest.neighbor.southWest);
-        country.assignHexagon(hexagon.neighbor.northEast.neighbor.northEast);
-        country.assignHexagon(hexagon.neighbor.northEast.neighbor.southEast);
-        country.assignHexagon(hexagon.neighbor.southEast.neighbor.southEast);
+        assignHexagon(country, hexagon.neighbor.north.neighbor.northWest);
+        assignHexagon(country, hexagon.neighbor.north.neighbor.north);
+        assignHexagon(country, hexagon.neighbor.north.neighbor.northEast);
+        assignHexagon(country, hexagon.neighbor.south.neighbor.southWest);
+        assignHexagon(country, hexagon.neighbor.south.neighbor.south);
+        assignHexagon(country, hexagon.neighbor.south.neighbor.southEast);
+        assignHexagon(country, hexagon.neighbor.northWest.neighbor.northWest);
+        assignHexagon(country, hexagon.neighbor.northWest.neighbor.southWest);
+        assignHexagon(country, hexagon.neighbor.southWest.neighbor.southWest);
+        assignHexagon(country, hexagon.neighbor.northEast.neighbor.northEast);
+        assignHexagon(country, hexagon.neighbor.northEast.neighbor.southEast);
+        assignHexagon(country, hexagon.neighbor.southEast.neighbor.southEast);
         return country;
     }
     var countryGridCell = new Array(gridHeight);
@@ -458,7 +501,7 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {
         if (typeof country.couldNotGrowAnymore === "undefined") {
             var hexagon = country.randomCountryLessNeighborHexagon();
             if (hexagon) {
-                country.assignHexagon(hexagon);
+                assignHexagon(country, hexagon);
             } else {
                 country.couldNotGrowAnymore = true;
                 return false;
@@ -467,7 +510,10 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {
         return country.neighbors.length === 0;
     }
     for (var i = 0; i < options.growIterations; i++) {
-        _.each(builder.countries, growCountry);
+        builder.countries.forEach(growCountry);
+    }
+    while (mainlands.length > 1) {
+        growCountry(mainlands[1].countries[_.random(mainlands[1].countries.length - 1)]);
     }
     var neighborLessCountries = _.select(builder.countries, function(country) {
         return country.neighbors.length === 0;

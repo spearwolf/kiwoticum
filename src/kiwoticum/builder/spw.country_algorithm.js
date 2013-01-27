@@ -86,6 +86,64 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
             //(noise.noise(x / (options.gridWidth * 0.5), y / (options.gridHeight * 0.5)) < -0.5);
     }
 
+    // ===== mainlands =============================== {{{
+    //
+    var mainlands = [];
+
+    function clearMainlands() {
+        mainlands = _.reject(mainlands, function(mainland) {
+            return mainland.countries.length === 0;
+        });
+        mainlands = _.sortBy(mainlands, function(mainland) {
+            return -mainland.countries.length;
+        });
+        //console.log("MAINLANDS", mainlands);
+    }
+
+    function isBiggestMainland(mainland) {
+        return mainland == mainlands[0];
+    }
+
+    function Mainland(country) {
+        this.countries = [country];
+        country.data.mainland = this;
+        //this.id = mainlands.length;
+        mainlands.push(this);
+    }
+
+    Mainland.prototype.assignCountry = function(country) {
+        if (this != country.data.mainland) {
+            //country.data.mainland.removeCountry(country);
+            this.countries.push(country);
+            country.data.mainland = this;
+        }
+    };
+
+    Mainland.prototype.merge = function(otherMainland) {
+        if (this != otherMainland) {
+            var self = this;
+            otherMainland.countries.forEach(function(otherCountry) {
+                self.assignCountry(otherCountry);
+            });
+            otherMainland.countries = [];
+            clearMainlands();
+        }
+    };
+
+    function assignHexagon(country, hexagon) {
+        var neighborBeforeCount = country.neighbors.length;
+
+        country.assignHexagon(hexagon);
+
+        if (country.neighbors.length > neighborBeforeCount) {
+            country.neighbors.forEach(function(_country) {
+                country.data.mainland.merge(_country.data.mainland);
+            });
+        }
+    }
+    //
+    // =============================================== }}}
+
     var x, y, point, hexagon, country,
         gridWidth = Math.round(width / options.gridWidth),
         gridHeight = Math.round(height / options.gridHeight);
@@ -101,6 +159,7 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
     function makeCountry(gridX, gridY) {
         var country = builder.createCountry();
         country.data.gridPos = [gridX, gridY];
+        country.data.mainland = new Mainland(country);
 
         var point = randomPointOfGrid(gridX, gridY, options.insideGridPaddingX, options.insideGridPaddingY);
         var hexagon = builder.getHexagon(point);
@@ -137,18 +196,18 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
         assignBaseHexagon(country, hexagon.neighbor.south);
         assignBaseHexagon(country, hexagon.neighbor.southEast);
 
-        country.assignHexagon(hexagon.neighbor.north.neighbor.northWest);
-        country.assignHexagon(hexagon.neighbor.north.neighbor.north);
-        country.assignHexagon(hexagon.neighbor.north.neighbor.northEast);
-        country.assignHexagon(hexagon.neighbor.south.neighbor.southWest);
-        country.assignHexagon(hexagon.neighbor.south.neighbor.south);
-        country.assignHexagon(hexagon.neighbor.south.neighbor.southEast);
-        country.assignHexagon(hexagon.neighbor.northWest.neighbor.northWest);
-        country.assignHexagon(hexagon.neighbor.northWest.neighbor.southWest);
-        country.assignHexagon(hexagon.neighbor.southWest.neighbor.southWest);
-        country.assignHexagon(hexagon.neighbor.northEast.neighbor.northEast);
-        country.assignHexagon(hexagon.neighbor.northEast.neighbor.southEast);
-        country.assignHexagon(hexagon.neighbor.southEast.neighbor.southEast);
+        assignHexagon(country, hexagon.neighbor.north.neighbor.northWest);
+        assignHexagon(country, hexagon.neighbor.north.neighbor.north);
+        assignHexagon(country, hexagon.neighbor.north.neighbor.northEast);
+        assignHexagon(country, hexagon.neighbor.south.neighbor.southWest);
+        assignHexagon(country, hexagon.neighbor.south.neighbor.south);
+        assignHexagon(country, hexagon.neighbor.south.neighbor.southEast);
+        assignHexagon(country, hexagon.neighbor.northWest.neighbor.northWest);
+        assignHexagon(country, hexagon.neighbor.northWest.neighbor.southWest);
+        assignHexagon(country, hexagon.neighbor.southWest.neighbor.southWest);
+        assignHexagon(country, hexagon.neighbor.northEast.neighbor.northEast);
+        assignHexagon(country, hexagon.neighbor.northEast.neighbor.southEast);
+        assignHexagon(country, hexagon.neighbor.southEast.neighbor.southEast);
 
         return country;
     }
@@ -182,7 +241,6 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
             }));
     }
 
-    // Check if each country-grid-cell has at least one neighbor
     function isCountry(cell) {
         return cell.type === 'Country';
     }
@@ -193,17 +251,16 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
 
     var neighborCountries, cells, cell;
 
+    // Make sure that each country-grid-cell has at least one neighbor
     for (y = 0; y < gridHeight; y++) {
         for (x = 0; x < gridWidth; x++) {
             cell = countryGridCell[y][x];
             if (cell && cell.type === 'Country') {
                 cells = neighborCells(x, y);
                 neighborCountries = _.filter(cells, isCountry);
-                //console.log("neighborCountries.length=", neighborCountries.length);
                 if (neighborCountries.length === 0) {
                     cells = _.filter(cells, isInnerCell);
                     cell = cells[_.random(0, cells.length-1)];
-                    //console.log("Cell ->", cell);
                     countryGridCell[cell.y][cell.x] = makeCountry(cell.x, cell.y);
                 }
             }
@@ -219,7 +276,8 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
         if (typeof country.couldNotGrowAnymore === 'undefined') {
             var hexagon = country.randomCountryLessNeighborHexagon();
             if (hexagon) {
-                country.assignHexagon(hexagon);
+                //country.assignHexagon(hexagon);
+                assignHexagon(country, hexagon);
             } else {
                 country.couldNotGrowAnymore = true;
                 return false;
@@ -229,7 +287,12 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
     }
 
     for (var i = 0; i < options.growIterations; i++) {
-        _.each(builder.countries, growCountry);
+        builder.countries.forEach(growCountry);
+    }
+
+    // grow until we have only one mainland left!
+    while (mainlands.length > 1) {
+        growCountry(mainlands[1].countries[_.random(mainlands[1].countries.length-1)]);
     }
 
     // C) Grow Countries Without Neighbors Until They Have One
@@ -249,6 +312,15 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
     for (i = 0; i < builder.countries.length; i++) {
         builder.countries[i].setColor(COUNTRY_COLORS[i % COUNTRY_COLORS.length]);
     }
+
+    // color mainlands [obsolete, since we grow until one mainland is left!]
+    //var j;
+    //for (i = 0; i < mainlands.length; i++) {
+        //for (j = 0; j < mainlands[i].countries.length; j++) {
+            //mainlands[i].countries[j].setColor(COUNTRY_COLORS[i % COUNTRY_COLORS.length]);
+        //}
+    //}
+
 };
 // }}}
 

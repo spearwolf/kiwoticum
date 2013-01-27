@@ -60,17 +60,21 @@ kiwoticum.ui.SvgRenderer = function(canvasContainer, builder) {
         inlinePath.mouseover(function () {
             shapePath.stop().toFront().animate({ transform: "s1.1 1.1" }, 500, "elastic");
             inlinePath.stop().toFront().animate({ transform: "s1.1 1.1" }, 500, "elastic");
-            //hexagonShapes.forEach(function(hexPath) { hexPath.toFront(); });
         }).mouseout(function () {
-            shapePath.stop().animate({ transform: "" },  500, "elastic");
-            inlinePath.stop().animate({ transform: "" },  500, "elastic");
+            if (shapePath) {
+                shapePath.stop().animate({ transform: "" },  500, "elastic");
+            }
+            if (inlinePath) {
+                inlinePath.stop().animate({ transform: "" },  500, "elastic");
+            }
         });
 
-        inlinePath.click(function() {
-            shapePath.remove();
-            inlinePath.remove();
-            //hexagonShapes.forEach(function(hexPath) { hexPath.remove(); });
-        });
+        //inlinePath.click(function() {
+            //shapePath.remove();
+            //inlinePath.remove();
+            //shapePath = null;
+            //inlinePath = null;
+        //});
     };
 
     return api;
