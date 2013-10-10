@@ -1,8 +1,11 @@
+/*global kiwoticum iScroll */
 jQuery(function($) {
 
     function createCountryMap(container) {
-        var options = kiwoticum.builder.spw.getCountryMapBuilderConfig(),
-            builder = kiwoticum.builder.CountryMapBuilder(options);
+        var options = kiwoticum.builder.spw.getCountryMapBuilderConfig();
+        options.hexagonInlineOffset = 4.5;
+
+        var builder = kiwoticum.builder.CountryMapBuilder(options);
         builder.renderer = kiwoticum.ui.SvgRenderer(container, builder);
 
         builder.createCountries();
@@ -36,7 +39,7 @@ jQuery(function($) {
             vScroll: true,
             lockDirection: false,
             zoom: true
-        }); 
+        });
 
         $(window).resize(function() {
             centerCountryMapView(container);

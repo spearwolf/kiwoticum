@@ -1,3 +1,4 @@
+/*global Raphael kiwoticum */
 jQuery(function($) {
 
     console.log("%ckiwoticum developer documentation", "font-weight:bold;font-size:120%;");
@@ -7,7 +8,7 @@ jQuery(function($) {
             width = $el.width(),
             height = $el.height(),
 
-            STROKE_WIDTH = 4,
+            STROKE_WIDTH = 8,
             SCALE_HEIGHT = height/width,
 
             hexSize = _.max([width-STROKE_WIDTH, height-STROKE_WIDTH]),
@@ -79,7 +80,7 @@ jQuery(function($) {
             vScroll: true,
             lockDirection: false,
             zoom: true
-        }); 
+        });
 
         $(window).resize(function() {
             centerCountryMapView(container);

@@ -1,3 +1,4 @@
+/*global kiwoticum */
 kiwoticum.builder = kiwoticum.builder||{};
 
 kiwoticum.builder.CountryMapBuilder = function(options) {
@@ -11,7 +12,6 @@ kiwoticum.builder.CountryMapBuilder = function(options) {
             paddingX: 0,
             paddingY: 0,
             hexagonInlineOffset: undefined,
-            hexagonInlineOffset2: 0.5,
             hexagonFill: '#79b',
             hexagonFill2: '#68a',
             hexagonStroke: '#024',
@@ -152,7 +152,7 @@ kiwoticum.builder.CountryMapBuilder = function(options) {
     api.drawGroundHexagons = function(showHexagonFn) {
         if (!api.renderer) throw "renderer is null!";
 
-        var y, x, hexagon, evenX, evenY, fillColor, showHexagon; 
+        var y, x, hexagon, evenX, evenY, fillColor, showHexagon;
 
         for (y = 0; y < conf.height; y++) {
             for (x = 0; x < conf.width; x++) {
@@ -194,7 +194,7 @@ kiwoticum.builder.CountryMapBuilder = function(options) {
     };
 
     Country.prototype.assignHexagon = function(hexagon) {
-        if (hexagon && hexagon.country != this) {
+        if (hexagon && hexagon.country !== this) {
             if (hexagon.country !== null) {
                 hexagon.country.unassignHexagon(hexagon);
             }
@@ -386,8 +386,10 @@ kiwoticum.builder.CountryMapBuilder = function(options) {
 
             var coords = [hexagon.getVertexCoords(edge), hexagon.getVertexCoords((edge + 1) % 6)];
             coords[1] = [
-                (coords[1][0] - coords[0][0]) * 0.5,  // x
-                (coords[1][1] - coords[0][1]) * 0.5   // y
+                (coords[1][0] - coords[0][0]) * 0.25,  // x
+                (coords[1][1] - coords[0][1]) * 0.25   // y
+                //(coords[1][0] - coords[0][0]) * 0.75,  // x
+                //(coords[1][1] - coords[0][1]) * 0.75   // y
             ];
             inlineShapePath.push([
                     coords[0][0] + coords[1][0],  // x

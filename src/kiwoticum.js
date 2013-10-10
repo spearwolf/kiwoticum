@@ -16,7 +16,6 @@ kiwoticum.builder.CountryMapBuilder = function(options) {
         paddingX: 0,
         paddingY: 0,
         hexagonInlineOffset: undefined,
-        hexagonInlineOffset2: .5,
         hexagonFill: "#79b",
         hexagonFill2: "#68a",
         hexagonStroke: "#024",
@@ -173,7 +172,7 @@ kiwoticum.builder.CountryMapBuilder = function(options) {
         return this;
     };
     Country.prototype.assignHexagon = function(hexagon) {
-        if (hexagon && hexagon.country != this) {
+        if (hexagon && hexagon.country !== this) {
             if (hexagon.country !== null) {
                 hexagon.country.unassignHexagon(hexagon);
             }
@@ -307,7 +306,7 @@ kiwoticum.builder.CountryMapBuilder = function(options) {
         if (prevEdge !== edge) {
             inlineShapePath.push(hexagon.getInlineVertexCoords(edge));
             var coords = [ hexagon.getVertexCoords(edge), hexagon.getVertexCoords((edge + 1) % 6) ];
-            coords[1] = [ (coords[1][0] - coords[0][0]) * .5, (coords[1][1] - coords[0][1]) * .5 ];
+            coords[1] = [ (coords[1][0] - coords[0][0]) * .25, (coords[1][1] - coords[0][1]) * .25 ];
             inlineShapePath.push([ coords[0][0] + coords[1][0], coords[0][1] + coords[1][1] ]);
         }
         return {
