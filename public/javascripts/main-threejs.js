@@ -70,14 +70,15 @@ jQuery(function($) {
 
     var camera, scene, renderer, mesh;
 
+    /*
     function create_cube() {
         var geometry = new THREE.CubeGeometry( 200, 200, 200 )
-          , material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: false } )
+          , material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } )
           , _mesh = new THREE.Mesh( geometry, material )
           ;
         return _mesh;
     }
-
+    */
 
     function init() {
         camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 10000 );

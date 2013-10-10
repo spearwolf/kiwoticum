@@ -59,7 +59,10 @@ kiwoticum.ui.THREEjsRenderer = function(scene, builder) {
         //console.log('solid:', solid);
 
         //var material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
-        var material = new THREE.MeshBasicMaterial( { color: country.data.color, wireframe: true } );
+        var material = new THREE.MeshBasicMaterial({
+            color: country.data.color,
+            wireframe: false
+        });
         var mesh = new THREE.Mesh(solid, material);
 
         //console.log('mesh:', mesh);
