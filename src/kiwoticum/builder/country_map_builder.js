@@ -386,14 +386,14 @@ kiwoticum.builder.CountryMapBuilder = function(options) {
 
             var coords = [hexagon.getVertexCoords(edge), hexagon.getVertexCoords((edge + 1) % 6)];
             coords[1] = [
-                (coords[1][0] - coords[0][0]) * 0.25,  // x
-                (coords[1][1] - coords[0][1]) * 0.25   // y
-                //(coords[1][0] - coords[0][0]) * 0.75,  // x
-                //(coords[1][1] - coords[0][1]) * 0.75   // y
+                //(coords[1][0] - coords[0][0]) * 0.25,  // x
+                //(coords[1][1] - coords[0][1]) * 0.25   // y
+                (coords[1][0] - coords[0][0]) * 0.65,  // x
+                (coords[1][1] - coords[0][1]) * 0.65   // y
             ];
             inlineShapePath.push([
-                    coords[0][0] + coords[1][0],  // x
-                    coords[0][1] + coords[1][1]   // y
+                coords[0][0] + coords[1][0],  // x
+                coords[0][1] + coords[1][1]   // y
             ]);
         }
 

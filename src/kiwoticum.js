@@ -306,7 +306,7 @@ kiwoticum.builder.CountryMapBuilder = function(options) {
         if (prevEdge !== edge) {
             inlineShapePath.push(hexagon.getInlineVertexCoords(edge));
             var coords = [ hexagon.getVertexCoords(edge), hexagon.getVertexCoords((edge + 1) % 6) ];
-            coords[1] = [ (coords[1][0] - coords[0][0]) * .25, (coords[1][1] - coords[0][1]) * .25 ];
+            coords[1] = [ (coords[1][0] - coords[0][0]) * .65, (coords[1][1] - coords[0][1]) * .65 ];
             inlineShapePath.push([ coords[0][0] + coords[1][0], coords[0][1] + coords[1][1] ]);
         }
         return {

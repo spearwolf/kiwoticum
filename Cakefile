@@ -10,7 +10,7 @@ SOURCES_KIWOTICUM_BASE = [
 ]
 
 SOURCES_KIWOTICUM_NODE = ['src/kiwoticum-node.js'].concat SOURCES_KIWOTICUM_BASE
-SOURCES_KIWOTICUM_WWW = SOURCES_KIWOTICUM_BASE.concat ['src/kiwoticum/ui/svg_renderer.js']
+SOURCES_KIWOTICUM_WWW = SOURCES_KIWOTICUM_BASE.concat ['src/kiwoticum/ui/svg_renderer.js', 'src/kiwoticum/ui/threejs_renderer.js']
 
 
 C_RED = '\u001b[31m'
