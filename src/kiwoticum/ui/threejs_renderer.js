@@ -50,7 +50,7 @@ kiwoticum.ui.THREEjsRenderer = function(scene, builder) {
 
         var shapes = path.toShapes();
         var solid = new THREE.ExtrudeGeometry(shapes, {
-            amount: 20,
+            amount: 5,
             bevelEnabled: false
         });
 
@@ -59,9 +59,9 @@ kiwoticum.ui.THREEjsRenderer = function(scene, builder) {
         //console.log('solid:', solid);
 
         //var material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
-        var material = new THREE.MeshBasicMaterial({
-            color: country.data.color,
-            wireframe: false
+        //var material = new THREE.MeshBasicMaterial({
+        var material = new THREE.MeshLambertMaterial({
+            color: country.data.color
         });
         var mesh = new THREE.Mesh(solid, material);
 

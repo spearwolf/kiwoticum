@@ -81,8 +81,10 @@ jQuery(function($) {
     */
 
     function init() {
-        camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
-        camera.position.z = 1000;
+        camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 10000 );
+        camera.position.z = 500;
+        camera.position.y = -250;
+        //camera.rotation.y = 5;
 
         scene = new THREE.Scene();
 
@@ -95,8 +97,22 @@ jQuery(function($) {
 
         scene.add( mesh );
 
-        mesh.position.x -= 550;
+        mesh.position.x -= 525;
         mesh.position.y -= 400;
+        mesh.rotation.x = -1.1;
+
+        // create a point light
+        var pointLight = new THREE.PointLight(0xFFFFFF);
+
+        // set its position
+        pointLight.position.x = 10;
+        pointLight.position.y = 50;
+        pointLight.position.z = 130;
+
+        // add to the scene
+        scene.add(pointLight);
+
+
 
         //renderer = new THREE.CanvasRenderer();
         renderer = new THREE.WebGLRenderer();
