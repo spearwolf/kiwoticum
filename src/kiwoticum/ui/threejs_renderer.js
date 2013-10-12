@@ -50,7 +50,7 @@ kiwoticum.ui.THREEjsRenderer = function(scene, builder) {
 
         var shapes = path.toShapes();
         var solid = new THREE.ExtrudeGeometry(shapes, {
-            amount: 5,
+            amount: 2,
             bevelEnabled: false
         });
 

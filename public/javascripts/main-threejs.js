@@ -6,7 +6,11 @@ jQuery(function($) {
 
     function createCountryMap(container) {
         var options = kiwoticum.builder.spw.getCountryMapBuilderConfig();
-        options.hexagonInlineOffset = 4.5;
+
+        //options.hexagonInlineOffset = 4.5;
+        //options.hexagonInlineOffset2 = 2;
+        //options.paddingX = 2;
+        //options.paddingY = 2;
 
         var builder = kiwoticum.builder.CountryMapBuilder(options);
         //builder.renderer = kiwoticum.ui.SvgRenderer(container, builder);
@@ -92,13 +96,14 @@ jQuery(function($) {
         //mesh.add( create_cube() );
 
         var builder = createCountryMap(mesh);
-        //console.log('builder:', builder);
         builder.drawAll();
+        //console.log('builder:', builder);
 
         scene.add( mesh );
 
         mesh.position.x -= 525;
         mesh.position.y -= 400;
+        mesh.position.z += 250;
         mesh.rotation.x = -1.1;
 
         // create a point light
