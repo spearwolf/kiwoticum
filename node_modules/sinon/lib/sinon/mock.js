@@ -10,7 +10,7 @@
  * @author Christian Johansen (christian@cjohansen.no)
  * @license BSD
  *
- * Copyright (c) 2010-2011 Christian Johansen
+ * Copyright (c) 2010-2013 Christian Johansen
  */
 "use strict";
 
@@ -379,7 +379,8 @@
                 }
 
                 var callStr = sinon.spyCall.toString.call({
-                    proxy: this.method, args: args
+                    proxy: this.method || "anonymous mock expectation",
+                    args: args
                 });
 
                 var message = callStr.replace(", [...", "[, ...") + " " +

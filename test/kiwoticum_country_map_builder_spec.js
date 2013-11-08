@@ -29,7 +29,7 @@ describe("kiwoticum.builder.CountryMapBuilder()", function() {
     });
 
     it("should return API", function() {
-        builder.should.be.a('object');
+        builder.should.be.type('object');
     });
 
     describe("API", function() {
@@ -414,7 +414,7 @@ describe("kiwoticum.builder.CountryMapBuilder()", function() {
 
             function assertNext(next, hexCoords, edge, of) {
                 should.exist(next);
-                next.should.be.a('object', 'typeof next('+of+')');
+                next.should.be.type('object', 'typeof next('+of+')');
                 next.hexagon.x.should.equal(hexCoords[0], 'next('+of+')->hexagon->x');
                 next.hexagon.y.should.equal(hexCoords[1], 'next('+of+')->hexagon->y');
                 next.edge.should.equal(edge, 'next('+of+')->edge');
