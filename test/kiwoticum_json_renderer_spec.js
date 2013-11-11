@@ -21,20 +21,20 @@ describe("kiwoticum.builder.JsonRenderer", function() {
         should.exist(builder);
 
         should.exist(builder.createCountries);
-        builder.createCountries.should.be.a('function');
+        builder.createCountries.should.be.type('function');
 
         should.exist(builder.drawAll);
-        builder.drawAll.should.be.a('function');
+        builder.drawAll.should.be.type('function');
     });
 
     it("Add kiwoticum.builder.JsonRenderer() to builder", function() {
         builder.renderer = kiwoticum.builder.JsonRenderer(builder);
 
         should.exist(builder.renderer.countryMapConfig);
-        builder.renderer.countryMapConfig.should.be.a('object');
+        builder.renderer.countryMapConfig.should.be.type('object');
 
         should.exist(builder.renderer.drawCountry);
-        builder.renderer.drawCountry.should.be.a('function');
+        builder.renderer.drawCountry.should.be.type('function');
     });
 
     it("Create countries with builder.createCountries() and builder.drawAll()", function() {

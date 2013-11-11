@@ -12,7 +12,7 @@
  * @author Christian Johansen (christian@cjohansen.no)
  * @license BSD
  *
- * Copyright (c) 2010-2011 Christian Johansen
+ * Copyright (c) 2010-2013 Christian Johansen
  */
 "use strict";
 
@@ -75,6 +75,15 @@ sinon.fakeServer = (function () {
         }
 
         return false;
+    }
+
+    function log(response, request) {
+        var str;
+
+        str =  "Request:\n"  + sinon.format(request)  + "\n\n";
+        str += "Response:\n" + sinon.format(response) + "\n\n";
+
+        sinon.log(str);
     }
 
     return {
@@ -183,6 +192,8 @@ sinon.fakeServer = (function () {
                 }
 
                 if (request.readyState != 4) {
+                    log(response, request);
+
                     request.respond(response[0], response[1], response[2]);
                 }
             } catch (e) {
