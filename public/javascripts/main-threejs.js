@@ -72,7 +72,7 @@ jQuery(function($) {
 
     //______________________ THREEjs setup ______________________________________________
 
-    var camera, scene, renderer, mesh;
+    var camera, scene, renderer, mesh, worldBuilder;
 
     /*
     function create_cube() {
@@ -94,37 +94,37 @@ jQuery(function($) {
 
         mesh = new THREE.Object3D();
         //mesh.add( create_cube() );
-
-        var builder = createCountryMap(mesh);
-        builder.drawAll();
-        //console.log('builder:', builder);
+        worldBuilder = createCountryMap(mesh);
+        worldBuilder.drawAll();
 
         scene.add( mesh );
 
-        mesh.position.x -= 525;
-        mesh.position.y -= 400;
-        mesh.position.z += 250;
+        mesh.position.x -= worldBuilder.getCanvasWidth() / 2.0;
+        mesh.position.y -= worldBuilder.getCanvasHeight() / 2.0;
+        mesh.position.z += 220;
+
         mesh.rotation.x = -1.1;
+
 
         // create a point light
         var pointLight = new THREE.PointLight(0xFFFFFF);
 
-        // set its position
-        pointLight.position.x = 10;
-        pointLight.position.y = 50;
-        pointLight.position.z = 130;
+        pointLight.position.x = 0;
+        pointLight.position.y = -250;
+        pointLight.position.z = 500;
 
-        // add to the scene
         scene.add(pointLight);
 
 
 
         //renderer = new THREE.CanvasRenderer();
         renderer = new THREE.WebGLRenderer();
+
+        // TODO
+        // - resize
+        // - container
         renderer.setSize( window.innerWidth, window.innerHeight );
-
         document.body.appendChild( renderer.domElement );
-
     }
 
     function animate() {

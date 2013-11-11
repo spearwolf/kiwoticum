@@ -24,51 +24,43 @@ kiwoticum.ui.THREEjsRenderer = function(scene, builder) {
     api.drawHexagon = function(hexagon, fillColor, strokeColor) {
     };
 
-    api.drawCountry = function(country) {
-        //if (onlyFirstCountry) {
-        //onlyFirstCountry = false;
 
+    function createMesh(points, amount, color) {
 
-        var shapePath, inlinePath;
-
-        // country outline shape (polygon)
-        shapePath = country.createShapePath();
-
-        // inline shape
-        inlinePath = country.data.inlineShapePath;
-
-        console.log('shapePath', shapePath);
-        console.log('inlinePath', inlinePath);
-
-        // Step I) Create Path ________________________________
+        // Path _____________________________________________________
 
         var path = new THREE.Path();
-        path.moveTo(shapePath[0][0], shapePath[0][1]);
-        for (var i=1; i < shapePath.length; i++) {
-            path.lineTo(shapePath[i][0], shapePath[i][1]);
+        path.moveTo(points[0][0], points[0][1]);
+        for (var i=1; i < points.length; i++) {
+            path.lineTo(points[i][0], points[i][1]);
         }
+
+        // Geometry _________________________________________________
 
         var shapes = path.toShapes();
         var solid = new THREE.ExtrudeGeometry(shapes, {
-            amount: 2,
+            amount: amount,
             bevelEnabled: false
         });
 
-        //console.log('THREE.Path:', path);
-        //console.log('shapes:', shapes);
-        //console.log('solid:', solid);
+        // Material _________________________________________________
 
-        //var material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
-        //var material = new THREE.MeshBasicMaterial({
         var material = new THREE.MeshLambertMaterial({
-            color: country.data.color
+            color: color
         });
-        var mesh = new THREE.Mesh(solid, material);
 
-        //console.log('mesh:', mesh);
+        // Mesh _____________________________________________________
 
-        scene.add( mesh );
-        //}
+        return new THREE.Mesh(solid, material);
+    }
+
+    api.drawCountry = function(country) {
+
+        var shapePath = country.createShapePath()        // country outline shape (polygon)
+          , inlinePath = country.data.inlineShapePath;   // inline shape
+
+        scene.add( createMesh(shapePath, 2, country.data.color) );
+        scene.add( createMesh(inlinePath, 3, '#333333') );
     };
 
     //api.endRender = function(){}
