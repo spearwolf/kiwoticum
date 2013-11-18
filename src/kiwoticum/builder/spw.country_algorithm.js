@@ -399,15 +399,15 @@ kiwoticum.builder.spw.getCountryMapBuilderConfig = function() {
 
         hexagonWidth: 18,
         hexagonHeight: 18,
-        hexagonInlineOffset: 4,
+        hexagonInlineOffset: 2,
         hexagonInlineOffset2: 0,
 
         hexagonStroke: "#333",
         hexagonFill: "rgba(128,128,128,0.5)",
         hexagonFill2: "rgba(128,128,128,0.25)",
 
-        paddingX: 1,
-        paddingY: 1
+        paddingX: 2,
+        paddingY: 2
 
     }, kiwoticum.builder.spw.getBuilderConfig());
 };

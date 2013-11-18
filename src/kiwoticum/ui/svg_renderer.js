@@ -2,9 +2,17 @@ kiwoticum.ui = kiwoticum.ui||{};
 kiwoticum.ui.utils = kiwoticum.ui.utils||{};
 
 
-kiwoticum.ui.utils.createSvgPath = function(coords) {
+kiwoticum.ui.utils.createSvgPath = function(coords, curve) {
+    var isFirstPoint = true;
     return _.reduce(coords, function(path, v) {
-        return path + (path === "" ? "M" : " L") + (Math.round(v[0]*100)/100) + " " + (Math.round(v[1]*100)/100);
+        var _path;
+        if (curve) {
+            _path = path + (path === "" ? "M" : (isFirstPoint ? " R" : " ")) + (Math.round(v[0]*100)/100) + " " + (Math.round(v[1]*100)/100);
+            if (path !== "" && isFirstPoint) isFirstPoint = false;
+            return _path;
+        } else {
+            return path + (path === "" ? "M" : " L") + (Math.round(v[0]*100)/100) + " " + (Math.round(v[1]*100)/100);
+        }
     }, "") + " z";
 };
 
@@ -40,12 +48,14 @@ kiwoticum.ui.SvgRenderer = function(canvasContainer, builder) {
         // country outline shape (polygon)
         shapePath = paper.path(kiwoticum.ui.utils.createSvgPath(country.createShapePath()));
         shapePath.attr("fill", country.data.color);
+        //shapePath.attr("fill", "rgba(10, 20, 30, 0.5)");
         shapePath.attr("stroke-width", "1");
         shapePath.attr("stroke", "#000000");
 
         // inline shape
         inlinePath = paper.path(kiwoticum.ui.utils.createSvgPath(country.data.inlineShapePath));
-        inlinePath.attr("fill", "rgba(0, 0, 0, 0.4)");
+        inlinePath.attr("fill", "rgba(0, 0, 0, 0.5)");
+        //inlinePath.attr("fill", country.data.colo);
         inlinePath.attr("stroke-width", "0");
 
         // base hexagons

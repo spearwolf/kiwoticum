@@ -3,7 +3,22 @@ jQuery(function($) {
 
     function createCountryMap(container) {
         var options = kiwoticum.builder.spw.getCountryMapBuilderConfig();
-        options.hexagonInlineOffset = 4.5;
+
+        options = _.extend(options, {
+            width: 80, //80,
+            height: 56, //56,
+            gridHeight: 8, //8,
+            gridWidth: 8, //8,
+            insideGridPaddingX: 4,
+            insideGridPaddingY: 4,
+
+            growIterations: 30,
+
+            hexagonWidth: 18,
+            hexagonHeight: 18,
+            hexagonInlineOffset: 3.5,
+            hexagonInlineOffset2: 0
+        });
 
         var builder = kiwoticum.builder.CountryMapBuilder(options);
         builder.renderer = kiwoticum.ui.SvgRenderer(container, builder);
