@@ -43,8 +43,11 @@ add_header = (headerFile, outFile, onFinish) ->
 
 task "build-www", "build www library -> 'public/javascripts/kiwoticum-min.js'", ->
     print_section "build-www"
+    target_public = 'public/javascripts/kiwoticum-min.js'
+    target_webapp = 'webapp/app/scripts/vendor/kiwoticum-min.js'
     _exec uglifyjs(SOURCES_KIWOTICUM_WWW, 'public/javascripts/kiwoticum-min.js.tmp', '--wrap kiwoticum'), ->
-        add_header 'src/kiwoticum-header.js', 'public/javascripts/kiwoticum-min.js'
+        add_header 'src/kiwoticum-header.js', target_public, ->
+            _exec "cp #{target_public} #{target_webapp}"
 
 task "build-node", "build node library -> 'src/kiwoticum.js'", ->
     print_section "build-node"
