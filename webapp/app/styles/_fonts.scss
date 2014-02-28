@@ -1,0 +1,19 @@
+
+@mixin kwtcm-text-font($size) {
+    font-family: 'Jura', sans-serif;
+    font-weight: 300;
+    font-size: $size;
+}
+
+@mixin kwtcm-btn-font($size) {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    font-size: $size;
+}
+
+@mixin kwtcm-headline-font($size) {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 700;
+    font-size: $size;
+}
+

@@ -1,0 +1,33 @@
+@import "compass/css3/box-sizing";
+
+.hero-unit {
+    @include box-sizing("border-box");
+
+    margin: 100px auto 0 auto;
+    width: 420px;
+    padding: 60px;
+    border-radius: 6px;
+
+    @include kwtcm-text-font(18px);
+    line-height: 30px;
+    background-color: rgba(0,0,0,0.25);
+
+    p, h1 {
+        color: $colText;
+    }
+
+    p:first-child, p:nth-child(2), h1 {
+        margin-bottom: 24px;
+    }
+
+    em {
+        color: $colHilite;
+    }
+
+    h1 {
+        @include kwtcm-headline-font(60px);
+        line-height: 1;
+        letter-spacing: -1px;
+    }
+}
+

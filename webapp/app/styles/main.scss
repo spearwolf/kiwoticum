@@ -1,9 +1,15 @@
 @import 'reset.css';
-@import 'kiwoticum.css';
+
+@import 'fonts';
+@import 'button';
+
 
 $colText: #efefe0;
 $colHilite: #fff;
 $colMainBg: #000;
+
+
+// _________ main layout _____________________________
 
 html, body {
     width: 100%;
@@ -11,43 +17,44 @@ html, body {
 }
 
 body {
-    color: $colText;
-    background-color: $colMainBg;
-    background-image: inline-image('bg-blue3.png');
     overflow: hidden;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .container {
-    position: relative;
     width: 100%;
     height: 100%;
     overflow: auto;
 }
 
-.hero-unit {
-    margin: 100px auto 0 auto;
-    width: 300px;
-    font-size: 18px;
-    font-weight: 200;
-    line-height: 30px;
-    background-color: rgba(0,0,0,0.25);
-    border-radius: 6px;
-    padding: 60px;
-
-    p, h1 {
-        color: $colText;
-    }
-
-    em {
-        color: $colHilite;
-    }
-
-    h1 {
-        font-size: 60px;
-        line-height: 1;
-        letter-spacing: -1px;
-        margin-bottom: 24px;
-    }
+.container-kiwoticum, .container-gui {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
+
+
+// _________ theming & colors ________________________
+
+body {
+    color: $colText;
+    background-color: $colMainBg;
+    background-image: inline-image('bg-blue3.png');
+
+    @include kwtcm-text-font(16px);
+}
+
+
+// _________ atomic classes __________________________
+
+.nav-actions {
+    text-align: center;
+}
+
+
+// _________ specials ________________________________
+
+@import "hero-unit";
+@import "kiwoticum";
 
