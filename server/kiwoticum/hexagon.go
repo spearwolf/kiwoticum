@@ -10,6 +10,7 @@ type Hexagon struct {
 	Row, Col          uint
 	Left, Top         float64
 	coords            []Vertex
+	Region            *Region
 	NeighborNorth     *Hexagon
 	NeighborNorthEast *Hexagon
 	NeighborSouthEast *Hexagon

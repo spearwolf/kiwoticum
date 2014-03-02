@@ -20,7 +20,11 @@ func (model *HexagonModel) Hexagon(x, y uint) *Hexagon {
 }
 
 func (model *HexagonModel) setHexagon(x, y uint, hex *Hexagon) *Hexagon {
-	model.hexagons[y*model.Width+x] = hex
+	if x < model.Width && y < model.Height {
+		model.hexagons[y*model.Width+x] = hex
+	} else {
+		panic("HexagonModel position is out of range!")
+	}
 	return hex
 }
 
