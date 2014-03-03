@@ -2,10 +2,13 @@
 
 package kiwoticum
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func makeHexagonModel() *HexagonModel {
-	return NewHexagonModel(10, 10, 20, 20, 0, 0, 90)
+	return NewHexagonModel(10, 10, 20, 20, 0, 0)
 }
 
 func testHexagonRowCol(t *testing.T, model *HexagonModel, col, row uint) {
@@ -170,8 +173,59 @@ func TestRegionUniqRegionLessNeighborHexagons(t *testing.T) {
 
 	// regionA
 	regionLess := regionA.UniqRegionLessNeighborHexagons()
-	if len(regionLess) != 6 {
-		t.Error("regionA expected to have 6 region-less-neighbor-hexagons, got", len(regionLess))
-	}
+	testRegionLessCount(t, regionLess, 6, "regionA")
 
+	testNotIncludeHexagonAt(t, regionLess, 1, 1)
+
+	testIncludeHexagonAt(t, regionLess, 0, 1)
+	testIncludeHexagonAt(t, regionLess, 1, 0)
+	testIncludeHexagonAt(t, regionLess, 2, 1)
+	testIncludeHexagonAt(t, regionLess, 2, 2)
+	testIncludeHexagonAt(t, regionLess, 1, 2)
+	testIncludeHexagonAt(t, regionLess, 0, 2)
+
+	// regionB
+	regionLess = regionB.UniqRegionLessNeighborHexagons()
+	testRegionLessCount(t, regionLess, 8, "regionB")
+
+	testNotIncludeHexagonAt(t, regionLess, 3, 1)
+	testNotIncludeHexagonAt(t, regionLess, 4, 2)
+
+	// regionC
+	regionLess = regionC.UniqRegionLessNeighborHexagons()
+	testRegionLessCount(t, regionLess, 3, "regionC")
+
+}
+
+func testRegionLessCount(t *testing.T, regionLess []*Hexagon, expectedLength int, regionName string) {
+	if len(regionLess) != expectedLength {
+		t.Error(regionName, "expected to have", expectedLength, "region-less-neighbor-hexagons, got", len(regionLess))
+	}
+}
+
+func includeHexagonAt(hexagons []*Hexagon, col, row uint) bool {
+	for _, hex := range hexagons {
+		if hex.Row == row && hex.Col == col {
+			return true
+		}
+	}
+	return false
+}
+
+func testNotIncludeHexagonAt(t *testing.T, hexagons []*Hexagon, col, row uint) {
+	if includeHexagonAt(hexagons, col, row) {
+		for _, hex := range hexagons {
+			fmt.Println(hex)
+		}
+		t.Error("Not expected to find Hexagon.Col=", col, ".Row=", row, " inside, got one")
+	}
+}
+
+func testIncludeHexagonAt(t *testing.T, hexagons []*Hexagon, col, row uint) {
+	if !includeHexagonAt(hexagons, col, row) {
+		for _, hex := range hexagons {
+			fmt.Println(hex)
+		}
+		t.Error("Expected to find Hexagon.Col=", col, ".Row=", row, ", got false")
+	}
 }

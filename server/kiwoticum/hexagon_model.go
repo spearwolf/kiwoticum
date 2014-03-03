@@ -28,13 +28,13 @@ func (model *HexagonModel) setHexagon(x, y uint, hex *Hexagon) *Hexagon {
 	return hex
 }
 
-func NewHexagonModel(width, height, hexWidth, hexHeight, paddingX, paddingY uint, startAtAngle float64) (model *HexagonModel) {
+func NewHexagonModel(width, height, hexWidth, hexHeight, paddingX, paddingY uint) (model *HexagonModel) {
 
 	model = new(HexagonModel)
 	model.Width, model.Height = width, height
 	model.hexagons = make([]*Hexagon, width*height)
 
-	baseHex := NewHexagon(0, 0, hexWidth, hexHeight, 0, 0, startAtAngle)
+	baseHex := NewHexagon(0, 0, hexWidth, hexHeight, 0, 0)
 	stepX := baseHex.VertexCoord(5).X - baseHex.VertexCoord(3).X
 	stepY := baseHex.VertexCoord(5).Y - baseHex.VertexCoord(1).Y
 	stepY1 := baseHex.VertexCoord(0).Y - baseHex.VertexCoord(1).Y
@@ -56,7 +56,7 @@ func NewHexagonModel(width, height, hexWidth, hexHeight, paddingX, paddingY uint
 			if row == 0 && col == 0 {
 				model.hexagons[0] = baseHex
 			} else {
-				hex := NewHexagon(col, row, hexWidth, hexHeight, left, top, startAtAngle)
+				hex := NewHexagon(col, row, hexWidth, hexHeight, left, top)
 				model.setHexagon(col, row, hex)
 			}
 		}

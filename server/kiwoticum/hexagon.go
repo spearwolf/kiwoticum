@@ -6,6 +6,8 @@ import (
 	"math"
 )
 
+const startAtAngle float64 = 90
+
 type Hexagon struct {
 	Row, Col          uint
 	Left, Top         float64
@@ -19,7 +21,7 @@ type Hexagon struct {
 	NeighborNorthWest *Hexagon
 }
 
-func (hex *Hexagon) MakeCoords(width, height uint, startAtAngle float64) {
+func (hex *Hexagon) MakeCoords(width, height uint) {
 	hex.coords = make([]Vertex, 6)
 
 	mx, my := float64(width)/2, float64(height)/2
@@ -35,10 +37,10 @@ func (hex *Hexagon) VertexCoord(i int) *Vertex {
 	return &hex.coords[i]
 }
 
-func NewHexagon(col, row, width, height uint, left, top, startAtAngle float64) (hex *Hexagon) {
+func NewHexagon(col, row, width, height uint, left, top float64) (hex *Hexagon) {
 	hex = new(Hexagon)
 	hex.Col, hex.Row = col, row
 	hex.Left, hex.Top = left, top
-	hex.MakeCoords(width, height, startAtAngle)
+	hex.MakeCoords(width, height)
 	return
 }
