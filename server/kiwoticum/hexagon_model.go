@@ -12,6 +12,14 @@ type HexagonModel struct {
 	hexagons                  []*Hexagon
 }
 
+func (model *HexagonModel) CanvasWidth() uint {
+	return model.canvasWidth
+}
+
+func (model *HexagonModel) CanvasHeight() uint {
+	return model.canvasHeight
+}
+
 func (model *HexagonModel) Hexagon(x, y uint) *Hexagon {
 	if x < model.Width && y < model.Height {
 		return model.hexagons[y*model.Width+x]
