@@ -161,7 +161,7 @@ func shouldExist(t *testing.T, neighbor *Hexagon, message string) {
 //    \__/  \__/  \__/  \__/  \__/  \
 //       \__/  \__/  \__/  \__/  \__/
 //
-func TestRegionUniqRegionLessNeighborHexagons(t *testing.T) {
+func TestRegionRegionLessNeighborHexagons(t *testing.T) {
 
 	model := makeHexagonModel()
 
@@ -172,7 +172,8 @@ func TestRegionUniqRegionLessNeighborHexagons(t *testing.T) {
 	regionC.AssignHexagon(model.Hexagon(9, 0))
 
 	// regionA
-	regionLess := regionA.UniqRegionLessNeighborHexagons()
+	// =======================================================
+	regionLess := regionA.RegionLessNeighborHexagons()
 	testRegionLessCount(t, regionLess, 6, "regionA")
 
 	testNotIncludeHexagonAt(t, regionLess, 1, 1)
@@ -185,16 +186,32 @@ func TestRegionUniqRegionLessNeighborHexagons(t *testing.T) {
 	testIncludeHexagonAt(t, regionLess, 0, 2)
 
 	// regionB
-	regionLess = regionB.UniqRegionLessNeighborHexagons()
+	// =======================================================
+	regionLess = regionB.RegionLessNeighborHexagons()
 	testRegionLessCount(t, regionLess, 8, "regionB")
 
 	testNotIncludeHexagonAt(t, regionLess, 3, 1)
 	testNotIncludeHexagonAt(t, regionLess, 4, 2)
 
+	testIncludeHexagonAt(t, regionLess, 3, 0)
+	testIncludeHexagonAt(t, regionLess, 4, 1)
+	testIncludeHexagonAt(t, regionLess, 5, 1)
+	testIncludeHexagonAt(t, regionLess, 5, 2)
+	testIncludeHexagonAt(t, regionLess, 4, 3)
+	testIncludeHexagonAt(t, regionLess, 3, 2)
+	testIncludeHexagonAt(t, regionLess, 2, 2)
+	testIncludeHexagonAt(t, regionLess, 2, 1)
+
 	// regionC
-	regionLess = regionC.UniqRegionLessNeighborHexagons()
+	// =======================================================
+	regionLess = regionC.RegionLessNeighborHexagons()
 	testRegionLessCount(t, regionLess, 3, "regionC")
 
+	testNotIncludeHexagonAt(t, regionLess, 9, 0)
+
+	testIncludeHexagonAt(t, regionLess, 8, 0)
+	testIncludeHexagonAt(t, regionLess, 8, 1)
+	testIncludeHexagonAt(t, regionLess, 9, 1)
 }
 
 func testRegionLessCount(t *testing.T, regionLess []*Hexagon, expectedLength int, regionName string) {
@@ -228,4 +245,154 @@ func testIncludeHexagonAt(t *testing.T, hexagons []*Hexagon, col, row uint) {
 		}
 		t.Error("Expected to find Hexagon.Col=", col, ".Row=", row, ", got false")
 	}
+}
+
+//     0_ 1  2_ 3  4_ 5  6_ 7  8_ 9
+//  0 /  \__/  \__/  \__/  \__/  \__
+//    \__/  \__/  \__/  \__/  \__/C \
+//  1 /  \__/  \__/  \__/  \__/  \__/
+//    \__/A \__/B \__/  \__/  \__/  \
+//  2 /  \__/  \__/B \__/  \__/  \__/
+//    \__/  \__/  \__/  \__/  \__/  \
+//  3 /  \__/  \__/  \__/  \__/  \__/
+//    \__/  \__/  \__/  \__/  \__/  \
+//  4 /  \__/D \__/D \__/  \__/  \__/
+//    \__/D \__/D \__/E \__/  \__/  \
+//  5 /D \__/d \__/D \__/  \__/  \__/
+//    \__/d \__/d \__/E \__/  \__/  \
+//  6 /D \__/D \__/D \__/  \__/  \__/
+//    \__/D \__/D \__/E \__/  \__/  \
+//  7 /D \__/  \__/E \__/  \__/  \__/
+//    \__/  \__/  \__/  \__/  \__/  \
+//  8 /  \__/  \__/  \__/  \__/  \__/
+//    \__/  \__/  \__/  \__/  \__/  \
+//  9 /  \__/  \__/  \__/  \__/  \__/
+//    \__/  \__/  \__/  \__/  \__/  \
+//       \__/  \__/  \__/  \__/  \__/
+//
+func TestRegionShapeHexagons(t *testing.T) {
+
+	model := makeHexagonModel()
+
+	// regionA
+	// =======================================================
+	region := new(Region)
+	region.AssignHexagon(model.Hexagon(1, 1))
+
+	shape := region.ShapeHexagons()
+	testShapeCount(t, shape, 1, "regionA")
+
+	testIncludeHexagonAt(t, shape, 1, 1)
+
+	// regionB
+	// =======================================================
+	region = new(Region)
+	region.AssignHexagon(model.Hexagon(3, 1))
+	region.AssignHexagon(model.Hexagon(4, 2))
+
+	shape = region.ShapeHexagons()
+	testShapeCount(t, shape, 2, "regionB")
+
+	testIncludeHexagonAt(t, shape, 3, 1)
+	testIncludeHexagonAt(t, shape, 4, 2)
+
+	// regionC
+	// =======================================================
+	region = new(Region)
+	region.AssignHexagon(model.Hexagon(9, 0))
+
+	shape = region.ShapeHexagons()
+	testShapeCount(t, shape, 1, "regionC")
+
+	testIncludeHexagonAt(t, shape, 9, 0)
+
+	// regionD
+	// =======================================================
+	region = new(Region)
+	region.AssignHexagon(model.Hexagon(0, 5))
+	region.AssignHexagon(model.Hexagon(1, 4))
+	region.AssignHexagon(model.Hexagon(2, 4))
+	region.AssignHexagon(model.Hexagon(0, 6))
+	region.AssignHexagon(model.Hexagon(1, 5))
+	region.AssignHexagon(model.Hexagon(2, 5))
+	region.AssignHexagon(model.Hexagon(3, 4))
+	region.AssignHexagon(model.Hexagon(4, 4))
+	region.AssignHexagon(model.Hexagon(0, 7))
+	region.AssignHexagon(model.Hexagon(1, 6))
+	region.AssignHexagon(model.Hexagon(2, 6))
+	region.AssignHexagon(model.Hexagon(3, 5))
+	region.AssignHexagon(model.Hexagon(4, 5))
+	region.AssignHexagon(model.Hexagon(3, 6))
+	region.AssignHexagon(model.Hexagon(4, 6))
+
+	shape = region.ShapeHexagons()
+	testShapeCount(t, shape, 12, "regionD")
+
+	testNotIncludeHexagonAt(t, shape, 1, 5)
+	testNotIncludeHexagonAt(t, shape, 2, 5)
+	testNotIncludeHexagonAt(t, shape, 3, 5)
+
+	testIncludeHexagonAt(t, shape, 0, 5)
+	testIncludeHexagonAt(t, shape, 1, 4)
+	testIncludeHexagonAt(t, shape, 2, 4)
+	testIncludeHexagonAt(t, shape, 0, 6)
+	testIncludeHexagonAt(t, shape, 3, 4)
+	testIncludeHexagonAt(t, shape, 4, 4)
+	testIncludeHexagonAt(t, shape, 0, 7)
+	testIncludeHexagonAt(t, shape, 1, 6)
+	testIncludeHexagonAt(t, shape, 2, 6)
+	testIncludeHexagonAt(t, shape, 4, 5)
+	testIncludeHexagonAt(t, shape, 3, 6)
+	testIncludeHexagonAt(t, shape, 4, 6)
+}
+
+func testShapeCount(t *testing.T, shape []*Hexagon, expectedLength int, regionName string) {
+	if len(shape) != expectedLength {
+		t.Error(regionName, "expected to have", expectedLength, "shape-hexagons, got", len(shape))
+	}
+}
+
+//     0_ 1  2_ 3  4_ 5  6_ 7  8_ 9
+//  0 /  \__/  \__/  \__/  \__/  \__
+//    \__/  \__/  \__/  \__/  \__/C \
+//  1 /  \__/  \__/  \__/  \__/  \__/
+//    \__/A \__/B \__/  \__/  \__/  \
+//  2 /  \__/  \_1/B \__/  \__/  \__/
+//    \__/F \__/  \_2/  \__/  \__/  \
+//  3 /F \_3/F \__/  \__/  \__/  \__/
+//    \_4/F \_2/  \__/  \__/  \__/  \
+//  4 /F \_1/D \__/D \__/  \__/  \__/
+//    \_5/D \_2/D \12/E \__/  \__/  \
+//  5 /D \_3/d \_1/D \_2/  \__/  \__/
+//    \_4/d \__/d \11/E \__/  \__/  \
+//  6 /D \__/D \__/D \_1/  \__/  \__/
+//    \_5/D \_8/D \10/E \__/E \__/  \
+//  7 /D \_7/  \_9/E \_3/E \_6/  \__/
+//    \_6/  \__/  \_4/  \_5/  \__/  \
+//  8 /  \__/  \__/  \__/  \__/  \__/
+//    \__/  \__/  \__/  \__/  \__/  \
+//  9 /  \__/  \__/  \__/  \__/  \__/
+//    \__/  \__/  \__/  \__/  \__/  \
+//       \__/  \__/  \__/  \__/  \__/
+//
+func TestNextHexagonShapeEdge(t *testing.T) {
+
+	var nextHexagon *Hexagon
+	var nextEdge int
+
+	model := makeHexagonModel()
+
+	// regionA
+	// =======================================================
+	region := new(Region)
+	region.AssignHexagon(model.Hexagon(1, 1))
+
+	hexagon := model.Hexagon(1, 1)
+
+	region.beginShape()
+	nextHexagon, nextEdge = region.nextShapeHexagonEdge(hexagon, -1)
+	region.endShape()
+
+	fmt.Println("nextHexagon", nextHexagon, "nextEdge", nextEdge, "shapePath", region.shapePath)
+
 }

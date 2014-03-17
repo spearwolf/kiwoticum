@@ -2,17 +2,25 @@
 
 package kiwoticum
 
+import "fmt"
+
 //type HexPos struct {
 //Row, Col uint
 //}
 
-const regionHexagonCap uint = 128
-const regionNeighborsCap uint = 64
-const regionLessNeighborsCap uint = 128
+const regionHexagonCap uint = 512
+const regionNeighborsCap uint = 512
+const regionLessNeighborsCap uint = 512
+const regionShapeHexagonsCap uint = 512
+const regionShapeVertexCap uint = 512
+
+var nextEdgeMap [6]int = [...]int{4, 5, 0, 1, 2, 3}
 
 type Region struct {
-	hexagons  []*Hexagon
-	neighbors []*Region
+	hexagons     []*Hexagon
+	neighbors    []*Region
+	visitedEdges map[*Hexagon]*[6]bool
+	shapePath    []*Vertex
 }
 
 func NewRegion() (region *Region) {
@@ -82,34 +90,140 @@ func isNotInside(hexagons []*Hexagon, hex *Hexagon) bool {
 	return true
 }
 
-func appendIfUniq(hexagons []*Hexagon, hex *Hexagon) []*Hexagon {
+func appendIfNotInside(hexagons []*Hexagon, hex *Hexagon) []*Hexagon {
 	if isNotInside(hexagons, hex) {
 		return append(hexagons, hex)
 	}
 	return hexagons
 }
 
-func (region *Region) UniqRegionLessNeighborHexagons() (regionLess []*Hexagon) {
+func (region *Region) RegionLessNeighborHexagons() (regionLess []*Hexagon) {
 	regionLess = make([]*Hexagon, 0, regionLessNeighborsCap)
 	for _, hex := range region.hexagons {
 		if hex.NeighborNorth != nil && hex.NeighborNorth.Region == nil {
-			regionLess = appendIfUniq(regionLess, hex.NeighborNorth)
+			regionLess = appendIfNotInside(regionLess, hex.NeighborNorth)
 		}
 		if hex.NeighborNorthEast != nil && hex.NeighborNorthEast.Region == nil {
-			regionLess = appendIfUniq(regionLess, hex.NeighborNorthEast)
+			regionLess = appendIfNotInside(regionLess, hex.NeighborNorthEast)
 		}
 		if hex.NeighborNorthWest != nil && hex.NeighborNorthWest.Region == nil {
-			regionLess = appendIfUniq(regionLess, hex.NeighborNorthWest)
+			regionLess = appendIfNotInside(regionLess, hex.NeighborNorthWest)
 		}
 		if hex.NeighborSouth != nil && hex.NeighborSouth.Region == nil {
-			regionLess = appendIfUniq(regionLess, hex.NeighborSouth)
+			regionLess = appendIfNotInside(regionLess, hex.NeighborSouth)
 		}
 		if hex.NeighborSouthEast != nil && hex.NeighborSouthEast.Region == nil {
-			regionLess = appendIfUniq(regionLess, hex.NeighborSouthEast)
+			regionLess = appendIfNotInside(regionLess, hex.NeighborSouthEast)
 		}
 		if hex.NeighborSouthWest != nil && hex.NeighborSouthWest.Region == nil {
-			regionLess = appendIfUniq(regionLess, hex.NeighborSouthWest)
+			regionLess = appendIfNotInside(regionLess, hex.NeighborSouthWest)
 		}
 	}
 	return
+}
+
+func (region *Region) isMarginal(hex *Hexagon) bool {
+	return hex == nil || hex.Region == nil || hex.Region != region
+}
+
+func (region *Region) ShapeHexagons() (shape []*Hexagon) {
+	shape = make([]*Hexagon, 0, regionShapeHexagonsCap)
+	for _, hex := range region.hexagons {
+		if region.isMarginal(hex.NeighborNorth) || region.isMarginal(hex.NeighborNorthEast) || region.isMarginal(hex.NeighborSouthEast) || region.isMarginal(hex.NeighborSouth) || region.isMarginal(hex.NeighborSouthWest) || region.isMarginal(hex.NeighborNorthWest) {
+			shape = append(shape, hex)
+		}
+	}
+	return
+}
+
+func (region *Region) RandomShapeHexagon() *Hexagon {
+	for _, hex := range region.hexagons {
+		if region.isMarginal(hex.NeighborNorth) || region.isMarginal(hex.NeighborNorthEast) || region.isMarginal(hex.NeighborSouthEast) || region.isMarginal(hex.NeighborSouth) || region.isMarginal(hex.NeighborSouthWest) || region.isMarginal(hex.NeighborNorthWest) {
+			return hex
+		}
+	}
+	return nil
+}
+
+func (region *Region) beginShape() {
+	region.visitedEdges = make(map[*Hexagon]*[6]bool)
+	region.shapePath = make([]*Vertex, 0, regionShapeVertexCap)
+}
+
+func (region *Region) endShape() {
+	region.visitedEdges = nil
+}
+
+func (region *Region) nextShapeHexagonEdge(hexagon *Hexagon, startAtEdge int) (*Hexagon, int) {
+	//
+	//       _1_
+	//     2/   \0
+	//     3\___/5
+	//        4
+	//
+
+	var i int
+
+	// find startAtEdge
+	if startAtEdge < 0 {
+		for i = 0; i < 6; i++ {
+			hex := hexagon.Neighbor(i)
+			if hex == nil || hex.Region != hexagon.Region {
+				break
+			}
+		}
+		if i < 6 {
+			startAtEdge = i
+		} else {
+			return nil, -1
+		}
+	}
+
+	// hexagon->visitedEdges
+	visitedEdges, exists := region.visitedEdges[hexagon]
+	if !exists {
+		region.visitedEdges[hexagon] = new([6]bool)
+		visitedEdges = region.visitedEdges[hexagon]
+	}
+
+	var edge int
+
+	for i = 0; i < 6; i++ {
+		edge = (startAtEdge + i) % 6
+
+		if visitedEdges[edge] {
+			return nil, -1
+		}
+		visitedEdges[edge] = true
+
+		if neighborHasOtherRegion(hexagon, edge) {
+			break
+		}
+	}
+	if i == 6 {
+		return nil, 1
+	}
+	// edge <= first edge with adjacent (different|none) region
+
+	for {
+		region.shapePath = append(region.shapePath, hexagon.VertexCoord(edge))
+		visitedEdges[edge] = true
+		edge = (edge + 1) % 6
+		if !(!visitedEdges[edge] && neighborHasOtherRegion(hexagon, edge)) {
+			break
+		}
+	}
+
+	fmt.Println("visitedEdges", visitedEdges, "edge", edge)
+
+	if edge == startAtEdge || visitedEdges[edge] {
+		return nil, -1
+	}
+
+	return hexagon.Neighbor(edge), nextEdgeMap[edge]
+}
+
+func neighborHasOtherRegion(hexagon *Hexagon, neighborIndex int) bool {
+	hex := hexagon.Neighbor(neighborIndex)
+	return hex == nil || hex.Region != hexagon.Region
 }

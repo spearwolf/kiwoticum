@@ -21,6 +21,33 @@ type Hexagon struct {
 	NeighborNorthWest *Hexagon
 }
 
+func (hex *Hexagon) Neighbor(index int) *Hexagon {
+	//
+	//       _1_
+	//     2/   \0
+	//     3\___/5
+	//        4
+	//
+	if index < 0 || index > 5 {
+		panic("Hexagon.Neighbor index is out of range")
+	}
+	switch index {
+	case 0:
+		return hex.NeighborNorthEast
+	case 1:
+		return hex.NeighborNorth
+	case 2:
+		return hex.NeighborNorthWest
+	case 3:
+		return hex.NeighborSouthWest
+	case 4:
+		return hex.NeighborSouth
+	case 5:
+		return hex.NeighborSouthEast
+	}
+	return nil
+}
+
 func (hex *Hexagon) MakeCoords(width, height uint) {
 	hex.coords = make([]Vertex, 6)
 

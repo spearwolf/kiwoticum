@@ -9,7 +9,7 @@ func main() {
 
 	fmt.Println("Hello, kiwoticum!")
 
-	model := kiwoticum.NewHexagonModel(5, 5, 20, 20, 0, 0, 90)
+	model := kiwoticum.NewHexagonModel(5, 5, 20, 20, 0, 0)
 
 	for i := 0; i < 6; i++ {
 		fmt.Println(model.Hexagon(0, 0).VertexCoord(i))
