@@ -21,13 +21,14 @@ type Hexagon struct {
 	NeighborNorthWest *Hexagon
 }
 
+// Return neighbor hexagon by index.
+//
+// 	  _1_
+// 	2/   \0
+// 	3\___/5
+// 	   4
+//
 func (hex *Hexagon) Neighbor(index int) *Hexagon {
-	//
-	//       _1_
-	//     2/   \0
-	//     3\___/5
-	//        4
-	//
 	if index < 0 || index > 5 {
 		panic("Hexagon.Neighbor index is out of range")
 	}

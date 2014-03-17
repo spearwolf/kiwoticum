@@ -130,7 +130,7 @@ func (region *Region) ShapeHexagons() (shape []*Hexagon) {
 	return
 }
 
-func (region *Region) RandomShapeHexagon() *Hexagon {
+func (region *Region) SingleRandomShapeHexagon() *Hexagon {
 	for i := len(region.hexagons) - 1; i >= 0; i-- {
 		hex := region.hexagons[i]
 		if region.isMarginal(hex.NeighborNorth) || region.isMarginal(hex.NeighborNorthEast) || region.isMarginal(hex.NeighborSouthEast) || region.isMarginal(hex.NeighborSouth) || region.isMarginal(hex.NeighborSouthWest) || region.isMarginal(hex.NeighborNorthWest) {
@@ -225,7 +225,7 @@ func neighborHasOtherRegion(hexagon *Hexagon, neighborIndex int) bool {
 
 func (region *Region) CreateShapePath() *[]*Vertex {
 	var edge int
-	hexagon := region.RandomShapeHexagon()
+	hexagon := region.SingleRandomShapeHexagon()
 	region.beginShape()
 	hexagon, edge = region.nextShapeHexagonEdge(hexagon, -1)
 	for hexagon != nil {
