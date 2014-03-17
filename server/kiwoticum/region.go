@@ -2,12 +2,6 @@
 
 package kiwoticum
 
-import "fmt"
-
-//type HexPos struct {
-//Row, Col uint
-//}
-
 const regionHexagonCap uint = 512
 const regionNeighborsCap uint = 512
 const regionLessNeighborsCap uint = 512
@@ -137,7 +131,8 @@ func (region *Region) ShapeHexagons() (shape []*Hexagon) {
 }
 
 func (region *Region) RandomShapeHexagon() *Hexagon {
-	for _, hex := range region.hexagons {
+	for i := len(region.hexagons) - 1; i >= 0; i-- {
+		hex := region.hexagons[i]
 		if region.isMarginal(hex.NeighborNorth) || region.isMarginal(hex.NeighborNorthEast) || region.isMarginal(hex.NeighborSouthEast) || region.isMarginal(hex.NeighborSouth) || region.isMarginal(hex.NeighborSouthWest) || region.isMarginal(hex.NeighborNorthWest) {
 			return hex
 		}
@@ -203,8 +198,8 @@ func (region *Region) nextShapeHexagonEdge(hexagon *Hexagon, startAtEdge int) (*
 	if i == 6 {
 		return nil, 1
 	}
-	// edge <= first edge with adjacent (different|none) region
 
+	// edge <= first edge with adjacent (different|none) region
 	for {
 		region.shapePath = append(region.shapePath, hexagon.VertexCoord(edge))
 		visitedEdges[edge] = true
@@ -214,7 +209,7 @@ func (region *Region) nextShapeHexagonEdge(hexagon *Hexagon, startAtEdge int) (*
 		}
 	}
 
-	fmt.Println("visitedEdges", visitedEdges, "edge", edge)
+	//fmt.Println("visitedEdges", visitedEdges, "edge", edge)
 
 	if edge == startAtEdge || visitedEdges[edge] {
 		return nil, -1
@@ -226,4 +221,16 @@ func (region *Region) nextShapeHexagonEdge(hexagon *Hexagon, startAtEdge int) (*
 func neighborHasOtherRegion(hexagon *Hexagon, neighborIndex int) bool {
 	hex := hexagon.Neighbor(neighborIndex)
 	return hex == nil || hex.Region != hexagon.Region
+}
+
+func (region *Region) CreateShapePath() *[]*Vertex {
+	var edge int
+	hexagon := region.RandomShapeHexagon()
+	region.beginShape()
+	hexagon, edge = region.nextShapeHexagonEdge(hexagon, -1)
+	for hexagon != nil {
+		hexagon, edge = region.nextShapeHexagonEdge(hexagon, edge)
+	}
+	region.endShape()
+	return &region.shapePath
 }
