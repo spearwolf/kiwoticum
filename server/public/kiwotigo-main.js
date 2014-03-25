@@ -25,11 +25,13 @@
 		canvas.width = width;
 		canvas.height = height;
 		document.getElementById('main').appendChild(canvas);
+		/*
 		var dpr = window.devicePixelRatio;
 		if (typeof dpr === 'number') {
 			canvas.style.width = (100/dpr) + '%';
 			canvas.style.height = (100/dpr) + '%';
 		}
+		*/
 		return ctx;
 	}
 

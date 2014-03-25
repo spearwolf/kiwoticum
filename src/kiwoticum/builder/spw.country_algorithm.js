@@ -53,6 +53,8 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
         ];
         // }}}
 
+	// helper functions {{{
+
     function randomPoint() {
         var x = Math.random() * (width - 1),
             y = Math.random() * (height - 1);
@@ -85,6 +87,8 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
         //return x === 0 || y === 0 || x > options.gridWidth - 1 || y > options.gridHeight - 1 ||
             //(noise.noise(x / (options.gridWidth * 0.5), y / (options.gridHeight * 0.5)) < -0.5);
     }
+
+	// }}}
 
     // ===== mainlands =============================== {{{
     //
@@ -150,7 +154,9 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
 
     // A) Create Countries
     // ===================
-    //
+
+	// helper functions {{{
+
     function assignBaseHexagon(country, hexagon) {
         country.assignHexagon(hexagon);
         country.data.baseHexagons.push(hexagon);
@@ -211,6 +217,8 @@ kiwoticum.builder.spw.createCountries = function(builder, options) {  // {{{
 
         return country;
     }
+
+	// --- }}}
 
     var countryGridCell = new Array(gridHeight);
 
