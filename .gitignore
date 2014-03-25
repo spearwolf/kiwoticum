@@ -12,4 +12,4 @@ App.old
 .sass-cache
 App/old
 build.bz2
-test/kiwoticum_json_renderer_map.json
+prototype-js/test/kiwoticum_json_renderer_map.json
