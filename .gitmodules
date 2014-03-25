@@ -1,3 +1,0 @@
-[submodule "server/kiwotigo"]
-	path = server/kiwotigo
-	url = git@github.com:spearwolf/kiwotigo.git
