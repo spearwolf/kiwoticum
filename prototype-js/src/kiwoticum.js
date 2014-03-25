@@ -44,13 +44,7 @@ kiwoticum.builder.CountryMapBuilder = function(options) {
             }
         });
     };
-    var baseHexCoords = api.baseHexCoords = api.createHexagonCoords(conf.hexagonWidth, conf.hexagonHeight),
-        inlineHexCoords = api.createHexagonCoords(conf.hexagonWidth, conf.hexagonHeight, conf.hexagonInlineOffset),
-        stepX = baseHexCoords[5][0] - baseHexCoords[3][0],
-        stepY = baseHexCoords[5][1] - baseHexCoords[1][1],
-        stepY1 = baseHexCoords[0][1] - baseHexCoords[1][1],
-        canvasWidth = (conf.width - 1) * stepX + (conf.width - 1) * conf.paddingX + conf.hexagonWidth,
-        canvasHeight = (conf.height - 1) * stepY + (conf.height - 1) * conf.paddingY + conf.hexagonHeight + stepY1;
+    var baseHexCoords = api.baseHexCoords = api.createHexagonCoords(conf.hexagonWidth, conf.hexagonHeight), inlineHexCoords = api.createHexagonCoords(conf.hexagonWidth, conf.hexagonHeight, conf.hexagonInlineOffset), stepX = baseHexCoords[5][0] - baseHexCoords[3][0], stepY = baseHexCoords[5][1] - baseHexCoords[1][1], stepY1 = baseHexCoords[0][1] - baseHexCoords[1][1], canvasWidth = (conf.width - 1) * stepX + (conf.width - 1) * conf.paddingX + conf.hexagonWidth, canvasHeight = (conf.height - 1) * stepY + (conf.height - 1) * conf.paddingY + conf.hexagonHeight + stepY1;
     api.getCanvasWidth = function() {
         return canvasWidth;
     };
