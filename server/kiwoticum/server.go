@@ -24,6 +24,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		GridHeight:        10,
 		GridOuterPaddingX: 10,
 		GridOuterPaddingY: 10,
+		GridInnerPaddingX: 4,
+		GridInnerPaddingY: 4,
 		GridHexWidth:      10,
 		GridHexHeight:     10,
 		HexWidth:          20,
