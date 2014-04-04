@@ -9,6 +9,7 @@ body, div {
 }
 
 body {
+	margin-top: 10px;
 	/*background-color: #fff;*/
 	/*color: #222;*/
 
@@ -18,4 +19,3 @@ body {
 
 	text-align: center;
 }
-

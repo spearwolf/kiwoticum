@@ -33,7 +33,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		HexPaddingX:           3,
 		HexPaddingY:           3,
 		FastGrowIterations:    1,
-		MinimalGrowIterations: 64}
+		MinimalGrowIterations: 64,
+		MaxRegionSizeFactor:   3}
 
 	strategy := kiwotigo.NewContinentCreationStrategy(config)
 	strategy.CreateRegions()

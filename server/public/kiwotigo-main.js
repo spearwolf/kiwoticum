@@ -56,7 +56,7 @@
 		}
 	}
 
-	function DrawRegions(ctx, regions) {
+	function DrawRegions(ctx, regions, drawBasePath) {
 		//ctx.strokeStyle = '#000000';
 		//ctx.fillStyle = '#d0f0ff';
 		ctx.strokeStyle = "#0B575B"; //'#246';
@@ -65,10 +65,25 @@
 
 		DrawPath(ctx, regions, 'fullPath', true);
 
-		//ctx.fillStyle = '#c0e0ee';
-		ctx.fillStyle = '#61A548'; //'#BEF202';
+		if (drawBasePath) {
+			//ctx.fillStyle = '#c0e0ee';
+			ctx.fillStyle = '#61A548'; //'#BEF202';
 
-		DrawPath(ctx, regions, 'basePath');
+			DrawPath(ctx, regions, 'basePath');
+		}
+	}
+
+	function DrawRegionsBase(ctx, data) {
+		ctx.fillStyle = '#61A548';
+
+		var i, j, p0;
+		for (i = 0; i < data.regions.length; i++) {
+			cp = data.centerPoints[i];
+			ctx.beginPath();
+			ctx.arc(cp.x, cp.y, cp.innerRadius, 0, 2 * Math.PI, false);
+			ctx.closePath();
+			ctx.fill();
+		}
 	}
 
 	function DrawRegionsConnections(ctx, data) {
@@ -91,10 +106,16 @@
 
 	function DrawRegionIds(ctx, data) {
 		ctx.font = 'normal 24px Verdana';
+		ctx.shadowColor = "#000";
+		ctx.shadowOffsetX = 1;
+		ctx.shadowOffsetY = 1;
+		ctx.shadowBlur = 2;
+		ctx.textAlign = "center";
+		ctx.textBaseline = 'middle';
 		ctx.fillStyle = '#fffff0';
 
 		for (var i = 0; i < data.centerPoints.length; i++) {
-			ctx.fillText(i+'', data.centerPoints[i].x-14, data.centerPoints[i].y+8);
+			ctx.fillText(i+'', data.centerPoints[i].x, data.centerPoints[i].y);
 		}
 	}
 
@@ -105,7 +126,8 @@
 		console.log('canvas created', ctx.canvas);
 
 		ClearCanvas(ctx);
-		DrawRegions(ctx, data.regions);
+		DrawRegions(ctx, data.regions, false);
+		DrawRegionsBase(ctx, data);
 		DrawRegionsConnections(ctx, data);
 		DrawRegionIds(ctx, data);
 	});
