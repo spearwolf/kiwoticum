@@ -75,14 +75,21 @@
 
 	function DrawRegionsBase(ctx, data) {
 		ctx.fillStyle = '#61A548';
+		ctx.lineWidth = 1;
 
 		var i, j, p0;
 		for (i = 0; i < data.regions.length; i++) {
 			cp = data.centerPoints[i];
+
 			ctx.beginPath();
-			ctx.arc(cp.x, cp.y, cp.innerRadius, 0, 2 * Math.PI, false);
+			ctx.arc(cp.x, cp.y, cp.iR, 0, 2 * Math.PI, false);
 			ctx.closePath();
 			ctx.fill();
+
+			ctx.beginPath();
+			ctx.arc(cp.x, cp.y, cp.oR, 0, 2 * Math.PI, false);
+			ctx.closePath();
+			ctx.stroke();
 		}
 	}
 
