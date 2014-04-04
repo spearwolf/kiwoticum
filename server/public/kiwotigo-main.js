@@ -14,7 +14,7 @@
 		}
 		req.onerror = function(){
 			console.log('ERROR', req);
-		}	
+		}
 		req.send();
 	}
 
@@ -27,8 +27,8 @@
 		document.getElementById('main').appendChild(canvas);
 		var dpr = window.devicePixelRatio;
 		if (typeof dpr === 'number') {
-			canvas.style.width = (100/dpr) + '%';
-			canvas.style.height = (100/dpr) + '%';
+			canvas.style.width = Math.round(width/dpr) + 'px';
+			canvas.style.height = Math.round(height/dpr) + 'px';
 		}
 		return ctx;
 	}
@@ -59,16 +59,43 @@
 	function DrawRegions(ctx, regions) {
 		//ctx.strokeStyle = '#000000';
 		//ctx.fillStyle = '#d0f0ff';
-		ctx.strokeStyle = '#000'; 
+		ctx.strokeStyle = "#0B575B"; //'#246';
 		ctx.fillStyle = '#88C425';
-		ctx.lineWidth = 1;
+		ctx.lineWidth = window.devicePixelRatio||1;
 
 		DrawPath(ctx, regions, 'fullPath', true);
 
 		//ctx.fillStyle = '#c0e0ee';
-		ctx.fillStyle = '#519548'; //'#BEF202';
+		ctx.fillStyle = '#61A548'; //'#BEF202';
 
 		DrawPath(ctx, regions, 'basePath');
+	}
+
+	function DrawRegionsConnections(ctx, data) {
+		ctx.strokeStyle = "rgba(255, 0, 128, 0.5)";
+		ctx.lineWidth = 2 * (window.devicePixelRatio||1);
+
+		var i, j, p0, p1;
+		for (i = 0; i < data.neighbors.length; i++) {
+			p0 = data.centerPoints[i];
+			for (j = 0; j < data.neighbors[i].length; j++) {
+				p1 = data.centerPoints[data.neighbors[i][j]];
+				ctx.beginPath();
+				ctx.moveTo(p0.x, p0.y);
+				ctx.lineTo(p1.x, p1.y)
+				ctx.closePath();
+				ctx.stroke();
+			}
+		}
+	}
+
+	function DrawRegionIds(ctx, data) {
+		ctx.font = 'normal 24px Verdana';
+		ctx.fillStyle = '#fffff0';
+
+		for (var i = 0; i < data.centerPoints.length; i++) {
+			ctx.fillText(i+'', data.centerPoints[i].x-14, data.centerPoints[i].y+8);
+		}
 	}
 
 	GetJson('/api/v1/create', function(data){
@@ -79,12 +106,8 @@
 
 		ClearCanvas(ctx);
 		DrawRegions(ctx, data.regions);
-
-		ctx.font = 'normal 24px Verdana';
-		ctx.fillStyle = '#fffff0';
-		for (var i = 0; i < data.centerPoints.length; i++) {
-			ctx.fillText(i+'', data.centerPoints[i].x-12, data.centerPoints[i].y+12);
-		}
+		DrawRegionsConnections(ctx, data);
+		DrawRegionIds(ctx, data);
 	});
 
 })(window);
