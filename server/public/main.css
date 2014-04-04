@@ -9,7 +9,13 @@ body, div {
 }
 
 body {
-	background-color: #fff;
-	color: #222;
+	/*background-color: #fff;*/
+	/*color: #222;*/
+
+	/* http://www.colourlovers.com/palette/871636/A_Dream_in_Color */
+	background-color: #1B676B;
+	color: #EAFDE6;
+
+	text-align: center;
 }
 

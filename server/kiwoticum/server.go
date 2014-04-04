@@ -3,7 +3,7 @@ package kiwoticum
 import (
 	"appengine"
 	"fmt"
-	"kiwotigo"
+	"github.com/spearwolf/kiwotigo"
 	"net/http"
 )
 
@@ -20,20 +20,25 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	//fmt.Fprint(w, "Hello, kiwoticum!")
 
 	config := kiwotigo.ContinentConfig{
-		GridWidth:         10,
-		GridHeight:        10,
-		GridOuterPaddingX: 10,
-		GridOuterPaddingY: 10,
-		GridInnerPaddingX: 4,
-		GridInnerPaddingY: 4,
-		GridHexWidth:      10,
-		GridHexHeight:     10,
-		HexWidth:          20,
-		HexHeight:         20}
+		GridWidth:             6,
+		GridHeight:            6,
+		GridOuterPaddingX:     8,
+		GridOuterPaddingY:     8,
+		GridInnerPaddingX:     2,
+		GridInnerPaddingY:     2,
+		GridHexWidth:          10,
+		GridHexHeight:         10,
+		HexWidth:              22,
+		HexHeight:             22,
+		HexPaddingX:           0,
+		HexPaddingY:           0,
+		FastGrowIterations:    1,
+		MinimalGrowIterations: 42}
 
 	strategy := kiwotigo.NewContinentCreationStrategy(config)
 	strategy.CreateRegions()
-	strategy.Continent.CreateAllShapes()
+	strategy.
+		strategy.Continent.UpdateCenterPoints()
 
 	fmt.Fprint(w, strategy.Continent.Json())
 }
