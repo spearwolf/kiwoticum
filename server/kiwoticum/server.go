@@ -37,8 +37,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	strategy := kiwotigo.NewContinentCreationStrategy(config)
 	strategy.CreateRegions()
-	strategy.
-		strategy.Continent.UpdateCenterPoints()
+	strategy.Continent.UpdateCenterPoints()
 
 	fmt.Fprint(w, strategy.Continent.Json())
 }
