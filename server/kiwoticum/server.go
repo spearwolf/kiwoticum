@@ -37,9 +37,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		MaxRegionSizeFactor:   3}
 
 	strategy := kiwotigo.NewContinentCreationStrategy(config)
-	strategy.CreateRegions()
-	strategy.Continent.UpdateCenterPoints()
-	strategy.Continent.MakeNeighbors()
+	continent := strategy.BuildContinent()
 
-	fmt.Fprint(w, strategy.Continent.Json())
+	fmt.Fprint(w, continent.Json())
 }
