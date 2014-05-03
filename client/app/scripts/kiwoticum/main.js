@@ -3,14 +3,20 @@
 
     require('./json/load.coffee');
     require('./world/create.coffee');
+    require('./app/fullscreen_canvas.coffee');
+    require('./app/world_viewer.coffee');
 
-    papa.Module('kiwoticum', window, function(kiwoticum){
+    papa.Module('kiwoticum', window, function(kiwoticum) {
 
         kiwoticum.main = function() {
 
+            var app = papa.Factory.Create("kiwoticum.app.world_viewer", true);
+
+            kiwoticum.app.fullscreen_canvas.create(app);
+
             kiwoticum.json.load('/api/v1/create').then(function(data) {
 
-                var world = kiwoticum.world.create(data)
+                var world = kiwoticum.world.create(data);
 
                 console.log('world', world);
                 console.log('region#0', world.regions[0]);

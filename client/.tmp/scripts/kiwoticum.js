@@ -9,7 +9,92 @@
 })();
 // vim: et ts=4 sts=4 sw=4
 
-},{"./kiwoticum/main":3}],2:[function(require,module,exports){
+},{"./kiwoticum/main":5}],2:[function(require,module,exports){
+papa.Module('kiwoticum.app.fullscreen_canvas', window, function(exports) {
+  var canvasHeight, canvasWidth, ctx, mainApp, onFrame, resizeCanvas, screenCanvas, shouldResize;
+  mainApp = null;
+  screenCanvas = null;
+  ctx = null;
+  shouldResize = true;
+  canvasWidth = null;
+  canvasHeight = null;
+  exports.create = function(app) {
+    mainApp = app;
+    screenCanvas = document.createElement('canvas');
+    if (navigator.isCocoonJS) {
+      screenCanvas.screencanvas = true;
+    }
+    ctx = screenCanvas.getContext('2d');
+    resizeCanvas();
+    document.body.appendChild(screenCanvas);
+    window.addEventListener('resize', function() {
+      return shouldResize = true;
+    });
+    return onFrame.run();
+  };
+  exports.setMainApp = function(app) {
+    if ((app != null) && mainApp !== app) {
+      mainApp = app;
+      return app.emit('resize', screenCanvas.width, screenCanvas.height);
+    }
+  };
+  resizeCanvas = function() {
+    var pixelRatio, pxHeight, pxWidth, winHeight, winWidth;
+    shouldResize = false;
+    winWidth = window.innerWidth;
+    winHeight = window.innerHeight;
+    pixelRatio = window.devicePixelRatio || 1;
+    pxWidth = winWidth * pixelRatio;
+    pxHeight = winHeight * pixelRatio;
+    if (canvasWidth !== pxWidth || canvasHeight !== pxHeight) {
+      screenCanvas.width = pxWidth;
+      screenCanvas.height = pxHeight;
+      screenCanvas.style.width = "" + winWidth + "px";
+      screenCanvas.style.height = "" + winHeight + "px";
+      if (mainApp != null) {
+        return mainApp.emit('resize', pxWidth, pxHeight);
+      }
+    }
+  };
+  onFrame = function() {
+    onFrame.run();
+    if (shouldResize) {
+      resizeCanvas();
+    }
+    if (mainApp != null) {
+      mainApp.emit('idle');
+      return mainApp.emit('render', ctx);
+    }
+  };
+  onFrame.run = function() {
+    return window.requestAnimationFrame(onFrame);
+  };
+});
+
+
+},{}],3:[function(require,module,exports){
+papa.Factory("kiwoticum.app.world_viewer", function() {
+  return {
+    dependsOn: "events",
+    initialize: function(exports, self) {
+      self.on('resize', function(w, h) {
+        self.width = w;
+        return self.height = h;
+      });
+      return self.on('render', function(ctx) {
+        ctx.save();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, ctx.width, ctx.height);
+        ctx.restore();
+        ctx.fillStyle = '#666666';
+        return ctx.fillRect(0, 0, self.width / 2, self.height);
+      });
+    }
+  };
+});
+
+
+},{}],4:[function(require,module,exports){
 papa.Module("kiwoticum.json", window, function(exports) {
   exports.load = function(url) {
     var deferred, req;
@@ -32,20 +117,26 @@ papa.Module("kiwoticum.json", window, function(exports) {
 });
 
 
-},{}],3:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 (function(){
     "use strict";
 
     require('./json/load.coffee');
     require('./world/create.coffee');
+    require('./app/fullscreen_canvas.coffee');
+    require('./app/world_viewer.coffee');
 
-    papa.Module('kiwoticum', window, function(kiwoticum){
+    papa.Module('kiwoticum', window, function(kiwoticum) {
 
         kiwoticum.main = function() {
 
+            var app = papa.Factory.Create("kiwoticum.app.world_viewer", true);
+
+            kiwoticum.app.fullscreen_canvas.create(app);
+
             kiwoticum.json.load('/api/v1/create').then(function(data) {
 
-                var world = kiwoticum.world.create(data)
+                var world = kiwoticum.world.create(data);
 
                 console.log('world', world);
                 console.log('region#0', world.regions[0]);
@@ -56,7 +147,7 @@ papa.Module("kiwoticum.json", window, function(exports) {
 })();
 // vim: et ts=4 sts=4 sw=4
 
-},{"./json/load.coffee":2,"./world/create.coffee":4}],4:[function(require,module,exports){
+},{"./app/fullscreen_canvas.coffee":2,"./app/world_viewer.coffee":3,"./json/load.coffee":4,"./world/create.coffee":6}],6:[function(require,module,exports){
 require("./setup.coffee");
 
 papa.Module("kiwoticum.world", window, function(exports) {
@@ -68,7 +159,7 @@ papa.Module("kiwoticum.world", window, function(exports) {
 });
 
 
-},{"./setup.coffee":8}],5:[function(require,module,exports){
+},{"./setup.coffee":10}],7:[function(require,module,exports){
 var findMax, findMin;
 
 require("./region.coffee");
@@ -114,7 +205,7 @@ papa.Factory("kiwoticum.world.region.bbox", function() {
 });
 
 
-},{"./region.coffee":7}],6:[function(require,module,exports){
+},{"./region.coffee":9}],8:[function(require,module,exports){
 require("./region.coffee");
 
 require("./bbox.coffee");
@@ -129,7 +220,7 @@ papa.Module("kiwoticum.world.region", window, function(exports) {
 });
 
 
-},{"./bbox.coffee":5,"./region.coffee":7}],7:[function(require,module,exports){
+},{"./bbox.coffee":7,"./region.coffee":9}],9:[function(require,module,exports){
 papa.Factory("kiwoticum.world.region", function() {
   return {
     initialize: function(exports, self) {
@@ -143,7 +234,7 @@ papa.Factory("kiwoticum.world.region", function() {
 });
 
 
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 require("./region/create.coffee");
 
 papa.Factory("kiwoticum.world", function() {
@@ -166,4 +257,4 @@ papa.Factory("kiwoticum.world", function() {
 });
 
 
-},{"./region/create.coffee":6}]},{},[1,3,2,4,5,6,7,8])
+},{"./region/create.coffee":8}]},{},[1,5,2,3,4,6,7,8,9,10])
