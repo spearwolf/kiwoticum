@@ -1,6 +1,6 @@
 papa.Factory "kiwoticum.world.region", ->
 
-	initialize: (exports, self) ->
+    initialize: (exports, self) ->
 
         self.centerPoint = self.world.data.centerPoints[self.id]
 

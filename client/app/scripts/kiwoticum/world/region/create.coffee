@@ -12,6 +12,5 @@ papa.Module "kiwoticum.world.region", window, (exports) ->
                 id: id
 
 
-
     return
 # vim: et ts=4 sts=4 sw=4

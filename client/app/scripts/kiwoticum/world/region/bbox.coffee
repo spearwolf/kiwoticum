@@ -17,6 +17,7 @@ findMax = (key, path) ->
 papa.Factory "kiwoticum.world.region.bbox", ->
 
     dependsOn: "kiwoticum.world.region"
+
     initialize: (exports, self) ->
 
         self.bbox =
