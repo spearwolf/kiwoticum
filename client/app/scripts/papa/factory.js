@@ -69,16 +69,23 @@
 			return instance;
 		};
 
-		api.Create = function(objectTypeName, newScopeInheritance) {
+		api.Create = function(objectTypeName, newScopeInheritance, objInstance) {
 			if (newScopeInheritance) {
-				var apiInstance = { papa: {} };
+				var apiInstance = objInstance || {};
+				apiInstance.papa = {};
+
 				var instance = Object.create(apiInstance);
 				apiInstance.papa.instance = instance;
 				apiInstance.papa.apiInstance = apiInstance;
-				api.Include(objectTypeName, apiInstance);
+
+				if (!!objectTypeName) {
+					api.Include(objectTypeName, apiInstance);
+				}
+
 				return instance;
+
 			} else {
-				return api.Include(objectTypeName, {});
+				return api.Include(objectTypeName, (objInstance || {}));
 			}
 		};
 
