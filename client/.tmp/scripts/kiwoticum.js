@@ -48,7 +48,6 @@ papa.Module("kiwoticum.json", window, function(exports) {
                 var world = kiwoticum.world.create(data)
 
                 console.log('world', world);
-                console.log('region#0 centerPoint', world.regions[0].centerPoint);
                 console.log('region#0', world.regions[0]);
             });
         };

@@ -25,7 +25,7 @@ papa.Factory "kiwoticum.world.region.bbox", ->
             y0: findMin 'y', self.path.full
             x1: findMax 'x', self.path.full
             y1: findMax 'y', self.path.full
-        
+
         self.bbox.w = self.bbox.x1 - self.bbox.x0
         self.bbox.h = self.bbox.y1 - self.bbox.y0
 
