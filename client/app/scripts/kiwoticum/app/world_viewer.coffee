@@ -2,21 +2,18 @@ papa.Factory "kiwoticum.app.world_viewer", ->
 
     dependsOn: "events"
 
-    initialize: (exports, self) ->
+    initialize: (exports, app) ->
 
-        self.on 'resize', (w, h) ->
-            self.width = w
-            self.height = h
-            # console.log 'resize', w, h
+        # app.on 'resize', (w, h) -> console.log 'resize', w, h
 
-        self.on 'render', (ctx) ->
+        app.on 'render', (ctx) ->
             ctx.save()
             ctx.setTransform 1, 0, 0, 1, 0, 0
-            ctx.clearRect 0, 0, ctx.width, ctx.height
+            ctx.clearRect 0, 0, app.width, app.height
             ctx.restore()
 
             ctx.fillStyle = '#666666'
-            ctx.fillRect 0, 0, self.width/2, self.height
+            ctx.fillRect 0, 0, app.width/2, app.height
 
 
 # vim: et ts=4 sts=4 sw=4

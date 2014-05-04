@@ -42,7 +42,10 @@ papa.Module 'kiwoticum.app.fullscreen_canvas', window, (exports) ->
             screenCanvas.style.width = "#{winWidth}px"
             screenCanvas.style.height = "#{winHeight}px"
 
-            mainApp.emit 'resize', pxWidth, pxHeight if mainApp?
+            if mainApp?
+                mainApp.width = pxWidth
+                mainApp.height = pxHeight
+                mainApp.emit 'resize', pxWidth, pxHeight
 
 
     onFrame = ->

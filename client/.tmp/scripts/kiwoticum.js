@@ -52,6 +52,8 @@ papa.Module('kiwoticum.app.fullscreen_canvas', window, function(exports) {
       screenCanvas.style.width = "" + winWidth + "px";
       screenCanvas.style.height = "" + winHeight + "px";
       if (mainApp != null) {
+        mainApp.width = pxWidth;
+        mainApp.height = pxHeight;
         return mainApp.emit('resize', pxWidth, pxHeight);
       }
     }
@@ -76,18 +78,14 @@ papa.Module('kiwoticum.app.fullscreen_canvas', window, function(exports) {
 papa.Factory("kiwoticum.app.world_viewer", function() {
   return {
     dependsOn: "events",
-    initialize: function(exports, self) {
-      self.on('resize', function(w, h) {
-        self.width = w;
-        return self.height = h;
-      });
-      return self.on('render', function(ctx) {
+    initialize: function(exports, app) {
+      return app.on('render', function(ctx) {
         ctx.save();
         ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.clearRect(0, 0, ctx.width, ctx.height);
+        ctx.clearRect(0, 0, app.width, app.height);
         ctx.restore();
         ctx.fillStyle = '#666666';
-        return ctx.fillRect(0, 0, self.width / 2, self.height);
+        return ctx.fillRect(0, 0, app.width / 2, app.height);
       });
     }
   };
@@ -191,15 +189,15 @@ findMax = function(key, path) {
 papa.Factory("kiwoticum.world.region.bbox", function() {
   return {
     dependsOn: "kiwoticum.world.region",
-    initialize: function(exports, self) {
-      self.bbox = {
-        x0: findMin('x', self.path.full),
-        y0: findMin('y', self.path.full),
-        x1: findMax('x', self.path.full),
-        y1: findMax('y', self.path.full)
+    initialize: function(exports, region) {
+      region.bbox = {
+        x0: findMin('x', region.path.full),
+        y0: findMin('y', region.path.full),
+        x1: findMax('x', region.path.full),
+        y1: findMax('y', region.path.full)
       };
-      self.bbox.w = self.bbox.x1 - self.bbox.x0;
-      return self.bbox.h = self.bbox.y1 - self.bbox.y0;
+      region.bbox.w = region.bbox.x1 - region.bbox.x0;
+      return region.bbox.h = region.bbox.y1 - region.bbox.y0;
     }
   };
 });
@@ -238,21 +236,19 @@ papa.Factory("kiwoticum.world.region", function() {
 require("./region/create.coffee");
 
 papa.Factory("kiwoticum.world", function() {
-  return {
-    initialize: function(exports, self) {
-      var createRegion, i;
-      createRegion = function(id) {
-        return kiwoticum.world.region.create(self, id);
-      };
-      return self.regions = (function() {
-        var _i, _ref, _results;
-        _results = [];
-        for (i = _i = 0, _ref = self.data.regions.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-          _results.push(createRegion(i));
-        }
-        return _results;
-      })();
-    }
+  return function(exports, world) {
+    var createRegion, i;
+    createRegion = function(id) {
+      return kiwoticum.world.region.create(world, id);
+    };
+    return world.regions = (function() {
+      var _i, _ref, _results;
+      _results = [];
+      for (i = _i = 0, _ref = world.data.regions.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+        _results.push(createRegion(i));
+      }
+      return _results;
+    })();
   };
 });
 
