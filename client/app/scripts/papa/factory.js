@@ -1,15 +1,15 @@
 (function(){
 	var papa = require('./papa');
 
-	papa.Module('Factory', papa, function() {
+	papa.Module('Mixin', papa, function() {
 
-		var factories = {};
+		var mixins = {};
 
 		var api = function(objectTypeName, callback) {
-			if (!Array.isArray(factories[objectTypeName])) {
-				factories[objectTypeName] = [];
+			if (!Array.isArray(mixins[objectTypeName])) {
+				mixins[objectTypeName] = [];
 			}
-			factories[objectTypeName].push(callback());
+			mixins[objectTypeName].push(callback());
 		};
 
 		function _initialize(objectTypeName, apiInstance) {
@@ -19,8 +19,8 @@
 				instance = apiInstance.papa.instance;
 			}
 
-			var _factories = factories[objectTypeName];
-			if (Array.isArray(_factories) && _factories.length > 0) {
+			var _mixins = mixins[objectTypeName];
+			if (Array.isArray(_mixins) && _mixins.length > 0) {
 
 				if (!apiInstance.papa) {
 					apiInstance.papa = {};
@@ -34,23 +34,23 @@
 					apiInstance.papa.mixins.push(objectTypeName);
 				}
 
-				_factories.forEach(function(factory) {
-					if (typeof factory === 'function') {
-						factory(apiInstance, instance);
-					} else if (typeof factory === 'object') {
-						if (Array.isArray(factory.dependsOn)) {
-							factory.dependsOn.forEach(function(_typeName) {
+				_mixins.forEach(function(mixin) {
+					if (typeof mixin === 'function') {
+						mixin(instance, apiInstance);  //, instance);
+					} else if (typeof mixin === 'object') {
+						if (Array.isArray(mixin.dependsOn)) {
+							mixin.dependsOn.forEach(function(_typeName) {
 								api.Include(_typeName, apiInstance);
 							});
-						} else if (typeof factory.dependsOn === 'string') {
-							api.Include(factory.dependsOn, apiInstance);
+						} else if (typeof mixin.dependsOn === 'string') {
+							api.Include(mixin.dependsOn, apiInstance);
 						}
-						if (typeof factory.initialize === 'function') {
-							if (typeof factory.namespace === 'string') {
-								exports = papa.Module.CreateObjPath(factory.namespace, apiInstance);
-								factory.initialize(exports, instance);
+						if (typeof mixin.initialize === 'function') {
+							if (typeof mixin.namespace === 'string') {
+								exports = papa.Module.CreateObjPath(mixin.namespace, apiInstance);
+								mixin.initialize(instance, exports); //, instance);
 							} else {
-								factory.initialize(apiInstance, instance);
+								mixin.initialize(instance, apiInstance); //, instance);
 							}
 						}
 					}
@@ -69,7 +69,7 @@
 			return instance;
 		};
 
-		api.Create = function(objectTypeName, newScopeInheritance, objInstance) {
+		api.NewObject = function(objectTypeName, newScopeInheritance, objInstance) {
 			if (newScopeInheritance) {
 				var apiInstance = objInstance || {};
 				apiInstance.papa = {};

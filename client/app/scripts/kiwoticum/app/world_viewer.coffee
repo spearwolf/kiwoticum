@@ -1,8 +1,8 @@
-papa.Factory "kiwoticum.app.world_viewer", ->
+papa.Mixin "kiwoticum.app.world_viewer", ->
 
     dependsOn: "events"
 
-    initialize: (exports, app) ->
+    initialize: (app, exports) ->
 
         exports.setWorld = (world) -> app.world = world
 

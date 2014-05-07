@@ -3,12 +3,12 @@ require './factory'
 require './events'
 {state_machine} = require './coffee_state_machine'
 
-papa.Factory "app_state_machine", ->
+papa.Mixin "app_state_machine", ->
 
 	namespace: 'state'
 	dependsOn: 'events'
 
-	initialize: (exports, self) ->
+	initialize: (app, exports) ->
 
 		state_machine "state", extend: exports, (state, event, transition) ->
 
@@ -23,15 +23,14 @@ papa.Factory "app_state_machine", ->
 
 
 			event "start", ->
-				transition.from "created", to: "setup", -> self.emit "setup"
+				transition.from "created", to: "setup", -> app.emit "setup"
 				transition.from "postInit", to: "running", ->
-					self.emit "started"
+					app.emit "started"
 
 			event "loadAssets", ->
 				transition.from "setup", to: "loading"  # TODO load assets
 
 			event "assetsLoaded", ->
 				transition.from "loading", to: "postInit", ->
-					self.emit "assetsLoaded"
+					app.emit "assetsLoaded"
 					exports.start()
-

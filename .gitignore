@@ -14,3 +14,4 @@ App/old
 build.bz2
 prototype-js/test/kiwoticum_json_renderer_map.json
 client/node_modules
+client/.tmp

@@ -4,7 +4,7 @@ require "./bbox.coffee"
 papa.Module "kiwoticum.world.region", (exports) ->
 
     exports.create = (world, id) ->
-        papa.Factory.Create [
+        papa.Mixin.NewObject [
                 'kiwoticum.world.region',
                 'kiwoticum.world.region.bbox'
             ], yes,
@@ -13,4 +13,5 @@ papa.Module "kiwoticum.world.region", (exports) ->
 
 
     return
+
 # vim: et ts=4 sts=4 sw=4

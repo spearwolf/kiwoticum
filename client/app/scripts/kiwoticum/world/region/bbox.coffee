@@ -14,11 +14,11 @@ findMax = (key, path) ->
     return max
 
 
-papa.Factory "kiwoticum.world.region.bbox", ->
+papa.Mixin "kiwoticum.world.region.bbox", ->
 
     dependsOn: "kiwoticum.world.region"
 
-    initialize: (exports, region) ->
+    initialize: (region) ->
 
         region.bbox =
             x0: findMin 'x', region.path.full

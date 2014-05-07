@@ -2,7 +2,7 @@
 	var papa = require('./papa');
     require('./factory');
 
-	papa.Factory('events', function() {
+	papa.Mixin('events', function() {
 
 		return function(api, self) {
 

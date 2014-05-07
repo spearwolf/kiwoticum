@@ -14,7 +14,7 @@
 		}
 
 		function createAppSkeleton(name) {
-			var app = papa.Factory.Create([
+			var app = papa.Mixin.NewObject([
 					//"events",
 					"app_state_machine"
 				], true);

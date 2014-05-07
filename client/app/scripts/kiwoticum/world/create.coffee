@@ -3,7 +3,7 @@ require "./setup.coffee"
 papa.Module "kiwoticum.world", (exports) ->
 
     exports.create = (data) ->
-        papa.Factory.Create "kiwoticum.world", true, data: data
+        papa.Mixin.NewObject "kiwoticum.world", true, data: data
 
 
     return

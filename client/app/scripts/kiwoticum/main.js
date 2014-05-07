@@ -10,7 +10,7 @@
 
         kiwoticum.main = function() {
 
-            var app = papa.Factory.Create("kiwoticum.app.world_viewer", true);
+            var app = papa.Mixin.NewObject("kiwoticum.app.world_viewer", true);
 
             kiwoticum.app.fullscreen_canvas.create(app);
 
