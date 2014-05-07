@@ -1,7 +1,7 @@
 require "./region.coffee"
 require "./bbox.coffee"
 
-papa.Module "kiwoticum.world.region", window, (exports) ->
+papa.Module "kiwoticum.world.region", (exports) ->
 
     exports.create = (world, id) ->
         papa.Factory.Create [

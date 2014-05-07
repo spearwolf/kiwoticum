@@ -1,4 +1,4 @@
-papa.Module "kiwoticum.json", window, (exports) ->
+papa.Module "kiwoticum.json", (exports) ->
 
     exports.load = (url) ->
         deferred = Q.defer()

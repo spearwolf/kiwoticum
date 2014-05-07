@@ -4,7 +4,7 @@
     require('./factory');
     require('./app_state_machine.coffee');
 
-	papa.Module('App', function() {
+	papa.Module('App', papa, function() {
 
 		var apps = {};
 		var nextAppId = 0;

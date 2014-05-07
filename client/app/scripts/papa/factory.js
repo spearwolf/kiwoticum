@@ -1,7 +1,7 @@
 (function(){
 	var papa = require('./papa');
 
-	papa.Module('Factory', function() {
+	papa.Module('Factory', papa, function() {
 
 		var factories = {};
 

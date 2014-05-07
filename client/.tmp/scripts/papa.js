@@ -16,7 +16,7 @@
     _dereq_('./factory');
     _dereq_('./app_state_machine.coffee');
 
-	papa.Module('App', function() {
+	papa.Module('App', papa, function() {
 
 		var apps = {};
 		var nextAppId = 0;
@@ -191,7 +191,7 @@ papa.Factory("app_state_machine", function() {
 (function(){
 	var papa = _dereq_('./papa');
 
-	papa.Module('Factory', function() {
+	papa.Module('Factory', papa, function() {
 
 		var factories = {};
 
@@ -291,7 +291,7 @@ papa.Factory("app_state_machine", function() {
     papa.Module = function(name, root, createModFn) {
         if (arguments.length === 2) {
             createModFn = root;
-            root = papa;
+            root = window || this;  //papa
         }
         papa.Module.CreateObjPath(name, root, function(cur, next) {
             if (typeof createModFn === 'function') {
@@ -335,6 +335,7 @@ papa.Factory("app_state_machine", function() {
     };
 
 })(module.exports);
+
 // vim: et ts=4 sts=4 sw=4
 
 },{}]},{},[1])

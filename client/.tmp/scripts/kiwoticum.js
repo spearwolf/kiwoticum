@@ -10,7 +10,7 @@
 // vim: et ts=4 sts=4 sw=4
 
 },{"./kiwoticum/main":5}],2:[function(require,module,exports){
-papa.Module('kiwoticum.app.fullscreen_canvas', window, function(exports) {
+papa.Module('kiwoticum.app.fullscreen_canvas', function(exports) {
   var canvasHeight, canvasWidth, ctx, mainApp, onFrame, resizeCanvas, screenCanvas, shouldResize;
   mainApp = null;
   screenCanvas = null;
@@ -96,7 +96,7 @@ papa.Factory("kiwoticum.app.world_viewer", function() {
 
 
 },{}],4:[function(require,module,exports){
-papa.Module("kiwoticum.json", window, function(exports) {
+papa.Module("kiwoticum.json", function(exports) {
   exports.load = function(url) {
     var deferred, req;
     deferred = Q.defer();
@@ -127,7 +127,7 @@ papa.Module("kiwoticum.json", window, function(exports) {
     require('./app/fullscreen_canvas.coffee');
     require('./app/world_viewer.coffee');
 
-    papa.Module('kiwoticum', window, function(kiwoticum) {
+    papa.Module('kiwoticum', function(kiwoticum) {
 
         kiwoticum.main = function() {
 
@@ -147,12 +147,13 @@ papa.Module("kiwoticum.json", window, function(exports) {
 
     });
 })();
+
 // vim: et ts=4 sts=4 sw=4
 
 },{"./app/fullscreen_canvas.coffee":2,"./app/world_viewer.coffee":3,"./json/load.coffee":4,"./world/create.coffee":6}],6:[function(require,module,exports){
 require("./setup.coffee");
 
-papa.Module("kiwoticum.world", window, function(exports) {
+papa.Module("kiwoticum.world", function(exports) {
   exports.create = function(data) {
     return papa.Factory.Create("kiwoticum.world", true, {
       data: data
@@ -212,7 +213,7 @@ require("./region.coffee");
 
 require("./bbox.coffee");
 
-papa.Module("kiwoticum.world.region", window, function(exports) {
+papa.Module("kiwoticum.world.region", function(exports) {
   exports.create = function(world, id) {
     return papa.Factory.Create(['kiwoticum.world.region', 'kiwoticum.world.region.bbox'], true, {
       world: world,

@@ -1,4 +1,4 @@
-papa.Module 'kiwoticum.app.fullscreen_canvas', window, (exports) ->
+papa.Module 'kiwoticum.app.fullscreen_canvas', (exports) ->
 
     mainApp = null
     screenCanvas = null
@@ -61,4 +61,5 @@ papa.Module 'kiwoticum.app.fullscreen_canvas', window, (exports) ->
 
 
     return
+
 # vim: et ts=4 sts=4 sw=4

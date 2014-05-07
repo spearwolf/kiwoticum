@@ -1,6 +1,6 @@
 require "./setup.coffee"
 
-papa.Module "kiwoticum.world", window, (exports) ->
+papa.Module "kiwoticum.world", (exports) ->
 
     exports.create = (data) ->
         papa.Factory.Create "kiwoticum.world", true, data: data

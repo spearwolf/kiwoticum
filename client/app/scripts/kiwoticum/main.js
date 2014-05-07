@@ -6,7 +6,7 @@
     require('./app/fullscreen_canvas.coffee');
     require('./app/world_viewer.coffee');
 
-    papa.Module('kiwoticum', window, function(kiwoticum) {
+    papa.Module('kiwoticum', function(kiwoticum) {
 
         kiwoticum.main = function() {
 
@@ -26,4 +26,5 @@
 
     });
 })();
+
 // vim: et ts=4 sts=4 sw=4

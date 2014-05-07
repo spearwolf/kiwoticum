@@ -4,7 +4,7 @@
     papa.Module = function(name, root, createModFn) {
         if (arguments.length === 2) {
             createModFn = root;
-            root = papa;
+            root = window || this;  //papa
         }
         papa.Module.CreateObjPath(name, root, function(cur, next) {
             if (typeof createModFn === 'function') {
@@ -48,4 +48,5 @@
     };
 
 })(module.exports);
+
 // vim: et ts=4 sts=4 sw=4
