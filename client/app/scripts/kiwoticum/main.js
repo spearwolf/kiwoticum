@@ -17,6 +17,7 @@
             kiwoticum.json.load('/api/v1/create').then(function(data) {
 
                 var world = kiwoticum.world.create(data);
+                app.setWorld(world);
 
                 console.log('world', world);
                 console.log('region#0', world.regions[0]);

@@ -79,6 +79,9 @@ papa.Factory("kiwoticum.app.world_viewer", function() {
   return {
     dependsOn: "events",
     initialize: function(exports, app) {
+      exports.setWorld = function(world) {
+        return app.world = world;
+      };
       return app.on('render', function(ctx) {
         ctx.save();
         ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -135,6 +138,7 @@ papa.Module("kiwoticum.json", window, function(exports) {
             kiwoticum.json.load('/api/v1/create').then(function(data) {
 
                 var world = kiwoticum.world.create(data);
+                app.setWorld(world);
 
                 console.log('world', world);
                 console.log('region#0', world.regions[0]);

@@ -4,7 +4,7 @@ papa.Factory "kiwoticum.app.world_viewer", ->
 
     initialize: (exports, app) ->
 
-        # app.on 'resize', (w, h) -> console.log 'resize', w, h
+        exports.setWorld = (world) -> app.world = world
 
         app.on 'render', (ctx) ->
             ctx.save()
