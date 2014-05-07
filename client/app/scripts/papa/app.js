@@ -14,12 +14,13 @@
 		}
 
 		function createAppSkeleton(name) {
-			var app = papa.Mixin.NewObject([
-					//"events",
+			return papa.Mixin.NewObject([
 					"app_state_machine"
-				], true);
-			app.papa.name = name;
-			return app;
+				], {
+					name: name
+				});
+			// app.papa.name = name;
+			// return app;
 		}
 
 		var api = function(name, callback) {

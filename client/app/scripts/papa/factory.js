@@ -70,6 +70,12 @@
 		};
 
 		api.NewObject = function(objectTypeName, newScopeInheritance, objInstance) {
+			if (arguments.length === 1) {
+				newScopeInheritance = true;
+			} else if (arguments.length === 2 && typeof newScopeInheritance === 'object') {
+				objInstance = newScopeInheritance;
+				newScopeInheritance = true;
+			}
 			if (newScopeInheritance) {
 				var apiInstance = objInstance || {};
 				apiInstance.papa = {};
