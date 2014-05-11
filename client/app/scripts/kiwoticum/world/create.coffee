@@ -1,9 +1,13 @@
 require "./setup.coffee"
+require "./config.coffee"
 
 papa.Module "kiwoticum.world", (exports) ->
 
     exports.create = (data) ->
-        papa.Mixin.NewObject "kiwoticum.world", data: data
+        papa.Mixin.NewObject [
+                "kiwoticum.world.config",
+                "kiwoticum.world"
+            ], data: data
 
 
     return

@@ -21,10 +21,10 @@ papa.Mixin "kiwoticum.world.region.bbox", ->
     initialize: (region) ->
 
         region.bbox =
-            x0: findMin 'x', region.path.full
-            y0: findMin 'y', region.path.full
-            x1: findMax 'x', region.path.full
-            y1: findMax 'y', region.path.full
+            x0: findMin('x', region.path.full) - region.world.regionPaddingX
+            y0: findMin('y', region.path.full) - region.world.regionPaddingY
+            x1: findMax('x', region.path.full) + region.world.regionPaddingX
+            y1: findMax('y', region.path.full) + region.world.regionPaddingY
 
         region.bbox.w = region.bbox.x1 - region.bbox.x0
         region.bbox.h = region.bbox.y1 - region.bbox.y0

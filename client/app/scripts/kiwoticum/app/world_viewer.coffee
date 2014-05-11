@@ -17,7 +17,11 @@ papa.Mixin "kiwoticum.app.world_viewer", ->
                 ctx.fillRect 0, 0, app.width/2, app.height
 
             if app.world
-                ctx.drawImage app.world.regions[0].canvas, 0, 0
+                region = app.world.regions[0]
+
+                ctx.fillStyle = '#204060'
+                ctx.fillRect 0, 0, region.bbox.w, region.bbox.h
+                ctx.drawImage region.canvas, 0, 0
 
 
 # vim: et ts=4 sts=4 sw=4
