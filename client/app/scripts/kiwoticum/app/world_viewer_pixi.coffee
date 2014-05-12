@@ -25,10 +25,14 @@ papa.Mixin "kiwoticum.app.world_viewer_pixi", ->
 
             for region in world.regions
                 app.regionGroup.addChild region.createSprite()
+                region.sprite.tint = 0x555555
 
-            #world.regions[0].sprite.tint = 0xff0000
-            #world.regions[2].sprite.tint = 0x0000ff
-            #world.regions[5].sprite.tint = 0x00ff00
+            world.regions[0].sprite.tint = 0x00ff00
+            world.regions[2].sprite.tint = 0x00ffff
+            world.regions[5].sprite.tint = 0xff00ff
+            world.regions[world.regions.length-1].sprite.tint = 0xff0000
+            world.regions[world.regions.length-3].sprite.tint = 0x0000ff
+            world.regions[world.regions.length-6].sprite.tint = 0xffff00
 
             app.on 'idle', ->
                 world.regions[0].sprite.rotation += 0.01

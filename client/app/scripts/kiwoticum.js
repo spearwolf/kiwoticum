@@ -2,6 +2,7 @@
     "use strict";
 
     require('./kiwoticum/main');
+    require('./kiwoticum/canvas/create.coffee');
 
     kiwoticum.main();
 

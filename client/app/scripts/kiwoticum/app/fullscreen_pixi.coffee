@@ -27,7 +27,7 @@ papa.Module 'kiwoticum.app.fullscreen_pixi', (exports) ->
 
         readWindowDimension()
 
-        renderer = new PIXI.autoDetectRenderer pxWidth, pxHeight
+        renderer = new PIXI.autoDetectRenderer pxWidth, pxHeight, null, yes, yes
         screenCanvas = renderer.view
         document.body.appendChild screenCanvas
 
