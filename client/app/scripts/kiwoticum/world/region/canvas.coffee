@@ -20,6 +20,18 @@ papa.Mixin "kiwoticum.world.region.region_canvas", ->
 
     initialize: (region, exports) ->
 
+        randColor = ->
+            r = (Math.random() * (255-128))|0 +64 
+            s = (Math.random() * 4)|0
+            if s is 0
+                return "rgb(#{r},64,64)"
+            else if s is 1
+                return "rgb(64,#{r},64)"
+            else if s is 2
+                return "rgb(64,64,#{r})"
+            else if s is 3
+                return "rgb(#{r},#{r},64)"
+
         exports.drawPath = (path, stroke = no) ->
             ctx = region.ctx
 
@@ -39,7 +51,7 @@ papa.Mixin "kiwoticum.world.region.region_canvas", ->
 
             ctx.clearRect 0, 0, region.canvas.width, region.canvas.height
             ctx.strokeStyle = "#000000"
-            ctx.fillStyle = '#555555'
+            ctx.fillStyle = randColor()  #'#555555'
             ctx.lineWidth = window.devicePixelRatio or 1
 
             ctx.save()
