@@ -6,6 +6,10 @@ papa.Mixin "kiwoticum.app.world_viewer", ->
 
         exports.setWorld = (world) -> app.world = world
 
+        #app.on 'idle', ->
+
+        #app.on 'resize', (w, h) ->
+
         app.on 'render', (ctx) ->
             ctx.save()
             ctx.setTransform 1, 0, 0, 1, 0, 0

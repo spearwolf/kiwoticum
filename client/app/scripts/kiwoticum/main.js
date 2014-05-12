@@ -4,15 +4,19 @@
     require('./json/load.coffee');
     require('./world/create.coffee');
     require('./app/fullscreen_canvas.coffee');
+    require('./app/fullscreen_pixi.coffee');
     require('./app/world_viewer.coffee');
+    require('./app/world_viewer_pixi.coffee');
 
     papa.Module('kiwoticum', function(kiwoticum) {
 
         kiwoticum.main = function() {
 
-            var app = papa.Mixin.NewObject("kiwoticum.app.world_viewer");
+            //var app = papa.Mixin.NewObject("kiwoticum.app.world_viewer");
+            var app = papa.Mixin.NewObject("kiwoticum.app.world_viewer_pixi");
 
-            kiwoticum.app.fullscreen_canvas.create(app);
+            //kiwoticum.app.fullscreen_canvas.create(app);
+            kiwoticum.app.fullscreen_pixi.create(app);
 
             kiwoticum.json.load('/api/v1/create').then(function(data) {
 

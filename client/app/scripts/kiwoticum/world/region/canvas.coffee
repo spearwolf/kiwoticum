@@ -38,8 +38,8 @@ papa.Mixin "kiwoticum.world.region.region_canvas", ->
             ctx = region.ctx
 
             ctx.clearRect 0, 0, region.canvas.width, region.canvas.height
-            ctx.strokeStyle = "#ffffff"
-            ctx.fillStyle = '#600030'
+            ctx.strokeStyle = "#f0f0f0"
+            ctx.fillStyle = '#555555'
             ctx.lineWidth = window.devicePixelRatio or 1
 
             ctx.save()
