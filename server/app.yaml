@@ -9,8 +9,8 @@ handlers:
 
 - url: /
   mime_type: text/html
-  static_files: public/index.html
-  upload: public/index.html
+  static_files: public/kiwoticum.html
+  upload: public/kiwoticum.html
 
 - url: /(.*\.css)
   mime_type: text/css

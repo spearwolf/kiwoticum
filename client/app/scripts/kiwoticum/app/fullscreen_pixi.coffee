@@ -27,7 +27,12 @@ papa.Module 'kiwoticum.app.fullscreen_pixi', (exports) ->
 
         readWindowDimension()
 
-        renderer = new PIXI.autoDetectRenderer pxWidth, pxHeight, null, yes, yes
+        renderer =
+            if navigator.isCocoonJS
+                new PIXI.CanvasRenderer pxWidth, pxHeight
+            else
+                new PIXI.autoDetectRenderer pxWidth, pxHeight, null, yes, yes
+
         screenCanvas = renderer.view
         document.body.appendChild screenCanvas
 
