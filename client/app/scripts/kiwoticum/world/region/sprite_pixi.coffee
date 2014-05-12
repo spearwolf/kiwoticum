@@ -1,4 +1,4 @@
-papa.Mixin "kiwoticum.world.region.pixi_sprite", ->
+papa.Mixin "kiwoticum.world.region.sprite_pixi", ->
 
     dependsOn: [
         "kiwoticum.world.region",
