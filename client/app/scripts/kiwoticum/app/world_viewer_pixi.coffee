@@ -10,12 +10,18 @@ papa.Mixin "kiwoticum.app.world_viewer_pixi", ->
             app.stage = new PIXI.Stage
             app.regionGroup = new PIXI.DisplayObjectContainer
             app.stage.addChild app.regionGroup
-            kiwoticum.pixi.utils.activateDrag app.regionGroup
             return
 
         exports.setWorld = (world) ->
             return if app.world
             app.world = world
+
+            kiwoticum.pixi.utils.activateDrag app.regionGroup,
+                    new PIXI.Rectangle(
+                        -world.data.width/2,
+                        -world.data.height/2,
+                        world.data.width*2,
+                        world.data.height*2 )
 
             for region in world.regions
                 app.regionGroup.addChild region.createSprite()
