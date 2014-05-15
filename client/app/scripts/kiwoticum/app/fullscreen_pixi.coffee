@@ -8,7 +8,6 @@ papa.Module 'kiwoticum.app.fullscreen_pixi', (exports) ->
     screenCanvas = null
     shouldResize = yes
 
-    pixelRatio = window.devicePixelRatio or 1
     winWidth = null
     winHeight = null
     pxWidth = null
@@ -18,8 +17,8 @@ papa.Module 'kiwoticum.app.fullscreen_pixi', (exports) ->
     readWindowDimension = ->
         winWidth = window.innerWidth
         winHeight = window.innerHeight
-        pxWidth = winWidth * pixelRatio
-        pxHeight = winHeight * pixelRatio
+        pxWidth = winWidth  * kiwoticum.pixelRatio
+        pxHeight = winHeight  * kiwoticum.pixelRatio
         return
 
     exports.create = (app) ->
@@ -27,13 +26,12 @@ papa.Module 'kiwoticum.app.fullscreen_pixi', (exports) ->
 
         readWindowDimension()
 
-        renderer =
-            if navigator.isCocoonJS
-                new PIXI.CanvasRenderer pxWidth, pxHeight
-            else
-                new PIXI.autoDetectRenderer pxWidth, pxHeight, null, yes, yes
+        #renderer = new PIXI.CanvasRenderer pxWidth, pxHeight, null, yes
+        renderer = new PIXI.autoDetectRenderer pxWidth, pxHeight, null, yes, yes
+        #PIXI.CanvasTinter.convertTintToImage = yes  # XXX only android?
 
         screenCanvas = renderer.view
+        screenCanvas.screencanvas = yes if navigator.isCocoonJS
         document.body.appendChild screenCanvas
 
         resizeCanvas()
@@ -56,6 +54,8 @@ papa.Module 'kiwoticum.app.fullscreen_pixi', (exports) ->
         if canvasWidth isnt pxWidth or canvasHeight isnt pxHeight
             canvasWidth = pxWidth
             canvasHeight = pxHeight
+
+            console.log "canvas size is #{canvasWidth}x#{canvasHeight}"
 
             screenCanvas.style.width = "#{winWidth}px"
             screenCanvas.style.height = "#{winHeight}px"

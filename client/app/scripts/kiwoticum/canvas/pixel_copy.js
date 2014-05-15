@@ -47,8 +47,7 @@
             };
 
             exports.pixelateCanvas = function(pixelZoom) {
-                var dpr = window.devicePixelRatio || 1
-                  , pz = pixelZoom * dpr
+                var pz = pixelZoom * kiwoticum.pixelRatio
                   , w = (canvas.canvas.width / pz)|0
                   , h = (canvas.canvas.height / pz)|0
                   , tmp = kiwoticum.canvas.create(w, h)

@@ -10,6 +10,8 @@ papa.Mixin "kiwoticum.app.world_viewer_pixi", ->
             app.stage = new PIXI.Stage
             app.regionGroup = new PIXI.DisplayObjectContainer
             app.stage.addChild app.regionGroup
+            app.regionInnerGroup = new PIXI.DisplayObjectContainer
+            app.regionGroup.addChild app.regionInnerGroup
             return
 
         exports.setWorld = (world) ->
@@ -23,16 +25,20 @@ papa.Mixin "kiwoticum.app.world_viewer_pixi", ->
                         world.data.width*2,
                         world.data.height*2 )
 
-            for region in world.regions
-                app.regionGroup.addChild region.createSprite()
-                region.sprite.tint = 0x555555
+            app.regionInnerGroup.pivot.x = 0.5
+            app.regionInnerGroup.pivot.y = 0.5
+            #app.regionInnerGroup.rotation = 45 * Math.PI / 180.0
 
-            world.regions[0].sprite.tint = 0x00ff00
-            world.regions[2].sprite.tint = 0x00ffff
-            world.regions[5].sprite.tint = 0xff00ff
-            world.regions[world.regions.length-1].sprite.tint = 0xff0000
-            world.regions[world.regions.length-3].sprite.tint = 0x0000ff
-            world.regions[world.regions.length-6].sprite.tint = 0xffff00
+            for region in world.regions
+                app.regionInnerGroup.addChild region.createSprite()
+                #region.sprite.tint = 0x555555
+
+            #world.regions[0].sprite.tint = 0x00ff00
+            #world.regions[2].sprite.tint = 0x00ffff
+            #world.regions[5].sprite.tint = 0xff00ff
+            #world.regions[world.regions.length-1].sprite.tint = 0xff0000
+            #world.regions[world.regions.length-3].sprite.tint = 0x0000ff
+            #world.regions[world.regions.length-6].sprite.tint = 0xffff00
 
             app.on 'idle', ->
                 world.regions[0].sprite.rotation += 0.01

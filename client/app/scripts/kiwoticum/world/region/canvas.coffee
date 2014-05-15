@@ -10,7 +10,7 @@ createRegionCanvas = (region) ->
     region.ctx = region.canvas.getContext '2d'
 
 
-papa.Mixin "kiwoticum.world.region.region_canvas", ->
+papa.Mixin "kiwoticum.world.region.canvas", ->
 
     namespace: 'canvas'
 
@@ -20,6 +20,18 @@ papa.Mixin "kiwoticum.world.region.region_canvas", ->
     ]
 
     initialize: (region, exports) ->
+
+        if !!region.world.regionPathSmoothing and typeof region.world.regionPathSmoothing is 'number'
+            smoothPath = (path) ->
+               points = ([v.x, v.y] for v in path)
+               smooth = Smooth points,
+                            method: Smooth.METHOD_CUBIC
+                            cubicTension: Smooth.CUBIC_TENSION_CATMULL_ROM
+                            clip: Smooth.CLIP_PERIODIC
+               (smooth(x) for x in [0..points.length] by region.world.regionPathSmoothing)
+
+        else
+            smoothPath = (path) -> ([v.x, v.y] for v in path)
 
         randColor = ->
             r = (Math.random() * (255-128))|0 +64 
@@ -38,41 +50,50 @@ papa.Mixin "kiwoticum.world.region.region_canvas", ->
             kiwoticum.canvas.from(canvas).pixelateCanvas pixelate
 
 
-        exports.drawPath = (path, stroke = no) ->
+        drawPath = (path, stroke = no) ->
             ctx = region.ctx
 
             ctx.beginPath()
-            ctx.moveTo path[0].x, path[0].y
+            ctx.moveTo path[0][0], path[0][1]
 
             for i in [1...path.length]
-                ctx.lineTo path[i].x, path[i].y
+                ctx.lineTo path[i][0], path[i][1]
 
             ctx.closePath()
             ctx.fill()
             ctx.stroke() if stroke
 
 
-        exports.drawRegion = ->
+        drawRegionCenter = (ctx) ->
+            ctx.beginPath()
+            ctx.arc region.centerPoint.x, region.centerPoint.y, region.centerPoint.iR, 0, 2 * Math.PI, false
+            ctx.closePath()
+            ctx.stroke()
+
+
+        drawRegion = ->
             ctx = region.ctx
 
             ctx.clearRect 0, 0, region.canvas.width, region.canvas.height
             ctx.fillStyle = '#ffffff'  #randColor()  #'#555555'
 
-            ctx.strokeStyle = "#555555"
             if region.world.regionShapeStroke
-                dpr = window.devicePixelRatio or 1
-                ctx.lineWidth = region.world.regionShapeStroke * dpr
+                ctx.strokeStyle = "#555555"
+                ctx.lineWidth = region.world.regionShapeStroke
 
             ctx.save()
             ctx.translate -region.bbox.x0, -region.bbox.y0
 
-            exports.drawPath region.path.full, !!region.world.regionShapeStroke
+            drawPath smoothPath(region.path.full), !!region.world.regionShapeStroke
+
+            ctx.strokeStyle = '#f01080'
+            drawRegionCenter ctx
 
             ctx.restore()
 
 
         createRegionCanvas region
-        exports.drawRegion()
+        drawRegion()
 
         if region.world.regionPixelZoom
             pixelateCanvas region.canvas, region.world.regionPixelZoom

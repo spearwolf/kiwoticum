@@ -10,6 +10,8 @@
 
     papa.Module('kiwoticum', function(kiwoticum) {
 
+        kiwoticum.pixelRatio = window.devicePixelRatio || 1;
+
         kiwoticum.main = function() {
 
             //var app = papa.Mixin.NewObject("kiwoticum.app.world_viewer");

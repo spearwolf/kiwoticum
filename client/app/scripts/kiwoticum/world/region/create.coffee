@@ -1,5 +1,6 @@
 require "./region.coffee"
 require "./bbox.coffee"
+require "./canvas.coffee"
 require "./sprite_pixi.coffee"
 
 papa.Module "kiwoticum.world.region", (exports) ->
@@ -8,7 +9,7 @@ papa.Module "kiwoticum.world.region", (exports) ->
         papa.Mixin.NewObject [
                 'kiwoticum.world.region',
                 'kiwoticum.world.region.bbox',
-                'kiwoticum.world.region.region_canvas',
+                'kiwoticum.world.region.canvas',
                 'kiwoticum.world.region.sprite_pixi'
             ],
             world: world
