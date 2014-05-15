@@ -86,6 +86,7 @@ papa.Mixin "kiwoticum.world.region.canvas", ->
 
             drawPath smoothPath(region.path.full), !!region.world.regionShapeStroke
 
+            ctx.lineWidth = 0.5
             ctx.strokeStyle = '#f01080'
             drawRegionCenter ctx
 
