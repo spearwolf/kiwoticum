@@ -13,8 +13,6 @@ createRegionCanvas = (region) ->
 
 papa.Mixin "kiwoticum.world.region.canvas", ->
 
-    namespace: 'canvas'
-
     dependsOn: [
         "kiwoticum.world.region",
         "kiwoticum.world.region.bbox",
@@ -23,16 +21,10 @@ papa.Mixin "kiwoticum.world.region.canvas", ->
 
     initialize: (region, exports) ->
 
-        world = region.world
+        conf = region.world.conf
 
 
-        pixelateCanvas = (canvas, pixelate) ->
-            kiwoticum.canvas.from(canvas).pixelateCanvas pixelate
-
-
-        drawPath = (path, stroke = no) ->
-            ctx = region.ctx
-
+        drawPath = (ctx, path, stroke = no) ->
             ctx.beginPath()
             ctx.moveTo path[0][0], path[0][1]
 
@@ -42,6 +34,7 @@ papa.Mixin "kiwoticum.world.region.canvas", ->
             ctx.closePath()
             ctx.fill()
             ctx.stroke() if stroke
+            return
 
 
         drawRegionCenter = (ctx) ->
@@ -49,36 +42,35 @@ papa.Mixin "kiwoticum.world.region.canvas", ->
             ctx.arc region.centerPoint.x, region.centerPoint.y, region.centerPoint.iR, 0, 2 * Math.PI, false
             ctx.closePath()
             ctx.stroke()
+            return
 
 
-        drawRegion = ->
-            ctx = region.ctx
+        drawRegion = (ctx) ->
             ctx.clearRect 0, 0, region.canvas.width, region.canvas.height
 
-            ctx.fillStyle = world.regionShapeFillStyle
+            ctx.fillStyle = conf.region.ShapeFillStyle
 
-            if world.regionShapeStroke
-                ctx.strokeStyle = world.regionShapeStrokeStyle
-                ctx.lineWidth = world.regionShapeStroke
+            if conf.region.ShapeStroke
+                ctx.strokeStyle = conf.region.ShapeStrokeStyle
+                ctx.lineWidth = conf.region.ShapeStroke
 
             ctx.save()
             ctx.translate -region.bbox.x0, -region.bbox.y0
 
-            drawPath region.smoothPath.get("full"), !!world.regionShapeStroke
+            drawPath ctx, region.smoothPath("full"), conf.region.ShapeStroke
 
-            if world.regionCenterLineWidth
-                ctx.lineWidth = world.regionCenterLineWidth
-                ctx.strokeStyle = world.regionCenterStrokeStyle
+            if conf.region.CenterLineWidth
+                ctx.lineWidth = conf.region.CenterLineWidth
+                ctx.strokeStyle = conf.region.CenterStrokeStyle
                 drawRegionCenter ctx
 
             ctx.restore()
 
 
-        createRegionCanvas region
-        drawRegion()
+        drawRegion createRegionCanvas(region)
 
-        if world.regionPixelZoom
-            pixelateCanvas region.canvas, world.regionPixelZoom
+        if conf.region.PixelZoom
+            kiwoticum.canvas.from(region.canvas).pixelateCanvas conf.region.PixelZoom
 
 
 
