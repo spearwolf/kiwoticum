@@ -12,8 +12,7 @@ papa.Mixin "kiwoticum.world.region.smooth_path", ->
 
         findOrCreatePath = (pathName, createPath) ->
             path_key = "smooth_#{pathName}"
-            region.path[path_key] or
-                    region.path[path_key] = createPath region.path[pathName]
+            region.path[path_key] or= createPath region.path[pathName]
 
 
         if conf.region.PathSmoothing and 'number' is typeof conf.region.PathSmoothing
