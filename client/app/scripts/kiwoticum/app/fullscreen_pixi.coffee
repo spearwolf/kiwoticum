@@ -36,8 +36,8 @@ papa.Module 'kiwoticum.app.fullscreen_pixi', (exports) ->
 
         readWindowDimension()
 
-        renderer = new PIXI.CanvasRenderer pxWidth, pxHeight
-        #renderer = new PIXI.autoDetectRenderer pxWidth, pxHeight  #, null, yes, yes
+        #renderer = new PIXI.CanvasRenderer pxWidth, pxHeight
+        renderer = new PIXI.autoDetectRenderer pxWidth, pxHeight  #, null, yes, yes
         #PIXI.CanvasTinter.convertTintToImage = yes  # XXX only android?
 
         screenCanvas = renderer.view

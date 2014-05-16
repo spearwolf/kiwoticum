@@ -1,5 +1,6 @@
 require "./region.coffee"
 require "./bbox.coffee"
+require "./smooth_path.coffee"
 require "../../canvas/create.coffee"
 
 
@@ -16,34 +17,13 @@ papa.Mixin "kiwoticum.world.region.canvas", ->
 
     dependsOn: [
         "kiwoticum.world.region",
-        "kiwoticum.world.region.bbox"
+        "kiwoticum.world.region.bbox",
+        "kiwoticum.world.region.smooth_path"
     ]
 
     initialize: (region, exports) ->
 
-        if !!region.world.regionPathSmoothing and typeof region.world.regionPathSmoothing is 'number'
-            smoothPath = (path) ->
-               points = ([v.x, v.y] for v in path)
-               smooth = Smooth points,
-                            method: Smooth.METHOD_CUBIC
-                            cubicTension: Smooth.CUBIC_TENSION_CATMULL_ROM
-                            clip: Smooth.CLIP_PERIODIC
-               (smooth(x) for x in [0..points.length] by region.world.regionPathSmoothing)
-
-        else
-            smoothPath = (path) -> ([v.x, v.y] for v in path)
-
-        randColor = ->
-            r = (Math.random() * (255-128))|0 +64 
-            s = (Math.random() * 4)|0
-            if s is 0
-                return "rgb(#{r},64,64)"
-            else if s is 1
-                return "rgb(64,#{r},64)"
-            else if s is 2
-                return "rgb(64,64,#{r})"
-            else if s is 3
-                return "rgb(#{r},#{r},64)"
+        world = region.world
 
 
         pixelateCanvas = (canvas, pixelate) ->
@@ -73,22 +53,23 @@ papa.Mixin "kiwoticum.world.region.canvas", ->
 
         drawRegion = ->
             ctx = region.ctx
-
             ctx.clearRect 0, 0, region.canvas.width, region.canvas.height
-            ctx.fillStyle = '#ffffff'  #randColor()  #'#555555'
 
-            if region.world.regionShapeStroke
-                ctx.strokeStyle = 'rgba(0,0,0,0.5)'
-                ctx.lineWidth = region.world.regionShapeStroke
+            ctx.fillStyle = world.regionShapeFillStyle
+
+            if world.regionShapeStroke
+                ctx.strokeStyle = world.regionShapeStrokeStyle
+                ctx.lineWidth = world.regionShapeStroke
 
             ctx.save()
             ctx.translate -region.bbox.x0, -region.bbox.y0
 
-            drawPath smoothPath(region.path.full), !!region.world.regionShapeStroke
+            drawPath region.smoothPath.get("full"), !!world.regionShapeStroke
 
-            ctx.lineWidth = 2
-            ctx.strokeStyle = '#800030'
-            drawRegionCenter ctx
+            if world.regionCenterLineWidth
+                ctx.lineWidth = world.regionCenterLineWidth
+                ctx.strokeStyle = world.regionCenterStrokeStyle
+                drawRegionCenter ctx
 
             ctx.restore()
 
@@ -96,8 +77,8 @@ papa.Mixin "kiwoticum.world.region.canvas", ->
         createRegionCanvas region
         drawRegion()
 
-        if region.world.regionPixelZoom
-            pixelateCanvas region.canvas, region.world.regionPixelZoom
+        if world.regionPixelZoom
+            pixelateCanvas region.canvas, world.regionPixelZoom
 
 
 
