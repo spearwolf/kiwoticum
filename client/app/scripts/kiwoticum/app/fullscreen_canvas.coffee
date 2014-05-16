@@ -1,4 +1,5 @@
 papa.Module 'kiwoticum.app.fullscreen_canvas', (exports) ->
+    return
 
     mainApp = null
     screenCanvas = null

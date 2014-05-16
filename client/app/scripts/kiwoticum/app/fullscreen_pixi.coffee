@@ -2,6 +2,7 @@ papa.Module 'kiwoticum.app.fullscreen_pixi', (exports) ->
 
     mainApp = null
     renderer = null
+    stats = null
 
     canvasWidth = null
     canvasHeight = null
@@ -21,13 +22,22 @@ papa.Module 'kiwoticum.app.fullscreen_pixi', (exports) ->
         pxHeight = winHeight  * kiwoticum.pixelRatio
         return
 
+    createStatsWidget = ->
+        unless navigator.isCocoonJS
+            stats = new Stats
+            stats.setMode 0
+            stats.domElement.style.position = "absolute"
+            stats.domElement.style.top = "0"
+            stats.domElement.style.left = "0"
+            document.body.appendChild stats.domElement
+
     exports.create = (app) ->
         mainApp = app
 
         readWindowDimension()
 
-        #renderer = new PIXI.CanvasRenderer pxWidth, pxHeight, null, yes
-        renderer = new PIXI.autoDetectRenderer pxWidth, pxHeight, null, yes, yes
+        renderer = new PIXI.CanvasRenderer pxWidth, pxHeight
+        #renderer = new PIXI.autoDetectRenderer pxWidth, pxHeight  #, null, yes, yes
         #PIXI.CanvasTinter.convertTintToImage = yes  # XXX only android?
 
         screenCanvas = renderer.view
@@ -35,6 +45,7 @@ papa.Module 'kiwoticum.app.fullscreen_pixi', (exports) ->
         document.body.appendChild screenCanvas
 
         resizeCanvas()
+        createStatsWidget()
 
         window.addEventListener 'resize', -> shouldResize = yes
 
@@ -69,17 +80,22 @@ papa.Module 'kiwoticum.app.fullscreen_pixi', (exports) ->
 
 
     onFrame = ->
-        onFrame.run()
+        stats.begin() if stats?
+
+        document.body.scrollTop = 0  # => iOS7 minimal-ui issue
+
         resizeCanvas() if shouldResize
 
         if mainApp?
             mainApp.emit 'idle'
             mainApp.emit 'render', renderer
 
+        stats.end() if stats?
+        onFrame.run()
+
 
     onFrame.run = -> window.requestAnimationFrame onFrame
 
 
     return
-
 # vim: et ts=4 sts=4 sw=4

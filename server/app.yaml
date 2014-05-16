@@ -27,3 +27,8 @@ handlers:
   static_files: public/\1
   upload: public/(.*\.js)
 
+- url: /(.*\.png)
+  mime_type: image/png
+  static_files: public/\1
+  upload: public/(.*\.png)
+

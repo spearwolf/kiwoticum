@@ -78,7 +78,7 @@ papa.Mixin "kiwoticum.world.region.canvas", ->
             ctx.fillStyle = '#ffffff'  #randColor()  #'#555555'
 
             if region.world.regionShapeStroke
-                ctx.strokeStyle = "#555555"
+                ctx.strokeStyle = 'rgba(0,0,0,0.5)'
                 ctx.lineWidth = region.world.regionShapeStroke
 
             ctx.save()
@@ -86,8 +86,8 @@ papa.Mixin "kiwoticum.world.region.canvas", ->
 
             drawPath smoothPath(region.path.full), !!region.world.regionShapeStroke
 
-            ctx.lineWidth = 0.5
-            ctx.strokeStyle = '#f01080'
+            ctx.lineWidth = 2
+            ctx.strokeStyle = '#800030'
             drawRegionCenter ctx
 
             ctx.restore()
