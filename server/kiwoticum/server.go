@@ -20,24 +20,28 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	//fmt.Fprint(w, "Hello, kiwoticum!")
 
 	config := kiwotigo.ContinentConfig{
-		GridWidth:             8,
-		GridHeight:            7,
-		GridOuterPaddingX:     10,
-		GridOuterPaddingY:     10,
-		GridInnerPaddingX:     2,
-		GridInnerPaddingY:     2,
-		GridHexWidth:          8,  //6,
-		GridHexHeight:         6,  //6,
-		HexWidth:              24, //24,
-		HexHeight:             24, //24,
-		HexPaddingX:           5,  //3,
-		HexPaddingY:           5,  //3,
-		FastGrowIterations:    1,
-		MinimalGrowIterations: 48, //48,
-		MaxRegionSizeFactor:   5}
+		GridWidth:             10,
+		GridHeight:            10,
+		GridOuterPaddingX:     25,
+		GridOuterPaddingY:     25,
+		GridInnerPaddingX:     6,
+		GridInnerPaddingY:     3,
+		GridHexWidth:          16,
+		GridHexHeight:         14,
+		HexWidth:              12,  //24,
+		HexHeight:             12,  //,
+		HexPaddingX:           0,   //5,  //3,
+		HexPaddingY:           0,   //5,  //3,
+		FastGrowIterations:    8,   //10,
+		MinimalGrowIterations: 120, //48,
+		MaxRegionSizeFactor:   3}
 
 	strategy := kiwotigo.NewContinentCreationStrategy(config)
 	continent := strategy.BuildContinent()
 
-	fmt.Fprint(w, continent.Json())
+	//fmt.Fprint(w, continent.Json())
+
+	result := kiwotigo.NewContinentDescription(continent, &config)
+	fmt.Fprint(w, result.Json())
+
 }

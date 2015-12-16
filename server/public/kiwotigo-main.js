@@ -59,8 +59,8 @@
 	function DrawRegions(ctx, regions, drawBasePath) {
 		//ctx.strokeStyle = '#000000';
 		//ctx.fillStyle = '#d0f0ff';
-		ctx.strokeStyle = "#0B575B"; //'#246';
-		ctx.fillStyle = '#88C425';
+		ctx.strokeStyle = "#333333"; //'#246';
+        ctx.fillStyle = '#9BCB3C'; // '#88C425';
 		ctx.lineWidth = window.devicePixelRatio||1;
 
 		DrawPath(ctx, regions, 'fullPath', true);
@@ -74,7 +74,7 @@
 	}
 
 	function DrawRegionsBase(ctx, data) {
-		ctx.fillStyle = '#61A548';
+		ctx.fillStyle = 'rgba(239, 246, 105, 0.5)';
 		ctx.lineWidth = 1;
 
 		var i, j, p0;
@@ -94,7 +94,7 @@
 	}
 
 	function DrawRegionsConnections(ctx, data) {
-		ctx.strokeStyle = "rgba(255, 0, 128, 0.5)";
+        ctx.strokeStyle = "#CF3333"; // "rgba(255, 0, 128, 0.5)";
 		ctx.lineWidth = 2 * (window.devicePixelRatio||1);
 
 		var i, j, p0, p1;
@@ -129,14 +129,16 @@
 	GetJson('/api/v1/create', function(data){
 		console.log('loaded data', data);
 
-		var ctx = CreateCanvas(data.width, data.height);
+        var continent = data.continent;
+		var ctx = CreateCanvas(continent.width, continent.height);
+
 		console.log('canvas created', ctx.canvas);
 
 		ClearCanvas(ctx);
-		DrawRegions(ctx, data.regions, false);
-		DrawRegionsBase(ctx, data);
-		DrawRegionsConnections(ctx, data);
-		DrawRegionIds(ctx, data);
+		DrawRegions(ctx, continent.regions, false);
+		DrawRegionsBase(ctx, continent);
+		DrawRegionsConnections(ctx, continent);
+		DrawRegionIds(ctx, continent);
 	});
 
 })(window);
