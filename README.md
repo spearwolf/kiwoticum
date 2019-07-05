@@ -1,6 +1,6 @@
 # kiwoticum
 
-kiwoticum is a game project created by myself just for fun.
+kiwoticum is a ~~game~~ a digital and evolutionary art project created by [myself](https://www.spearwolf.de) just for fun!
 
 ![](./images/kiwoticum-prototype-js-shot0.jpg)
 
